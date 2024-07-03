@@ -1,18 +1,84 @@
-html {
-  font-size: 14px;
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", sans-serif;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+/*MENU LARETAL - WEB */
+body{
+    display: flex;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+.iconMenu{
+    width: 50px;
 }
 
-body {
-  margin-bottom: 60px;
+.navegation {
+    position: relative;
+    height: 600px;
+    background: #33752A;
+    width: 70px;
+    overflow-x: hidden;
+    transition: 0.5s;
+    z-index: 1;
+    position: fixed
 }
+
+.navegation:hover{
+    width: 220px;
+}
+
+.navegation ul{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding-top: 15px;
+    padding-left: 0;
+}
+
+.navegation ul li{
+    position: relative;
+    list-style: none;
+    width: 100%;
+    padding: 3px;
+}
+
+.navegation ul li a{
+    color: white;
+    position: relative;
+    display: flex;
+    width: 100%;
+    text-decoration: none;
+
+}
+
+.navegation ul li a .icon{
+    position: relative;
+    display: block;
+    min-width: 60px;
+    height: 70px;
+    text-align: center;
+    line-height: 70px;
+}
+
+.navegation ul li a .icon .iconMenu{
+    position: relative;
+    font-size: 1.5rem;
+    z-index: 1;
+}
+
+.navegation ul li a .title{
+    position: relative;
+    display: block;
+    padding-left: 10px;
+    height: 60px;
+    line-height: 75px;
+    white-space: nowrap;    
+}
+
+.navegation ul li.active {
+    background: #8FD457;
+}
+
