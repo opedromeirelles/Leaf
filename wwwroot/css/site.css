@@ -47,7 +47,6 @@ body{
 
 .navegation ul li a{
     color: white;
-    position: relative;
     display: flex;
     width: 100%;
     text-decoration: none;
