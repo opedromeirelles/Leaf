@@ -6,17 +6,17 @@
 }
 
 /*MENU LARETAL - WEB */
-body{
+body {
     display: flex;
 }
 
-.iconMenu{
+.iconMenu {
     width: 50px;
 }
 
 .navegation {
     position: relative;
-    height: 600px;
+    height: 100vh;
     background: #33752A;
     width: 70px;
     overflow-x: hidden;
@@ -25,59 +25,261 @@ body{
     position: fixed
 }
 
-.navegation:hover{
-    width: 220px;
-}
+    .navegation:hover {
+        width: 220px;
+    }
 
-.navegation ul{
-    position: absolute;
-    top: 0;
-    left: 0;
+    .navegation ul {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding-top: 15px;
+        padding-left: 0px;
+    }
+
+        .navegation ul li {
+            position: relative;
+            list-style: none;
+            width: 100%;
+            padding: 3px;
+        }
+
+            .navegation ul li a {
+                color: white;
+                position: relative;
+                display: flex;
+                width: 100%;
+                text-decoration: none;
+            }
+
+                .navegation ul li a .icon {
+                    position: relative;
+                    display: block;
+                    min-width: 60px;
+                    height: 70px;
+                    text-align: center;
+                    line-height: 70px;
+                    padding-left:5px;
+                }
+
+                    .navegation ul li a .icon .iconMenu {
+                        position: relative;
+                        font-size: 1.5rem;
+                        z-index: 1;
+                    }
+
+                .navegation ul li a .title {
+                    position: relative;
+                    display: block;
+                    padding-left: 15px;
+                    height: 60px;
+                    line-height: 75px;
+                    white-space: nowrap;
+                }
+
+            .navegation ul li.active {
+                background: #8FD457;
+            }
+
+
+/*PLANO DE FUNDO*/
+#homePage {
+    background-image: url('../imgs/backgound/degradeFundo.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
     width: 100%;
-    padding-top: 15px;
-    padding-left: 0;
-}
-
-.navegation ul li{
     position: relative;
-    list-style: none;
-    width: 100%;
-    padding: 3px;
-}
-
-.navegation ul li a{
-    color: white;
     display: flex;
-    width: 100%;
-    text-decoration: none;
-
-}
-
-.navegation ul li a .icon{
-    position: relative;
-    display: block;
-    min-width: 60px;
-    height: 70px;
     text-align: center;
-    line-height: 70px;
+    color: white;
 }
 
-.navegation ul li a .icon .iconMenu{
-    position: relative;
-    font-size: 1.5rem;
-    z-index: 1;
-}
-
-.navegation ul li a .title{
-    position: relative;
+.logo {
     display: block;
-    padding-left: 10px;
-    height: 60px;
-    line-height: 75px;
-    white-space: nowrap;    
+    width: 50%;
+    max-width: 250px;
+    width: 50%;
+    align-items: center center;
+    position: relative;
+    transform: translate(10%, 80%);
+    margin: auto;
 }
 
-.navegation ul li.active {
-    background: #8FD457;
+
+/* Area de Login */
+
+.login-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
 }
 
+.login-image {
+    background-color: #4CAF50;
+    color: white;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease-in-out;
+}
+
+    .login-image img {
+        max-width: 30%;
+        height: auto;
+        margin-bottom: 20px;
+    }
+
+.login-form {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f5f5;
+    padding: 60px; /* Aumentando o padding para expandir o bloco de login */
+    transition: all 0.3s ease-in-out;
+}
+
+    .login-form h2 {
+        font-size: 2.5em; /* Aumentando o tamanho do título */
+        margin-bottom: 30px; /* Posicionando o título acima do formulário */
+        color: #333;
+    }
+
+.form-group {
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    padding: 15px 20px; /* Aumentando o padding para dar mais espaço interno */
+}
+
+.input-icon {
+    width: 65px;
+    height: 75px;
+    margin-right: 35px;
+}
+
+.form-control {
+    border: none;
+    width: 100%;    
+    padding: 10px;
+    outline: none;
+}
+
+.btn-success {
+    width: 100%;
+    padding: 20px; /* Aumentando o tamanho do botão */
+    font-size: 1.5em; /* Aumentando o tamanho do texto no botão */
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+    .btn-success:hover {
+        background-color: #45a049;
+    }
+
+.btn{
+    margin-top: 20px;
+}
+
+/* Estilos para dispositivos móveis */
+@media (max-width: 1100px) {
+    .login-container {
+        flex-direction: inherit;
+        width:100%;
+    }
+
+    .login-image {
+        width: 90%;
+        background-color: #4CAF50;
+        padding-top: 15px;
+    }
+
+        .login-image img {
+            max-width: 45%;
+        }
+
+    .login-form {
+        width: 100%;
+        background-color: #f5f5f5;
+        padding: 50px;
+        height: 100%;
+    }
+
+        .login-form h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+    .input-container {
+        padding: 15px;
+    }
+
+    .input-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .btn-success {
+        padding: 20px;
+        font-size: 1.5em;
+    }
+}
+
+@media (max-width: 700px) {
+    .login-container {
+        flex-direction: column;
+    }
+
+    .login-image {
+        width: 100%;
+        background-color: #4CAF50;
+        padding-top: 15px;
+    }
+
+        .login-image img {
+            max-width: 25%;
+        }
+
+    .login-form {
+        width: 100%;
+        background-color: #f5f5f5;
+        padding: 50px;
+        height: 100%;
+        
+    }
+
+        .login-form h2 {
+            font-size: 2em;
+            margin-bottom: 10%;
+        }
+
+    .input-container {
+        padding: 15px;
+        margin: 10px;
+    }
+
+    .input-icon {
+        width: 50px; 
+        height: 50px;
+    }
+
+    .btn-success {
+        padding: 20px;
+        font-size: 1.5em;
+        margin-bottom: 50%;
+    }
+}

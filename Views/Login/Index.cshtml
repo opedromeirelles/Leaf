@@ -1,0 +1,32 @@
+﻿@{
+    Layout = "_LayoutLogin";
+    ViewData["Title"] = "Área de Acesso.";
+}
+
+
+<div class="login-container">
+    <div class="login-image">
+        <img src="~/imgs/icons/svg/logo300px.svg" alt="Logo">
+    </div>
+    
+        <div class="login-form">
+            <h2>LOGIN</h2>
+            <form method="post">
+                <div class="form-group">
+                    <div class="input-container">
+                        <img src="~/imgs/icons/svg/perfil.svg" alt="Ícone de Perfil" class="input-icon" />
+                        <input type="text" id="login" class="form-control" placeholder="Login">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-container">
+                        <img src="~/imgs/icons/svg/senha.svg" alt="Ícone de Senha" class="input-icon" />
+                        <input type="password" id="password" class="form-control" placeholder="Senha">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">ENTRAR</button>
+            </form>
+        </div>
+    
+</div>
+
