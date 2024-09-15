@@ -1,0 +1,88 @@
+﻿@model IEnumerable<Leaf.Models.Usuario>
+@{
+    ViewData["Title"] = "Usuários";
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+    <span id="@ViewBag.CssId">@TempData["MensagemErro"]</span>
+}
+
+
+<h2>USUÁRIOS</h2>
+
+<div id="gridUsuario">
+    <!-- Controle de Busca -->
+    <div class="controleBusca">
+        
+        <div class="linha-superior">
+            <!--Campo de busca-->
+            <div class="input-grupo">
+                <input type="text" class="form-control txtBuscar" placeholder="Nome.." aria-label="Recipient's username">
+                <!--Departamento-->
+                <div class="dropdown cbDepartamento">
+                    <button class="btn btn-secondary dropdown-toggle" id="dropdownButton" type="button" onclick="toggleDropdown()" aria-expanded="false">
+                        Departamento
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenuCustom">
+                        <a class="dropdown-item itnCbDepartamento" href="#" onclick="selectItem('Financeiro')">Financeiro</a>
+                        <a class="dropdown-item itnCbDepartamento" href="#" onclick="selectItem('Recursos Humanos')">Recursos Humanos</a>
+                        <a class="dropdown-item itnCbDepartamento" href="#" onclick="selectItem('TI')">TI</a>
+                        <a class="dropdown-item itnCbDepartamento" href="#" onclick="selectItem('Administrativo')">Administrativo</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item itnCbDepartamento" href="#" onclick="selectItem('Nenhum')">Nenhum</a>
+
+                    </div>
+                </div>
+                <!--Buscar-->
+                <button class="btn btn-outline-secondary btnBuscar" type="button">Buscar</button>
+                <!--Limpar-->
+                <button type="button" class="btn btn-outline-secondary btnLimpar">Limpar</button>
+            </div>
+            <!--Novo usuario-->
+            <button type="button" class="btn btn-success btnNovoUsuario" onclick="location.href='@Url.Action("NovoUsuario")'">Novo Usuário</button>
+        </div>       
+    </div>
+
+    <div class="tableUsuarios">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Usuário</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Login</th>
+                    <th scope="col">Senha</th>
+                    <th scope="col">Departamento</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var usuario in Model)
+                {
+                    <tr>
+                        <td>@usuario.Id</td>
+                        <td>@usuario.Nome</td>
+                        <td>@usuario.Login</td>
+                        <td>@usuario.Senha</td>
+                        <td>@usuario.Departamento.Descricao</td>
+                        <td>
+                            @if (usuario.Status == 1)
+                            {
+                                <span>Ativo</span>
+                            }
+                            else if (usuario.Status == 0)
+                            {
+                                <span>Desativado</span>
+                            }
+                            else
+                            {
+                                <span>Indefinido</span>
+                            }
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>

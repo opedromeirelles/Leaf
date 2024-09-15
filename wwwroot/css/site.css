@@ -5,8 +5,18 @@
     font-family: "Poppins", sans-serif;
 }
 
-/*MENU LARETAL - WEB */
+/*margem para paginas de cadastro*/
+.paginaPadrao{
+    margin-left:11%;
+    margin-right:6%;
+}
 
+
+
+
+/* ================================
+        MENU LATERAL - HOME
+   ================================ */
 body {
     display: flex;
 }
@@ -85,20 +95,7 @@ body {
                 background: #8FD457;
             }
 
-
 /*PLANO DE FUNDO*/
-#homePage {
-    background-image: url('../imgs/backgound/degradeFundo.svg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 100vh;
-    width: 100%;
-    position: relative;
-    display: flex;
-    text-align: center;
-    color: white;
-}
 
 .logo {
     width: 50%;
@@ -122,54 +119,46 @@ body {
 }
 
 
-/* Alertas flutuante */
-#eventoErro {
+/* ================================
+   MENSAGENS DE ALERTA - GLOBAL
+   ================================ */
+
+#eventoErro, #eventoSucesso, #eventoAlteracao {
     position: fixed;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: #f8d7da;
-    color: #EC312F;
     padding: 10px;
-    border: 1px solid #f5c6cb;
     border-radius: 5px;
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
     z-index: 1000;
+}
+
+#eventoErro {
+    background-color: #f8d7da;
+    color: #EC312F;
+    border: 1px solid #f5c6cb;
 }
 
 #eventoSucesso {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
     background-color: #d4edda;
     color: #155724;
-    padding: 10px;
     border: 1px solid #c3e6cb;
-    border-radius: 5px;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-    z-index: 1000;
 }
 
 #eventoAlteracao {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
     background-color: #fff3cd;
     color: #856404;
-    padding: 10px;
     border: 1px solid #ffeeba;
-    border-radius: 5px;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-    z-index: 1000;
 }
 
 
-/* AREA DE LOGIN */
+
+/* ================================
+            AREA DO LOGIN
+   ================================ */
+
 .login-container {
     display: flex;
     height: 100vh;
@@ -268,7 +257,159 @@ body {
 }
 
 
-/* Estilos para dispositivos móveis */
+/* ================================
+            AREA DO USUARIO
+   ================================ */
+
+#gridUsuario {
+    margin-left: 5%;
+}
+
+h2{
+    text-align:center;
+    padding:2%;
+}
+
+.controleBusca {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5%;
+}
+    
+    .controleBusca .linha-superior {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: -20px;
+    }
+    
+    .controleBusca .input-grupo {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+    }
+
+.txtBuscar {
+    margin-top: 20px;
+    margin-right: 10px;
+}
+
+.btnBuscar, .btnLimpar {
+    margin-right: 10px;
+}
+
+.btnNovoUsuario {
+    margin-left: 10%;
+    background-color: #28a745;
+    color: white;
+    font-weight: bold;
+    max-width: 20%;
+}
+
+.cbDepartamento {
+    margin-right: 10px;
+    margin-top: 0px;
+    padding-top: 0px;
+    width: 300px;
+}
+
+.itnCbDepartamento {
+    font-size: 16px;
+    padding: 10px;
+}
+
+/*NOVO USUARIO*/
+.btnsControle{
+    display:block;
+    text-align:end;
+}
+
+    .btnsControle button {
+        width: 30%;
+        align-items: inherit;
+        font-size: 14px;
+    }
+
+
+
+/* ================================
+      DISPOSITIVOS MOVEIS - USUARIOS
+   ================================ */
+@media (max-width: 855px) {
+    #gridUsuario {
+        margin-left: 10%;
+    }
+
+    .controleBusca {
+        flex-direction: column; 
+        
+    }
+
+    .tableUsuarios {
+        margin-right: 10px;
+    }
+
+    .cbDepartamento {
+        margin-right: 10px;
+        margin-top: 0px;
+        padding-top: 0px;
+        width: 300px;
+    }
+
+    .linha-superior {
+        flex-direction: column;
+        align-items: flex-start; 
+    }
+
+    .input-grupo, .cbDepartamento, .btnNovoUsuario {
+        width: 100%;
+        margin-bottom: 0; 
+    }
+      
+
+    .btnNovoUsuario {        
+        margin-left: 68%;
+        margin-bottom: 0;
+        max-width: 30%;
+    }
+
+    .btn-success{
+        margin-bottom: 0 !important;
+    }
+}
+
+@media (max-width: 765px) {
+
+    #gridUsuario {
+        margin-left: 2%;
+    }
+
+    .btnNovoUsuario {
+        margin-left: 0;
+        margin-right: 70%;
+
+    }
+
+}
+
+@media (max-width: 665px) {
+    #gridUsuario {
+        margin-left: 8%;
+        padding: 15px;
+    }
+
+    .btnNovoUsuario{
+        border:none;
+    }
+
+       
+}
+
+
+
+/* ================================
+      DISPOSITIVOS MOVEIS - LOGIN
+   ================================ */
 @media (max-width: 1100px) {
     .login-container {
         flex-direction: inherit;

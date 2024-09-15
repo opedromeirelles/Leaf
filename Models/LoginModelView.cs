@@ -12,7 +12,9 @@ namespace Leaf.Models
 
         public LoginModelView()
         {
-            
+            this.Username = "";
+            this.Senha = "";
+
         }
     }
 }

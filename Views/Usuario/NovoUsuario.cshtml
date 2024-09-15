@@ -1,0 +1,68 @@
+﻿@model Leaf.Models.Usuario
+@{
+    ViewData["Title"] = "Novo usuario";
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+    <span id="@ViewBag.CssId">@TempData["MensagemErro"]</span>
+}
+
+
+<div class="paginaPadrao">
+    <br />
+    <h2>Cadastro de Usuário</h2>
+    <br />
+    <form asp-action="Criar" method="post">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Nome">Novo nome</label>
+                    <input name="Nome" type="text" class="form-control" id="nomeUsuario" placeholder="ex: João" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Senha">Nova senha</label>
+                    <input name="Senha" type="password" class="form-control" id="senhaUsuario" placeholder="*****" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="usernameUsuario">Novo username</label>
+                    <input name="Login" type="text" class="form-control" id="usernameUsuario" placeholder="novo.usuario" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="confSenha">Confirmar senha</label>
+                    <input name="confSenha" type="password" class="form-control" id="confirmaSenha" placeholder="*****" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="departamentoUsuario">Departamento</label>
+                    <select class="form-control" id="departamentoUsuario" name="IdDpto" required>
+                        <option value="">Selecione</option>
+                        @foreach (var departamento in ViewBag.Departamentos)
+                        {
+                            <option value="@departamento.IdDpto">@departamento.Descricao</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="btnsControle">
+            <button type="submit" class="btn btn-success">CONFIRMAR</button>
+
+            <a href="@Url.Action("Index", "Usuario")" class="btn btn-danger">DESCARTAR</a>
+        </div>
+    </form>
+</div>
