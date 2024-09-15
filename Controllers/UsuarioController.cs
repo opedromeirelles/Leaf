@@ -28,22 +28,25 @@ namespace Leaf.Controllers
 
         public IActionResult NovoUsuario()
         {
-            // Aqui podemos passar a lista de departamentos para o dropdown
-            ViewBag.Departamentos = _departamentoService.ListaDepartamenos();
+            var departamentos = _departamentoService.ListaDepartamenos();
+            if (departamentos == null || !departamentos.Any())
+            {
+                TempData["MensagemErro"] = "Não foi possível carregar os departamentos";
+            }
+            ViewBag.Departamentos = departamentos;
             return View();
         }
 
         [HttpPost]
         public IActionResult Criar(Usuario usuario, string confSenha)
         {
-
+            // Verificar se os dados são inválidos antes de processar
             if (!ModelState.IsValid)
             {
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
                 TempData["MensagemErro"] = "Ops, algo deu errado. Erros: " + string.Join(", ", errors);
-                ViewBag.CssId = "eventoErro";
-                
 
+                
                 ViewBag.Departamentos = _departamentoService.ListaDepartamenos();
                 return View("NovoUsuario", usuario);
             }
@@ -51,45 +54,99 @@ namespace Leaf.Controllers
             {
                 try
                 {
-                    if (usuario.Senha == confSenha)
+                    // Verificar se as senhas coincidem
+                    if (usuario.Senha != confSenha)
                     {
-                        if (ModelState.IsValid)
-                        {
-                            _usuarioService.NovoUsuario(usuario);
-
-                            //mensagem de sucesso:
-                            TempData["MensagemErro"] = "Operação realizada com sucesso!";
-                            ViewBag.CssId = "eventoSucesso";
-                            return RedirectToAction("Index");
-                        }
-                        else
-                        {
-                            TempData["MensagemErro"] = "Ops algo deu errado, tente novamente.";
-                            ViewBag.CssId = "eventoErro";
-                            ViewBag.Departamentos = _departamentoService.ListaDepartamenos();
-                            return View("NovoUsuario", usuario);
-                        }
-
+                        TempData["MensagemErro"] = "Senhas diferentes.";
+                        ViewBag.Departamentos = _departamentoService.ListaDepartamenos();
+                        return View("NovoUsuario", usuario);
                     }
                     else
                     {
+                        _usuarioService.NovoUsuario(usuario);
+
+                        // Mensagem de sucesso e redirecionamento
+                        TempData["MensagemSucesso"] = "Operação realizada com sucesso!";
+                        return RedirectToAction("Index");
+                    }
+                    
+                }
+                catch (Exception ex)
+                {
+                    TempData["MensagemErro"] = $"Ops não foi possível realizar a operação, erro: {ex.Message}";
+                    ViewBag.Departamentos = _departamentoService.ListaDepartamenos();
+                    return View("NovoUsuario", usuario);
+                }
+
+            }
+            
+        }
+
+       
+        // Exibir formulário de edição
+        public IActionResult Editar(int id) // renomeado para Editar
+        {
+            // Chama o serviço ou repositório para buscar o usuário pelo id
+            Usuario usuario = _usuarioService.getUsuarioId(id);
+
+            if (usuario == null)
+            {
+                ViewData["MenssagemErro"] = "Erro ao editar, tente novamente mais tarde";
+                return View("Index");
+            }
+
+            // Passa o usuário para a view
+            ViewBag.Departamentos = _departamentoService.ListaDepartamenos();
+            return View(usuario);
+        }
+
+        [HttpPost]
+        public IActionResult Atualizar(Usuario usuario, string confSenha)
+        {
+            // Verificar se os dados são inválidos antes de processar
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                TempData["MensagemErro"] = "Ops, algo deu errado. Erros: " + string.Join(", ", errors);
+
+
+                ViewBag.Departamentos = _departamentoService.ListaDepartamenos();
+                return View("EditarUsuario", usuario);
+            }
+            else
+            {
+                try
+                {
+                    // Verificar se as senhas coincidem
+                    if (usuario.Senha != confSenha)
+                    {
                         TempData["MensagemErro"] = "Senhas diferentes.";
-                        ViewBag.CssId = "eventoErro";
                         ViewBag.Departamentos = _departamentoService.ListaDepartamenos();
-                        return View("NovoUsuario", usuario);
+                        return View("EditarUsuario", usuario);
+                    }
+                    else
+                    {
+                        if (_usuarioService.AtualizarUsuario(usuario))
+                        {
+                            // Mensagem de sucesso e redirecionamento
+                            TempData["MensagemSucesso"] = "Operação realizada com sucesso!";
+                            return RedirectToAction("Index");
+                        }
+                        // Mensagem de erro e redirecionamento
+                        TempData["MensagemErro"] = "Erro ao tentar atualizar usuario. Tente novamente";
+                        return RedirectToAction("Index");
+
                     }
 
                 }
                 catch (Exception ex)
                 {
-                    ViewBag.CssId = "eventoErro";
-                    TempData["MensagemErro"] = $"Ops não foi possivel realizar a operação, erro: {ex.Message}";
-                    // Se houver erro, retorna à página com a mensagem de erro
+                    TempData["MensagemErro"] = $"Ops não foi possível realizar a operação, erro: {ex.Message}";
                     ViewBag.Departamentos = _departamentoService.ListaDepartamenos();
                     return View("NovoUsuario", usuario);
                 }
+
             }
-            
         }
 
     }

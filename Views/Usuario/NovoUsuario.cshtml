@@ -5,9 +5,12 @@
 
 @if (TempData["MensagemErro"] != null)
 {
-    <span id="@ViewBag.CssId">@TempData["MensagemErro"]</span>
+    <span id="eventoErro">@TempData["MensagemErro"]</span>
 }
-
+else if (TempData["MensagemSucesso"] != null)
+{
+    <span id="eventoSucesso">@TempData["MensagemSucesso"]</span>
+}
 
 <div class="paginaPadrao">
     <br />

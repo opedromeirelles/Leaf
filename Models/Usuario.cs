@@ -18,10 +18,10 @@ namespace Leaf.Models
         public int Status { get; set; }
 
         // Relação com Departamento
-        [Range(1, int.MaxValue, ErrorMessage = "Selecione um departamento válido")]
+        [Required(ErrorMessage = "Selecione um departamento")]
         public int IdDpto { get; set; }
 
-        public Departamento Departamento { get; set; } // Propriedade de navegação
+        public Departamento? Departamento { get; set; } // Propriedade de navegação
 
         public Usuario()
         {

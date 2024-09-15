@@ -34,5 +34,35 @@ namespace Leaf.Services
                 return false;
             }
         }
+
+        public bool AtualizarUsuario(Usuario usuario)
+        {
+            try
+            {
+                UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);
+                _usuarioRepository.AtualizarUsuario(usuario);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public Usuario getUsuarioId(int id)
+        {
+            try
+            {
+                UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);
+                return _usuarioRepository.GetUsuarioById(id);
+                
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
     }
 }

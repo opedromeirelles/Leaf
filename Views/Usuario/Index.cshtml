@@ -5,7 +5,11 @@
 
 @if (TempData["MensagemErro"] != null)
 {
-    <span id="@ViewBag.CssId">@TempData["MensagemErro"]</span>
+    <span id="eventoErro">@TempData["MensagemErro"]</span>
+}
+else if (TempData["MensagemSucesso"] != null)
+{
+    <span id="eventoSucesso">@TempData["MensagemSucesso"]</span>
 }
 
 
@@ -78,6 +82,9 @@
                             {
                                 <span>Indefinido</span>
                             }
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Editar", "Usuario", new { id = usuario.Id })">Editar</a>
                         </td>
                     </tr>
                 }
