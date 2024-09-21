@@ -63,6 +63,7 @@ namespace Leaf.Controllers
                     }
                     else
                     {
+                        usuario.Status = 1;
                         _usuarioService.NovoUsuario(usuario);
 
                         // Mensagem de sucesso e redirecionamento
@@ -83,8 +84,7 @@ namespace Leaf.Controllers
         }
 
        
-        // Exibir formulário de edição
-        public IActionResult Editar(int id) // renomeado para Editar
+        public IActionResult Editar(int id)
         {
             // Chama o serviço ou repositório para buscar o usuário pelo id
             Usuario usuario = _usuarioService.getUsuarioId(id);
@@ -97,19 +97,19 @@ namespace Leaf.Controllers
 
             // Passa o usuário para a view
             ViewBag.Departamentos = _departamentoService.ListaDepartamenos();
+
             return View(usuario);
         }
 
         [HttpPost]
         public IActionResult Atualizar(Usuario usuario, string confSenha)
-        {
+    {
+            
             // Verificar se os dados são inválidos antes de processar
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || usuario.Id == 0)
             {
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
                 TempData["MensagemErro"] = "Ops, algo deu errado. Erros: " + string.Join(", ", errors);
-
-
                 ViewBag.Departamentos = _departamentoService.ListaDepartamenos();
                 return View("EditarUsuario", usuario);
             }
@@ -126,15 +126,30 @@ namespace Leaf.Controllers
                     }
                     else
                     {
-                        if (_usuarioService.AtualizarUsuario(usuario))
+                        //verifica se houve mudança no status
+                        if (usuario.Status == 0)
                         {
-                            // Mensagem de sucesso e redirecionamento
-                            TempData["MensagemSucesso"] = "Operação realizada com sucesso!";
+                            if (_usuarioService.AtualizaStatusUsuario(usuario.Id))
+                            {
+                                TempData["MensagemSucesso"] = "Status do usuario alterado. Demais mudanças foram descartadas!";
+                                return RedirectToAction("Index");
+                            }
+
+                            TempData["MensagemErro"] = "Erro ao alterar status do usuário, tente novamente.";
                             return RedirectToAction("Index");
                         }
-                        // Mensagem de erro e redirecionamento
-                        TempData["MensagemErro"] = "Erro ao tentar atualizar usuario. Tente novamente";
-                        return RedirectToAction("Index");
+                        else
+                        {
+                            if (_usuarioService.AtualizarUsuario(usuario))
+                            {
+                                // Mensagem de sucesso e redirecionamento
+                                TempData["MensagemSucesso"] = "Operação realizada com sucesso!";
+                                return RedirectToAction("Index");
+                            }
+                            // Mensagem de erro e redirecionamento
+                            TempData["MensagemErro"] = "Erro ao tentar atualizar usuario. Tente novamente";
+                            return RedirectToAction("Index");
+                        }
 
                     }
 
@@ -147,6 +162,52 @@ namespace Leaf.Controllers
                 }
 
             }
+        }
+
+        public IActionResult Excluir(int id)
+        {
+            try
+            {
+                Usuario usuario = _usuarioService.getUsuarioId(id);
+                usuario.Departamento = _departamentoService.GetDepartamento(id);
+
+                if (usuario != null)
+                {
+                    return View(usuario); 
+                }
+
+                TempData["MensagemErro"] = "Usuário não encontrado.";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = $"Ops não conseguimos dar sequência na exclusão, erro: {ex.Message} - Tente novamente";
+                return RedirectToAction("Index");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult ConfirmarExclusao(int id)
+        {
+            try
+            {
+                if (_usuarioService.ExcluirUsuario(id))
+                {
+                    TempData["MensagemSucesso"] = "Usuário excluido com sucesso.";
+                    return RedirectToAction("Index");
+                }
+               
+
+            }
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = $"Ops algo deu errado. Tente novamente, erro {ex.Message}";
+                return RedirectToAction("Index");
+            }
+
+            TempData["MensagemErro"] = $"Ops algo deu errado. Tente novamente";
+            return RedirectToAction("Index");
+
         }
 
     }

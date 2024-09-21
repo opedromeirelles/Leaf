@@ -177,6 +177,28 @@ function confirmarAcao(url, opcao) {
     }
 }
 
+//VER SENHA:
+
+document.addEventListener('DOMContentLoaded', function () {
+    var mostrarSenhaCheckbox = document.getElementById('mostrarSenha');
+    var senhaInput = document.getElementById('senhaUsuario');
+    var confirmaSenhaInput = document.getElementById('confirmaSenha');
+
+    if (mostrarSenhaCheckbox) {
+        mostrarSenhaCheckbox.addEventListener('change', function () {
+            if (this.checked) {
+                senhaInput.type = 'text';
+                confirmaSenhaInput.type = 'text';
+            } else {
+                senhaInput.type = 'password';
+                confirmaSenhaInput.type = 'password';
+            }
+        });
+    }
+});
+
+
+
 
 
 

@@ -318,16 +318,24 @@ h2{
     padding: 10px;
 }
 
-/*NOVO USUARIO*/
+.btnsControleUsuario {
+    display: block;
+    text-align: end;
+}
+
+    .btnsControleUsuario button {
+        align-items: inherit;
+        width: 15%;
+    }
+
+/*Controle de botoes*/
 .btnsControle{
     display:block;
     text-align:end;
 }
 
     .btnsControle button {
-        width: 30%;
-        align-items: inherit;
-        font-size: 14px;
+       align-items: inherit;
     }
 
 

@@ -68,7 +68,16 @@ else if (TempData["MensagemSucesso"] != null)
                         <td>@usuario.Nome</td>
                         <td>@usuario.Login</td>
                         <td>@usuario.Senha</td>
-                        <td>@usuario.Departamento.Descricao</td>
+                        <td>
+                            @if(@usuario.Departamento != null)
+                            {
+                                @usuario.Departamento.Descricao
+                            }
+                            else
+                            {
+                                <span>Departamento não encontrado</span>
+                            }
+                        </td>
                         <td>
                             @if (usuario.Status == 1)
                             {
@@ -85,6 +94,9 @@ else if (TempData["MensagemSucesso"] != null)
                         </td>
                         <td>
                             <a href="@Url.Action("Editar", "Usuario", new { id = usuario.Id })">Editar</a>
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Excluir", "Usuario", new { id = usuario.Id })">Excluir</a>
                         </td>
                     </tr>
                 }

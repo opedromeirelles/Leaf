@@ -1,0 +1,65 @@
+﻿@model Leaf.Models.Usuario
+@{
+    ViewData["Title"] = "Excluir usuário";
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+    <span id="eventoErro">@TempData["MensagemErro"]</span>
+}
+else if (TempData["MensagemSucesso"] != null)
+{
+    <span id="eventoSucesso">@TempData["MensagemSucesso"]</span>
+}
+
+<br />
+
+<h2>Tem certeza que deseja excluir este usuário?</h2>
+
+<p>Esta ação não poderá ser desfeita.</p>
+
+<table class="table">
+    <tr>
+        <th>Nome</th>
+        <td>@Model.Nome</td>
+    </tr>
+    <tr>
+        <th>Login</th>
+        <td>@Model.Login</td>
+    </tr>
+    <tr>
+        <th>Status</th>
+        @if (Model.Status == 1)
+        {
+        <td>Ativo</td>        
+        }
+        else
+        {
+        <td>Desativado</td>
+        }
+    </tr>
+    <tr>
+        <th>Senha atual</th>
+        <td>@Model.Senha</td>
+    </tr>
+    <tr>
+        <th>Departamento</th>
+        <td>@Model.Departamento?.Descricao</td>
+    </tr>
+</table>
+<div class="btnsControle">
+
+    <form asp-action="ConfirmarExclusao" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <button type="submit" class="btn btn-danger">Sim, excluir</button>
+
+        <a href="@Url.Action("Index", "Usuario")" class="btn btn-secondary">Cancelar</a>
+    </form>
+
+</div>
+
+<br />
+<br />
+<br />
+
+

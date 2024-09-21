@@ -19,5 +19,11 @@ namespace Leaf.Services
             DepartamentoRepository _departamentoRepository = new DepartamentoRepository(_dbConnectionManager);
             return _departamentoRepository.GetDepartamentos();
         }
+
+        public Departamento GetDepartamento(int idUsuario)
+        {
+            DepartamentoRepository _departamentoRepository = new DepartamentoRepository(_dbConnectionManager);
+            return _departamentoRepository.GetDepartamento(idUsuario);
+        }
     }
 }

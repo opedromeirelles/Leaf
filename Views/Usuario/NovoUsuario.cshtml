@@ -26,8 +26,8 @@ else if (TempData["MensagemSucesso"] != null)
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="Senha">Nova senha</label>
-                    <input name="Senha" type="password" class="form-control" id="senhaUsuario" placeholder="*****" required>
+                    <label for="usernameUsuario">Novo username</label>
+                    <input name="Login" type="text" class="form-control" id="usernameUsuario" placeholder="novo.usuario" required>
                 </div>
             </div>
         </div>
@@ -35,9 +35,10 @@ else if (TempData["MensagemSucesso"] != null)
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="usernameUsuario">Novo username</label>
-                    <input name="Login" type="text" class="form-control" id="usernameUsuario" placeholder="novo.usuario" required>
+                    <label for="Senha">Nova senha</label>
+                    <input name="Senha" type="password" class="form-control" id="senhaUsuario" placeholder="*****" required>
                 </div>
+                
             </div>
             <div class="col-md-6">
                 <div class="form-group">
@@ -46,6 +47,12 @@ else if (TempData["MensagemSucesso"] != null)
                 </div>
             </div>
         </div>
+        <div class="form-group form-check ">
+            <input type="checkbox" class="form-check-input" id="mostrarSenha">
+            <label class="form-check-label" for="mostrarSenha">Mostrar senha</label>
+        </div>
+
+        <br />
 
         <div class="row">
             <div class="col-md-6">
@@ -62,10 +69,11 @@ else if (TempData["MensagemSucesso"] != null)
             </div>
         </div>
 
-        <div class="btnsControle">
+        <div class="btnsControleUsuario">
             <button type="submit" class="btn btn-success">CONFIRMAR</button>
-
             <a href="@Url.Action("Index", "Usuario")" class="btn btn-danger">DESCARTAR</a>
         </div>
+
+        
     </form>
 </div>

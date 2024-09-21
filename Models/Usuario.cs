@@ -21,12 +21,9 @@ namespace Leaf.Models
         [Required(ErrorMessage = "Selecione um departamento")]
         public int IdDpto { get; set; }
 
-        public Departamento? Departamento { get; set; } // Propriedade de navegação
+        public Departamento? Departamento { get; set; }
 
-        public Usuario()
-        {
-            this.Status = 1; //sempre um novo usuario por padrao é ativo
-        }
+        
     }
 
 

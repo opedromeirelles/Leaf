@@ -1,6 +1,7 @@
 ﻿using Leaf.Data;
 using Leaf.Models;
 using Leaf.Repository;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Leaf.Services
 {
@@ -17,7 +18,16 @@ namespace Leaf.Services
         public List<Usuario> ListaUsuarios()
         {
             UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);
-            return _usuarioRepository.GetUsuarios();
+            try
+            {
+                return _usuarioRepository.GetUsuarios();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao listar os usuários: {ex.Message}");
+                
+            }
         }
 
         public bool NovoUsuario(Usuario usuario)
@@ -29,9 +39,10 @@ namespace Leaf.Services
                 return true;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return false;
+                throw new Exception($"Erro ao cadastrar o usuário: {ex.Message}");
+
             }
         }
 
@@ -43,10 +54,11 @@ namespace Leaf.Services
                 _usuarioRepository.AtualizarUsuario(usuario);
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return false;
+                throw new Exception($"Erro ao atualizar o usuário: {ex.Message}");
             }
+
         }
 
         public Usuario getUsuarioId(int id)
@@ -57,10 +69,44 @@ namespace Leaf.Services
                 return _usuarioRepository.GetUsuarioById(id);
                 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                throw new Exception($"Erro ao localizar o usuário: {ex.Message}");
 
-                throw;
+            }
+
+        }
+
+        public bool ExcluirUsuario(int id)
+        {
+            try
+            {
+                UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);
+                _usuarioRepository.DeletarUsuario(id);
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao excluir o usuário: {ex.Message}");
+            }
+        }
+
+        public bool AtualizaStatusUsuario(int id)
+        {
+            UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);
+
+            try
+            {
+                if (_usuarioRepository.AtualizaStatus(id))
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao atualizar status do usuário: {ex.Message}");
             }
         }
 

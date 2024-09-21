@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Data.SqlTypes;
+using System.Security.Cryptography.Pkcs;
 using Leaf.Data;
 using Leaf.Models;
 
@@ -84,17 +86,22 @@ namespace Leaf.Repository
         {
             using (SqlConnection conn = _dbConnectionManager.GetConnection())
             {
-                string sql = @"UPDATE Usuario SET nome = @nome, login = @login, senha = @senha, status = @status, id_dpto = @idDpto 
-                       WHERE id = @id";
+                string sql = @"UPDATE Usuario SET 
+                            nome = @nome, 
+                            login = @login, 
+                            senha = @senha, 
+                            status = @status,
+                            id_dpto = @id_dpto 
+                            WHERE idusuario = @idusuario";
 
                 List<SqlParameter> sqlParametros = new List<SqlParameter>
                 {
-                    new SqlParameter("@id", usuario.Id),
+                    new SqlParameter("@idusuario", usuario.Id),
                     new SqlParameter("@nome", usuario.Nome),
                     new SqlParameter("@login", usuario.Login),
                     new SqlParameter("@senha", usuario.Senha),
                     new SqlParameter("@status", usuario.Status),
-                    new SqlParameter("@idDpto", usuario.IdDpto)
+                    new SqlParameter("@id_dpto", usuario.IdDpto)
                 };
 
                 try
@@ -103,12 +110,45 @@ namespace Leaf.Repository
                 }
                 catch (SqlException ex)
                 {
-                    throw new Exception($"Erro ao inserir o usuário: {ex.Message}");
+                    throw new Exception($"Erro ao atualizar usuário: {ex.Message}");
                 }
+            }
+        }           
+
+        public bool AtualizaStatus(int id)
+        {
+            using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+                string sql = @"UPDATE usuario
+                               SET status = 0
+                               WHERE idusuario = @idUsuario";
+
+                SqlCommand command = new SqlCommand(sql, conn);
+                command.Parameters.AddWithValue("@idUsuario", id);
+
+                try
+                {
+                    if (command.ExecuteNonQuery() == 1)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+
+                    throw new Exception($"Erro ao alterar status do usuário: {ex.Message}");
+
+                }
+
             }
         }
 
-        public Usuario GetUsuarioById(int id)
+        public Usuario? GetUsuarioById(int id)
         {
             using (SqlConnection conn = _dbConnectionManager.GetConnection())
             {
@@ -139,6 +179,28 @@ namespace Leaf.Repository
             }
                 return null;
         }
+
+        public void DeletarUsuario(int id)
+        {
+            using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+                string sql = @"Delete from usuario where idusuario = @id";
+
+                SqlCommand comando = new SqlCommand(sql, conn);
+                comando.Parameters.AddWithValue("@id", id);
+                
+                try
+                {
+                    comando.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    throw new Exception($"Erro ao excluir o usuário: {ex.Message}");
+                }
+
+            }
+        }
+
 
     }
 }
