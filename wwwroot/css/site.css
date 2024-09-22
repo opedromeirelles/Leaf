@@ -25,6 +25,13 @@ body {
     width: 50px;
 }
 
+.cbDepartamentoHome {
+    margin-top: 20px;
+    margin-right: 18px;
+    max-width: 30%;
+}
+
+
 .navegation {
     position: relative;
     height: 100vh;
@@ -53,8 +60,8 @@ body {
             position: relative;
             list-style: none;
             width: 100%;
-            margin-top: 10px;
-            padding: 3px;
+            margin-top: 5px;
+            padding: 1px;
         }
 
             .navegation ul li a {

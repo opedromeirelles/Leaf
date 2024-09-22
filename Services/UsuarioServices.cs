@@ -30,6 +30,19 @@ namespace Leaf.Services
             }
         }
 
+        public List<Usuario> ListaUsuariosFiltro(string nome, int idDpto)
+        {
+            UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);
+            try
+            {
+                return _usuarioRepository.GetUsuariosFiltro(nome, idDpto);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"Erro ao acessar a lista de usuários: {ex.Message}");
+            }
+        }
         public bool NovoUsuario(Usuario usuario)
         {
             UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);

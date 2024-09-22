@@ -20,10 +20,41 @@ namespace Leaf.Controllers
         }
 
 
+        
+        [HttpGet]
         public IActionResult Index()
         {
-            List<Usuario> usuarios = _usuarioService.ListaUsuarios();
-            return View(usuarios);
+            var usuarios = _usuarioService.ListaUsuarios();
+            var departamentos = _departamentoService.ListaDepartamenos();
+
+            ViewBag.Departamentos = departamentos;
+            return View(usuarios); 
+        }
+
+        [HttpGet]
+        public IActionResult Buscar(string nome, int IdDpto)
+        {
+            try
+            {
+                var usuarios = _usuarioService.ListaUsuariosFiltro(nome, IdDpto);
+                var departamentos = _departamentoService.ListaDepartamenos();
+                ViewBag.Departamentos = departamentos;
+
+                if (usuarios.Any()) // Verifica se há dados
+                {
+                    TempData["MensagemSucesso"] = "Dados encontrados.";
+                }
+                else
+                {
+                    TempData["MensagemErro"] = "Ops, não encontramos os dados solicitados.";
+                }
+
+                return View("Index", usuarios); // Use a mesma view "Index"
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Não foi possível retornar os usuários solicitados: erro {ex.Message}");
+            }
         }
 
         public IActionResult NovoUsuario()
