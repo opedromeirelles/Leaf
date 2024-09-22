@@ -197,6 +197,29 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+// Validação de ponto para virgula
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Obtenha o campo de valor unitário
+    var valorUnitarioInput = document.querySelector('input[name="ValorUnitario"]');
+
+    // Adicione o evento 'blur' ao campo de valor unitário (acionado quando o campo perde o foco)
+    if (valorUnitarioInput) {
+        valorUnitarioInput.addEventListener('blur', function () {
+            // Substituir ponto por vírgula ao perder o foco
+            valorUnitarioInput.value = valorUnitarioInput.value.replace(".", ",");
+        });
+    }
+
+    // Adicione o evento 'submit' ao formulário para garantir que a conversão ocorra também no envio
+    var form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function (event) {
+            // Substituir ponto por vírgula antes do envio, se houver
+            valorUnitarioInput.value = valorUnitarioInput.value.replace(".", ",");
+        });
+    }
+});
 
 
 

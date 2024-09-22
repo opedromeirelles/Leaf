@@ -1,0 +1,65 @@
+﻿@model Leaf.Models.Produto
+@{
+    ViewData["Title"] = "Excluir Produto";
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+    <span id="eventoErro">@TempData["MensagemErro"]</span>
+}
+else if (TempData["MensagemSucesso"] != null)
+{
+    <span id="eventoSucesso">@TempData["MensagemSucesso"]</span>
+}
+
+<br />
+<div class="paginaPadrao">   
+    <h2>Tem certeza que deseja excluir este produto?</h2>
+
+    <p>Esta ação não poderá ser desfeita.</p>
+
+    <table class="table">
+        <tr>
+            <th>Codigo</th>
+            <td>@Model.IdProduto</td>
+        </tr>
+        <tr>
+            <th>Descrição</th>
+            <td>@Model.Descricao</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            @if (Model.Status == 1)
+            {
+                <td>Ativo</td>
+            }
+            else
+            {
+                <td>Desativado</td>
+            }
+        </tr>
+        <tr>
+            <th>Valor unitário</th>
+            <td>@Model.ValorUnitario</td>
+        </tr>
+        <tr>
+            <th>Quantidade em estoque</th>
+            <td>@Model.QtdeEstoque</td>
+        </tr>
+    </table>
+    <div class="btnsControle">
+
+        <form asp-action="Deletar" method="post">
+           <input type="hidden" name="IdProduto" value="@Model.IdProduto" />
+           <button type="submit" class="btn btn-danger">Sim, excluir</button>
+
+            <a href="@Url.Action("Index", "Produto")" class="btn btn-secondary">Cancelar</a>
+        </form>
+
+    </div>
+
+    <br />
+    <br />
+    <br />
+</div>
+

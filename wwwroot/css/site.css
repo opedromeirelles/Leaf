@@ -11,6 +11,33 @@
     margin-right:6%;
 }
 
+/*margem para paginas individuias */
+.paginaProdutos {
+    margin-left: 11%;
+    margin-right: 6%;
+}
+
+/* margem para elementos */
+.btnsControles {
+    display: block;
+    text-align: end;
+}
+
+    .btnsControles button {
+        align-items: inherit;
+        width: 15%;
+    }
+
+
+
+/* ================================
+            AREA DE BUSCAS
+   ================================ */
+.cbBusca {
+    margin-top: 20px;
+    margin-right: 18px;
+    max-width: 30%;
+}
 
 
 

@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Leaf.Models.Produto>
+@{
+	ViewData["Title"] = "Produtos";
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+    <span id="eventoErro">@TempData["MensagemErro"]</span>
+}
+else if (TempData["MensagemSucesso"] != null)
+{
+    <span id="eventoSucesso">@TempData["MensagemSucesso"]</span>
+}
+
+
+<br />
+<h2>PRODUTOS</h2>
+
+<div class="paginaPadrao">
+    <!-- Controle de Busca -->
+    <div class="controleBusca">
+        <form asp-action="Buscar" method="get">
+            <div class="linha-superior">
+                <!--Campo de busca-->
+                <div class="input-grupo">
+                    <input type="text" class="form-control txtBuscar" placeholder="Produto.." name="descricao" aria-label="Recipient's username">
+
+                    <!--Departamento-->
+                    <select class="form-control cbBusca bg-secondary text-light" name="status">
+                        <option value="">Status</option>
+                        <option value="1">Ativo</option>
+                        <option value="0">Desativado</option>
+                    </select>
+
+                    <!--Buscar-->
+                    <button class="btn btn-outline-secondary btnBuscar" type="submit">Buscar</button>
+                    <!--Limpar-->
+                    <button type="reset" class="btn btn-outline-secondary btnLimpar" onclick="location.href='@Url.Action("Index")'">Limpar</button>
+                </div>
+                <!--Novo usuario-->
+                <button type="button" class="btn btn-success btnNovoUsuario" onclick="location.href='@Url.Action("Cadastrar")'">Cadastrar Produto</button>
+            </div>
+        </form>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Código</th>
+                <th scope="col">Descrição</th>
+                <th scope="col">Valor unitário</th>
+                <th scope="col">Estoque</th>
+                <th scope="col">Status</th>
+                <th scope="col">Ferramenas</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var produto in Model)
+            {
+                <tr>
+                    <th scope="row">@produto.IdProduto</th>
+                    <td>@produto.Descricao</td>
+                    <td >@produto.ValorUnitario</td>
+                    <td>@produto.QtdeEstoque</td>
+                    <td>
+                        @if (produto.Status == 1)
+                        {
+                            <span>Ativo</span>
+                        }
+                        else if (produto.Status == 0)
+                        {
+                            <span>Desativado</span>
+                        }
+                        else
+                        {
+                            <span>Indefinido</span>
+                        }
+                    </td>
+                    <td colspan="2">
+                        <a href="@Url.Action("Editar", "Produto", new { id = produto.IdProduto })">Editar</a> |
+                        <a href="@Url.Action("Excluir", "Produto", new { id = produto.IdProduto })">Excluir</a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+</div>

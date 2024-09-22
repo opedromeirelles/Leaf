@@ -9,16 +9,16 @@ namespace Leaf.Controllers
 {
     public class UsuarioController : Controller
     {
+        //injetar os serviços no meu construtor
+
         private readonly UsuarioServices _usuarioService;
         private readonly DepartamentoServices _departamentoService;
 
-        //injetar os serviços no meu construtor
         public UsuarioController(UsuarioServices usuarioService, DepartamentoServices departamentoServices)
         {
             _usuarioService = usuarioService;
             _departamentoService = departamentoServices;
         }
-
 
         
         [HttpGet]
@@ -26,6 +26,18 @@ namespace Leaf.Controllers
         {
             var usuarios = _usuarioService.ListaUsuarios();
             var departamentos = _departamentoService.ListaDepartamenos();
+
+            if (usuarios == null)
+            {
+                TempData["MensagemErro"] = "Ops, não encontramos os dados solicitados.";
+                usuarios = new List<Usuario>();
+            }
+            if (departamentos == null)
+            {
+                TempData["MensagemErro"] = "Ops, não encontramos os departamentos solicitados.";
+
+                departamentos = new List<Departamento>();
+            }
 
             ViewBag.Departamentos = departamentos;
             return View(usuarios); 
@@ -49,7 +61,7 @@ namespace Leaf.Controllers
                     TempData["MensagemErro"] = "Ops, não encontramos os dados solicitados.";
                 }
 
-                return View("Index", usuarios); // Use a mesma view "Index"
+                return View("Index", usuarios); 
             }
             catch (Exception ex)
             {
@@ -57,7 +69,7 @@ namespace Leaf.Controllers
             }
         }
 
-        public IActionResult NovoUsuario()
+        public IActionResult Criar()
         {
             var departamentos = _departamentoService.ListaDepartamenos();
             if (departamentos == null || !departamentos.Any())
@@ -69,7 +81,7 @@ namespace Leaf.Controllers
         }
 
         [HttpPost]
-        public IActionResult Criar(Usuario usuario, string confSenha)
+        public IActionResult Cadastrar(Usuario usuario, string confSenha)
         {
             // Verificar se os dados são inválidos antes de processar
             if (!ModelState.IsValid)
@@ -79,7 +91,7 @@ namespace Leaf.Controllers
 
                 
                 ViewBag.Departamentos = _departamentoService.ListaDepartamenos();
-                return View("NovoUsuario", usuario);
+                return View("Criar", usuario);
             }
             else
             {
@@ -90,7 +102,7 @@ namespace Leaf.Controllers
                     {
                         TempData["MensagemErro"] = "Senhas diferentes.";
                         ViewBag.Departamentos = _departamentoService.ListaDepartamenos();
-                        return View("NovoUsuario", usuario);
+                        return View("Criar", usuario);
                     }
                     else
                     {
@@ -107,14 +119,13 @@ namespace Leaf.Controllers
                 {
                     TempData["MensagemErro"] = $"Ops não foi possível realizar a operação, erro: {ex.Message}";
                     ViewBag.Departamentos = _departamentoService.ListaDepartamenos();
-                    return View("NovoUsuario", usuario);
+                    return View("Criar", usuario);
                 }
 
             }
             
         }
 
-       
         public IActionResult Editar(int id)
         {
             // Chama o serviço ou repositório para buscar o usuário pelo id

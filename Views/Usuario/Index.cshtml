@@ -12,10 +12,11 @@ else if (TempData["MensagemSucesso"] != null)
     <span id="eventoSucesso">@TempData["MensagemSucesso"]</span>
 }
 
+<br />
 
 <h2>USUÁRIOS</h2>
 
-<div id="gridUsuario">
+<div class="paginaPadrao">
     <!-- Controle de Busca -->
     <div class="controleBusca">
         <form asp-action="Buscar" method="get">
@@ -25,8 +26,8 @@ else if (TempData["MensagemSucesso"] != null)
                     <input type="text" class="form-control txtBuscar" placeholder="Nome.." name="nome" aria-label="Recipient's username">
 
                     <!--Departamento-->
-                    <select class="form-control cbDepartamentoHome" id="departamentoUsuario" name="IdDpto">
-                        <option value="">Selecione</option>
+                    <select class="form-control cbDepartamentoHome bg-secondary text-light" id="departamentoUsuario" name="IdDpto">
+                        <option value="">Departamento</option>
                         @foreach (var departamento in ViewBag.Departamentos)
                         {
                             <option value="@departamento.IdDpto">@departamento.Descricao</option>
@@ -39,7 +40,7 @@ else if (TempData["MensagemSucesso"] != null)
                     <button type="reset" class="btn btn-outline-secondary btnLimpar" onclick="location.href='@Url.Action("Index")'">Limpar</button>
                 </div>
                 <!--Novo usuario-->
-                <button type="button" class="btn btn-success btnNovoUsuario" onclick="location.href='@Url.Action("NovoUsuario")'">Novo Usuário</button>
+                <button type="button" class="btn btn-success btnNovoUsuario" onclick="location.href='@Url.Action("Criar")'">Novo Usuário</button>
             </div>
         </form>
     </div>
@@ -54,6 +55,7 @@ else if (TempData["MensagemSucesso"] != null)
                     <th scope="col">Senha</th>
                     <th scope="col">Departamento</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Ferramentas</th>
                 </tr>
             </thead>
             <tbody>
@@ -88,12 +90,11 @@ else if (TempData["MensagemSucesso"] != null)
                                 <span>Indefinido</span>
                             }
                         </td>
-                        <td>
-                            <a href="@Url.Action("Editar", "Usuario", new { id = usuario.Id })">Editar</a>
-                        </td>
-                        <td>
+                        <td colspan="2">
+                            <a href="@Url.Action("Editar", "Usuario", new { id = usuario.Id })">Editar</a> |
                             <a href="@Url.Action("Excluir", "Usuario", new { id = usuario.Id })">Excluir</a>
                         </td>
+                        
                     </tr>
                 }
 
