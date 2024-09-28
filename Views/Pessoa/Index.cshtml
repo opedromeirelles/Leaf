@@ -1,0 +1,97 @@
+﻿@model IEnumerable<Leaf.Models.Pessoa>
+@{
+    ViewData["Title"] = "Pessoas";
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+    <span id="eventoErro">@TempData["MensagemErro"]</span>
+}
+else if (TempData["MensagemSucesso"] != null)
+{
+    <span id="eventoSucesso">@TempData["MensagemSucesso"]</span>
+}
+
+<br />
+<h2>PESSOAS</h2>
+
+<div class="paginaPadrao">
+    <!-- Controle de Busca -->
+    <div class="controleBusca">
+        <form asp-action="Buscar" method="get">
+            <div class="linha-superior">
+                <!--Campo de busca por Nome-->
+                <div class="input-grupo">
+                    <input type="text" class="form-control txtBuscar" placeholder="Nome da Pessoa.." name="nome" aria-label="Recipient's username">
+
+                    <!--Filtro por Tipo (Pessoa Física ou Jurídica)-->
+                    <select class="form-control cbBusca bg-secondary text-light" name="tipo">
+                        <option value="">Tipo</option>
+                        <option value="PF">Pessoa Física</option>
+                        <option value="PJ">Pessoa Jurídica</option>
+                    </select>
+
+                    <!--Buscar-->
+                    <button class="btn btn-outline-secondary btnBuscar" type="submit">Buscar</button>
+                    <!--Limpar-->
+                    <button type="reset" class="btn btn-outline-secondary btnLimpar" onclick="location.href='@Url.Action("Index")'">Limpar</button>
+                </div>
+                <!--Nova Pessoa-->
+                <button type="button" class="btn btn-success btnNovoUsuario" onclick="location.href='@Url.Action("Cadastrar")'">Cadastrar Pessoa</button>
+            </div>
+        </form>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Código</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">CPF/CNPJ</th>
+                <th scope="col">Telefone</th>
+                <th scope="col">Email</th>
+                <th scope="col">Ferramentas</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pessoa in Model)
+            {
+                <tr>
+                    <th scope="row">@pessoa.IdPessoa</th>
+                    <td>@pessoa.Nome</td>
+                    <td>
+                        @if (pessoa.Tipo == "PF")
+                        {
+                            <span>Pessoa Física</span>
+                        }
+                        else if (pessoa.Tipo == "PJ")
+                        {
+                            <span>Pessoa Jurídica</span>
+                        }
+                        else
+                        {
+                            <span>Indefinido</span>
+                        }
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(pessoa.Cpf))
+                        {
+                            @pessoa.Cpf
+                        }
+                        else
+                        {
+                            @pessoa.Cnpj
+                        }
+                    </td>
+                    <td>@pessoa.Telefone1</td>
+                    <td>@pessoa.Email1</td>
+                    <td>
+                        <a href="@Url.Action("Editar", "Pessoa", new { id = pessoa.IdPessoa })">Editar</a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>

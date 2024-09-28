@@ -234,28 +234,5 @@ namespace Leaf.Repository
             }
         }
 
-        public void DeletarUsuario(int id)
-        {
-            using (SqlConnection conn = _dbConnectionManager.GetConnection())
-            {
-                string sql = @"Delete from usuario where idusuario = @id";
-
-                SqlCommand comando = new SqlCommand(sql, conn);
-                comando.Parameters.AddWithValue("@id", id);
-                
-                try
-                {
-                    comando.ExecuteNonQuery();
-                }
-                catch (SqlException ex)
-                {
-                    throw new Exception($"Erro ao excluir o usuário: {ex.Message}");
-                }
-
-            }
-        }
-
-
-
     }
 }

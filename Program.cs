@@ -24,11 +24,15 @@ builder.Services.AddSingleton<DbConnectionManager>(sp =>
 builder.Services.AddTransient<UsuarioServices>();
 builder.Services.AddTransient<DepartamentoServices>();
 builder.Services.AddTransient<ProdutoServices>();
+builder.Services.AddTransient<PessoaServices>();
+
+
 
 //Repositories:
 builder.Services.AddTransient<UsuarioRepository>();
 builder.Services.AddTransient<DepartamentoRepository>();
-builder.Services.AddTransient<ProdutoRepository>();
+builder.Services.AddTransient<PessoaRepository>();
+
 
 // Configurar a cultura padrão
 var defaultCulture = new CultureInfo("pt-BR");

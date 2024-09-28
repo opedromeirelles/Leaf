@@ -63,35 +63,36 @@ namespace Leaf.Repository
             List<Produto> produtos = new List<Produto>();
 
             // Base da query SQL
-            var sql = new StringBuilder(@"SELECT idproduto, descricao, valor_unitario, qtde_estoque, status FROM produto WHERE 1 = 1");
+            string sql = @"SELECT idproduto, descricao, valor_unitario, qtde_estoque, status 
+                           FROM produto WHERE 1 = 1";
 
             // Parâmetros para a consulta
-            var parametros = new List<SqlParameter>();
+            List<SqlParameter> parametros = new List<SqlParameter>();
 
-            // Adiciona a condição para descrição se foi fornecida
+            // Condição para descrição se foi fornecida
             if (!string.IsNullOrEmpty(descricao))
             {
-                sql.Append(" AND descricao LIKE @descricao");
+                sql += " AND descricao LIKE @descricao";
                 parametros.Add(new SqlParameter("@descricao", "%" + descricao + "%"));
             }
 
-            // Adiciona a condição para status se foi fornecido
-            if (status == 1)
+            // Condição para status se foi fornecido
+            if (status.Equals(1) || status.Equals(0))
             {
-                sql.Append(" AND status = @status");
+                sql += " AND status = @status";
                 parametros.Add(new SqlParameter("@status", status));
             }
-            else if (status == 0)
+            else if (status.Equals(3))
             {
-                sql.Append(" AND status = @status");
-                parametros.Add(new SqlParameter("@status", status));
+                // Não filtrar por status, retorna todos os produtos independentemente do status
+                // Aqui, não fazemos nada, pois não queremos adicionar a condição de status
             }
-            
+           
 
             // Executar a query
             using (SqlConnection conn = _dbConnectionManager.GetConnection())
             {
-                SqlCommand command = new SqlCommand(sql.ToString(), conn);
+                SqlCommand command = new SqlCommand(sql, conn);
                 command.Parameters.AddRange(parametros.ToArray());
 
                 SqlDataReader reader = command.ExecuteReader();
@@ -219,27 +220,6 @@ namespace Leaf.Repository
                     throw new Exception($"Erro alterar o status do protudo, erro: {ex.Message}");
                 }
 
-
-            }
-        }
-
-        public void DeletarProduto(int idProduto)
-        {
-            using (SqlConnection conn = _dbConnectionManager.GetConnection())
-            {
-                string sql = @"DELETE FROM produto where idproduto = @idproduto";
-
-                SqlCommand command = new SqlCommand(sql, conn);
-                command.Parameters.AddWithValue("@idproduto", idProduto);
-                try
-                {
-                    command.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-
-                    throw new Exception($"Não foi possivel deletar o produto, erro: {ex.Message}");
-                }
 
             }
         }

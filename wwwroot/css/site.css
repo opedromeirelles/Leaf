@@ -60,74 +60,60 @@ body {
 
 
 .navegation {
-    position: relative;
-    height: 100vh;
+    position: fixed; /* Garante que o menu fique fixo na lateral */
+    top: 0;
+    height: 100vh; /* Ocupa toda a altura da tela */
     background: #33752A;
-    width: 70px;
-    overflow-x: hidden;
-    transition: 0.5s;
+    width: 80px; /* Largura inicial do menu */
+    overflow-y: auto; /* Controla o scroll vertical */
+    overflow-x: hidden; /* Remove scroll horizontal */
+    transition: width 0.5s;
     z-index: 1;
-    position: fixed
 }
 
     .navegation:hover {
-        width: 220px;
+        width: 190px; /* Aumenta a largura ao passar o mouse */
     }
 
     .navegation ul {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
         padding-top: 15px;
         padding-left: 0px;
     }
 
         .navegation ul li {
-            position: relative;
             list-style: none;
-            width: 100%;
             margin-top: 5px;
-            padding: 1px;
         }
 
             .navegation ul li a {
                 color: white;
-                position: relative;
                 display: flex;
-                width: 100%;
+                align-items: center; /* Centraliza verticalmente */
                 text-decoration: none;
+                padding: 3px 5px; /* Espaçamento adicional para evitar sobreposição */
             }
 
                 .navegation ul li a .icon {
-                    position: relative;
-                    display: block;
-                    min-width: 60px;
-                    height: 60px;
-                    text-align: center;
-                    line-height: 70px;
-                    padding-left:5px;
+                    margin-top:7px;
+                    min-width: 60px; /* Define um espaço mínimo para o ícone */
+                    text-align: center; /* Centraliza o ícone */
                 }
 
                     .navegation ul li a .icon .iconMenu {
-                        position: relative;
                         font-size: 1.5rem;
-                        z-index: 1;
                     }
 
                 .navegation ul li a .title {
-                    position: relative;
-                    display: block;
-                    padding-left: 15px;
-                    height: 60px;
-                    line-height: 75px;
+                    margin-top: 7px;
+                    padding-left: 15px; /* Espaço entre o ícone e o texto */
                     white-space: nowrap;
                 }
 
             .navegation ul li.active {
-                height:75px;
+                height: 65px;
                 background: #8FD457;
             }
+
 
 /*PLANO DE FUNDO*/
 

@@ -97,19 +97,5 @@ namespace Leaf.Services
             }
         }
 
-        public bool ExcluirProduto(int idProduto)
-        {
-            ProdutoRepository _produtoRepository = new ProdutoRepository(_dbConnectionManager);
-            try
-            {
-                _produtoRepository.DeletarProduto(idProduto);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
     }
 }

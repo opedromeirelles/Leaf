@@ -90,9 +90,8 @@ else if (TempData["MensagemSucesso"] != null)
                                 <span>Indefinido</span>
                             }
                         </td>
-                        <td colspan="2">
-                            <a href="@Url.Action("Editar", "Usuario", new { id = usuario.Id })">Editar</a> |
-                            <a href="@Url.Action("Excluir", "Usuario", new { id = usuario.Id })">Excluir</a>
+                        <td>
+                            <a href="@Url.Action("Editar", "Usuario", new { id = usuario.Id })">Editar</a>
                         </td>
                         
                     </tr>

@@ -43,6 +43,7 @@ namespace Leaf.Services
                 throw new Exception($"Erro ao acessar a lista de usuários: {ex.Message}");
             }
         }
+
         public bool NovoUsuario(Usuario usuario)
         {
             UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);
@@ -88,21 +89,6 @@ namespace Leaf.Services
 
             }
 
-        }
-
-        public bool ExcluirUsuario(int id)
-        {
-            try
-            {
-                UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);
-                _usuarioRepository.DeletarUsuario(id);
-                return true;
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao excluir o usuário: {ex.Message}");
-            }
         }
 
         public bool AtualizaStatusUsuario(int id)

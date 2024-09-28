@@ -18,25 +18,25 @@ namespace Leaf.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var produto = _produtoServices.ListarProdutos();
+            List<Produto> produtos = _produtoServices.ListarProdutos();
+            
 
-            if (produto == null)
+            if (produtos == null)
             {
                 TempData["MensagemErro"] = "Ops, não encontramos os dados solicitados.";
-                produto = new List<Produto>();
+                produtos = new List<Produto>();
             }
 
-            //ViewBag.StatusProduto = _produtoServices.getStatus();
-
-            return View(produto);
+            return View(produtos);
         }
         
         [HttpGet]
         public IActionResult Buscar(string descricao, int status)
         {
+
             try
             {
-                var produtos = _produtoServices.ListarProdutosFiltrados(descricao, status);
+                List<Produto> produtos = _produtoServices.ListarProdutosFiltrados(descricao, status);
 
                 if (produtos.Any()) // Verifica se há dados
                 {
@@ -51,7 +51,7 @@ namespace Leaf.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception($"Não foi possível retornar os usuários solicitados: erro {ex.Message}");
+                throw new Exception($"Não foi possível retornar os produtos solicitados: erro {ex.Message}");
             }
         }
         
@@ -143,38 +143,6 @@ namespace Leaf.Controllers
                     return View("Editar", produto);
                 }
             }
-        }
-
-        public IActionResult Excluir(int id)
-        {
-            Produto produto = _produtoServices.GetProduto(id);
-            if (produto != null)
-            {
-                return View(produto);
-            }
-            else
-            {
-                TempData["MensagemErro"] = "Erro ao tentar editar o produto";
-                return RedirectToAction("index");
-            }
-
-        }
-
-        [HttpPost]
-        public IActionResult Deletar(Produto produto)
-        {
-            try
-            {
-                _produtoServices.ExcluirProduto(produto.IdProduto);
-                TempData["MensagemSucesso"] = "Produto excluido com sucesso!";
-                return RedirectToAction("index");
-            }
-            catch (Exception ex)
-            {
-                TempData["MensagemErro"] = $"Não foi possivel concluir a ação, erro: {ex.Message}";
-                return View("Excluir", produto);
-            }
-
         }
 
     }

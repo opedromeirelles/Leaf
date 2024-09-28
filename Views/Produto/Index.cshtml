@@ -27,7 +27,7 @@ else if (TempData["MensagemSucesso"] != null)
 
                     <!--Departamento-->
                     <select class="form-control cbBusca bg-secondary text-light" name="status">
-                        <option value="">Status</option>
+                        <option value="3">Status</option>
                         <option value="1">Ativo</option>
                         <option value="0">Desativado</option>
                     </select>
@@ -77,9 +77,8 @@ else if (TempData["MensagemSucesso"] != null)
                             <span>Indefinido</span>
                         }
                     </td>
-                    <td colspan="2">
-                        <a href="@Url.Action("Editar", "Produto", new { id = produto.IdProduto })">Editar</a> |
-                        <a href="@Url.Action("Excluir", "Produto", new { id = produto.IdProduto })">Excluir</a>
+                    <td>
+                        <a href="@Url.Action("Editar", "Produto", new { id = produto.IdProduto })">Editar</a>
                     </td>
                 </tr>
             }

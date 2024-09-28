@@ -1,13 +1,28 @@
 ﻿
 // ANIMAÇÃO MENU
+// ANIMAÇÃO MENU
 const list = document.querySelectorAll('.list');
+
+// Função para adicionar a classe 'active' ao item clicado
 function activeLink() {
-    list.forEach((item) =>
-        item.classList.remove('active'));
+    list.forEach((item) => item.classList.remove('active'));
     this.classList.add('active');
 }
-list.forEach((item) =>
-    item.addEventListener('click', activeLink));
+
+// Adiciona o evento de clique a todos os itens da lista
+list.forEach((item) => item.addEventListener('click', activeLink));
+
+// Detecta a URL atual e ajusta o menu ativo
+document.addEventListener("DOMContentLoaded", () => {
+    const currentPath = window.location.pathname.toLowerCase();
+
+    list.forEach((item) => {
+        const link = item.querySelector('a');
+        if (link && link.getAttribute('href').toLowerCase() === currentPath) {
+            item.classList.add('active');
+        }
+    });
+});
 
 // ANIMAÇÃO DE EVENTOS DE MENSAGEM
 

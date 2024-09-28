@@ -24,8 +24,9 @@ namespace Leaf.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var usuarios = _usuarioService.ListaUsuarios();
-            var departamentos = _departamentoService.ListaDepartamenos();
+
+            List<Usuario> usuarios = _usuarioService.ListaUsuarios();
+            List<Departamento> departamentos = _departamentoService.ListaDepartamenos();
 
             if (usuarios == null)
             {
@@ -48,8 +49,8 @@ namespace Leaf.Controllers
         {
             try
             {
-                var usuarios = _usuarioService.ListaUsuariosFiltro(nome, IdDpto);
-                var departamentos = _departamentoService.ListaDepartamenos();
+                List<Usuario> usuarios = _usuarioService.ListaUsuariosFiltro(nome, IdDpto);
+                List<Departamento> departamentos = _departamentoService.ListaDepartamenos();
                 ViewBag.Departamentos = departamentos;
 
                 if (usuarios.Any()) // Verifica se há dados
@@ -71,7 +72,7 @@ namespace Leaf.Controllers
 
         public IActionResult Criar()
         {
-            var departamentos = _departamentoService.ListaDepartamenos();
+            List<Departamento> departamentos = _departamentoService.ListaDepartamenos();
             if (departamentos == null || !departamentos.Any())
             {
                 TempData["MensagemErro"] = "Não foi possível carregar os departamentos";
@@ -204,52 +205,6 @@ namespace Leaf.Controllers
                 }
 
             }
-        }
-
-        public IActionResult Excluir(int id)
-        {
-            try
-            {
-                Usuario usuario = _usuarioService.getUsuarioId(id);
-                usuario.Departamento = _departamentoService.GetDepartamento(id);
-
-                if (usuario != null)
-                {
-                    return View(usuario); 
-                }
-
-                TempData["MensagemErro"] = "Usuário não encontrado.";
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                TempData["MensagemErro"] = $"Ops não conseguimos dar sequência na exclusão, erro: {ex.Message} - Tente novamente";
-                return RedirectToAction("Index");
-            }
-        }
-
-        [HttpPost]
-        public IActionResult ConfirmarExclusao(int id)
-        {
-            try
-            {
-                if (_usuarioService.ExcluirUsuario(id))
-                {
-                    TempData["MensagemSucesso"] = "Usuário excluido com sucesso.";
-                    return RedirectToAction("Index");
-                }
-               
-
-            }
-            catch (Exception ex)
-            {
-                TempData["MensagemErro"] = $"Ops algo deu errado. Tente novamente, erro {ex.Message}";
-                return RedirectToAction("Index");
-            }
-
-            TempData["MensagemErro"] = $"Ops algo deu errado. Tente novamente";
-            return RedirectToAction("Index");
-
         }
 
     }
