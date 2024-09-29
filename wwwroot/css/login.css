@@ -1,0 +1,166 @@
+/* ================================
+        PAGINA DE LOGIN CUSTOMIZADA
+   ================================ */
+
+.login-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+}
+
+.login-image {
+    background-color: #4CAF50;
+    color: white;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease-in-out;
+}
+
+    .login-image img {
+        max-width: 30%;
+        height: auto;
+        margin-bottom: 20px;
+    }
+
+.login-form {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f5f5;
+    padding: 40px;
+    transition: all 0.3s ease-in-out;
+}
+
+    .login-form h2 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+.login-group {
+    margin-bottom: 15px; /* Diminui a margem entre os campos */
+    width: 100%;
+}
+
+/* Contêiner para agrupar o campo e o ícone */
+.input-container-group {
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    margin-bottom: 10px; /* Reduz o espaçamento entre os grupos */
+}
+
+.input-icon-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.input-icon-custom {
+    width: 50px; /* Reduz o tamanho do ícone */
+    height: 50px;
+}
+
+/* Customização dos grupos de formulário */
+.form-group-custom {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.form-label-custom {
+    font-size: 0.85em; /* Reduz um pouco o tamanho da label */
+    margin-bottom: 4px; /* Reduz a margem abaixo da label */
+    color: #333;
+}
+
+/* Campos de Entrada Customizados */
+.form-input-custom {
+    border: 1px solid #ddd;
+    padding: 8px; /* Reduz o padding para diminuir a altura */
+    border-radius: 4px;
+    width: 100%;
+}
+
+/*LABEL DE CAMPO REQUERIDO - LOGIN CUSTOMIZADO */
+.text-danger-login {
+    margin-top: 4px; /* Reduz o espaçamento superior */
+    font-size: 0.85em; /* Reduz o tamanho do texto */
+    color: #d9534f;
+}
+
+/* Botão customizado */
+.btn-success-login-custom {
+    width: 100%; /* Ajusta a largura do botão */
+    height: 20%; /* Ajusta a largura do botão */
+    padding: 0px; /* Reduz o padding vertical para diminuir a altura */
+    font-size: 1.2em; /* Ajusta o tamanho da fonte */
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+    .btn-success-login-custom:hover {
+        background-color: #45a049;
+    }
+
+.btn-login-custom {
+    margin-top: 15px; /* Ajuste para dar mais equilíbrio ao botão */
+}
+
+/* ================================
+    DISPOSITIVOS MOVEIS - LOGIN
+   ================================ */
+
+@media (max-width: 830px) {
+    .login-container {
+        flex-direction: column;
+    }
+
+    .login-image {
+        width: 100%;
+        background-color: #4CAF50;
+        padding-top: 15px;
+        align-items: flex-start;
+    }
+
+        .login-image img {
+            max-width: 10%;
+            margin-left: 5%;
+        }
+
+    .login-form {
+        width: 100%;
+        background-color: #f5f5f5;
+        padding: 0px;
+        height: 100%;
+        padding-bottom: 10%;
+    }
+
+    .input-container-group {
+        padding: 10px;
+        
+    }
+
+    .input-icon-custom {
+        width: 40px;
+        height: 40px;
+    }
+
+    .btn-success-login-custom {
+        padding: 0px;
+        font-size: 1.2em;
+        width: 100%;
+    }
+}

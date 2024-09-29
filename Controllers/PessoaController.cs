@@ -54,6 +54,30 @@ namespace Leaf.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult Detalhes(int id)
+        {
+            try
+            {
+                // Buscar a pessoa pelo ID
+                Pessoa pessoa = _pessoaServices.GetPessoa(id);
+
+                if (pessoa == null)
+                {
+                    TempData["MensagemErro"] = "Pessoa não encontrada.";
+                    return RedirectToAction("Index");
+                }
+
+                // Retornar para a view de detalhes com a pessoa encontrada
+                return View(pessoa);
+            }
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = $"Erro ao buscar os detalhes da pessoa: {ex.Message}";
+                return RedirectToAction("Index");
+            }
+        }
+
         // Exibir a tela de cadastro de nova pessoa
         public IActionResult Cadastrar()
         {

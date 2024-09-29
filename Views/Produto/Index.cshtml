@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<Leaf.Models.Produto>
 @{
-	ViewData["Title"] = "Produtos";
+    ViewData["Title"] = "Produtos";
 }
 
 @if (TempData["MensagemErro"] != null)
@@ -12,78 +12,92 @@ else if (TempData["MensagemSucesso"] != null)
     <span id="eventoSucesso">@TempData["MensagemSucesso"]</span>
 }
 
-
 <br />
-<h2>PRODUTOS</h2>
+<h2 class="h2titulo">PRODUTOS</h2>
 
 <div class="paginaPadrao">
     <!-- Controle de Busca -->
     <div class="controleBusca">
         <form asp-action="Buscar" method="get">
-            <div class="linha-superior">
-                <!--Campo de busca-->
-                <div class="input-grupo">
-                    <input type="text" class="form-control txtBuscar" placeholder="Produto.." name="descricao" aria-label="Recipient's username">
+            <div class="linha-superior-custom">
+                <!-- Campo de busca por Nome -->
+                <div class="grupoBusca-custom">
+                    <input type="text" class="form-control txtBuscar-custom" placeholder="Descrição do Produto..." name="descricao" aria-label="Recipient's username">
+                </div>
 
-                    <!--Departamento-->
-                    <select class="form-control cbBusca bg-secondary text-light" name="status">
+                <!-- Filtro por Status -->
+                <div class="grupoBusca-custom tipoBusca">
+                    <select class="form-control cbBusca-custom bg-secondary text-light" name="status">
                         <option value="3">Status</option>
                         <option value="1">Ativo</option>
                         <option value="0">Desativado</option>
                     </select>
-
-                    <!--Buscar-->
-                    <button class="btn btn-outline-secondary btnBuscar" type="submit">Buscar</button>
-                    <!--Limpar-->
-                    <button type="reset" class="btn btn-outline-secondary btnLimpar" onclick="location.href='@Url.Action("Index")'">Limpar</button>
                 </div>
-                <!--Novo usuario-->
-                <button type="button" class="btn btn-success btnNovoUsuario" onclick="location.href='@Url.Action("Cadastrar")'">Cadastrar Produto</button>
+
+                <!-- Botão Buscar -->
+                <div class="grupoBusca-custom botaoBusca">
+                    <button class="btn btn-outline-secondary btnBuscar-custom" type="submit">Buscar</button>
+                </div>
+
+                <!-- Botão Limpar -->
+                <div class="grupoBusca-custom botaoLimpar">
+                    <button type="reset" class="btn btn-outline-secondary btnLimpar-custom" onclick="location.href='@Url.Action("Index")'">Limpar</button>
+                </div>
+
+                <!-- Botão Novo Cadastro de Produto -->
+                <div class="grupoBusca-custom btn-novo-container">
+                    <button type="button" class="btn btn-success btnNovoUsuario-custom" onclick="location.href='@Url.Action("Cadastrar")'">Cadastrar Produto</button>
+                </div>
             </div>
         </form>
+        <br />
+        <br />
     </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">Código</th>
-                <th scope="col">Descrição</th>
-                <th scope="col">Valor unitário</th>
-                <th scope="col">Estoque</th>
-                <th scope="col">Status</th>
-                <th scope="col">Ferramenas</th>
-
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var produto in Model)
-            {
-                <tr>
-                    <th scope="row">@produto.IdProduto</th>
-                    <td>@produto.Descricao</td>
-                    <td >@produto.ValorUnitario</td>
-                    <td>@produto.QtdeEstoque</td>
-                    <td>
-                        @if (produto.Status == 1)
-                        {
-                            <span>Ativo</span>
-                        }
-                        else if (produto.Status == 0)
-                        {
-                            <span>Desativado</span>
-                        }
-                        else
-                        {
-                            <span>Indefinido</span>
-                        }
-                    </td>
-                    <td>
-                        <a href="@Url.Action("Editar", "Produto", new { id = produto.IdProduto })">Editar</a>
-                    </td>
-                </tr>
-            }
-
-        </tbody>
-    </table>
-
+    <!-- Tabela Responsiva -->
+    <div class="container">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Código</th>
+                        <th scope="col">Descrição</th>
+                        <th scope="col" class="hide-column">Valor Unitário</th>
+                        <th scope="col">Estoque</th>
+                        <th scope="col" class="hide-column">Status</th>
+                        <th scope="col">Ferramentas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var produto in Model)
+                    {
+                        <tr>
+                            <td>@produto.IdProduto</td>
+                            <td>@produto.Descricao</td>
+                            <td class="hide-column">@produto.ValorUnitario.ToString("C")</td>
+                            <td>@produto.QtdeEstoque</td>
+                            <td class="hide-column">
+                                @if (produto.Status == 1)
+                                {
+                                    <span>Ativo</span>
+                                }
+                                else if (produto.Status == 0)
+                                {
+                                    <span>Desativado</span>
+                                }
+                                else
+                                {
+                                    <span>Indefinido</span>
+                                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Editar", "Produto", new { id = produto.IdProduto })">Editar</a> |
+                                <a href="@Url.Action("Detalhes", "Produto", new { id = produto.IdProduto })">Detalhes</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

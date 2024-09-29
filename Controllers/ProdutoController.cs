@@ -54,7 +54,31 @@ namespace Leaf.Controllers
                 throw new Exception($"Não foi possível retornar os produtos solicitados: erro {ex.Message}");
             }
         }
-        
+
+        [HttpGet]
+        public IActionResult Detalhes(int id)
+        {
+            try
+            {
+                // Buscar a pessoa pelo ID
+                Produto produto = _produtoServices.GetProduto(id);
+
+                if (produto == null)
+                {
+                    TempData["MensagemErro"] = "Produto não encontrada.";
+                    return RedirectToAction("Index");
+                }
+
+                // Retornar para a view de detalhes com a pessoa encontrada
+                return View(produto);
+            }
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = $"Erro ao buscar os detalhes do produto: {ex.Message}";
+                return RedirectToAction("Index");
+            }
+        }
+
         public  IActionResult Cadastrar()
         {
             return View();

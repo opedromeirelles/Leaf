@@ -1,0 +1,91 @@
+﻿
+/* ================================
+        MENU LATERAL - HOME
+   ================================ */
+
+body {
+    display: flex;
+}
+
+.iconMenu {
+    width: 50px;
+}
+
+
+.navegation {
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    background: #33752A;
+    width: 80px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: width 0.5s;
+    z-index: 1;
+}
+
+    .navegation:hover {
+        width: 190px;
+    }
+
+    .navegation ul {
+        padding-top: 15px;
+        padding-left: 0px;
+    }
+
+        .navegation ul li {
+            list-style: none;
+            margin-top: 5px;
+        }
+
+            .navegation ul li a {
+                color: white;
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+                padding: 3px 5px;
+            }
+
+                .navegation ul li a .icon {
+                    margin-top: 7px;
+                    min-width: 60px;
+                    text-align: center;
+                }
+
+                    .navegation ul li a .icon .iconMenu {
+                        font-size: 1.5rem;
+                    }
+
+                .navegation ul li a .title {
+                    margin-top: 7px;
+                    padding-left: 15px;
+                    white-space: nowrap;
+                }
+
+            .navegation ul li.active {
+                height: 65px;
+                background: #8FD457;
+            }
+
+
+/*PLANO DE FUNDO*/
+
+.logo {
+    width: 50%;
+    max-width: 250px;
+    width: 50%;
+    width: 50%;
+    align-items: center center;
+    position: relative;
+    transform: translate(10%, 80%);
+    margin: auto;
+}
+
+.logoHome {
+    text-align: center;
+    display: flex;
+    position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

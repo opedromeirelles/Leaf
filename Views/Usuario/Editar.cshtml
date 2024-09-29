@@ -14,40 +14,44 @@ else if (TempData["MensagemSucesso"] != null)
 
 <div class="paginaPadrao">
     <br />
-    <h2>Editar cadastro</h2>
-    <br />
+    <h2 class="h2tituloCadastro">Editar cadastro</h2>
 
-    
+    <br />
 
     <form asp-action="Atualizar" method="post">
         <div class="form-group">
+            <br />
             <label for="Nome">Nome</label>
             <input name="Nome" value="@Model.Nome" type="text" class="form-control" id="nomeUsuario" required />
         </div>
 
         <div class="form-group">
+            <br />
             <label for="Login">Login</label>
             <input name="Login" value="@Model.Login" type="text" class="form-control" id="loginUsuario" required />
         </div>
 
         <div class="form-group">
+            <br />
             <label for="Senha">Senha</label>
             <input name="Senha" value="@Model.Senha" type="password" class="form-control" id="senhaUsuario" placeholder="******" required />
         </div>
 
         <div class="form-group">
+            <br />
             <label for="confSenha">Confirmar senha</label>
             <input name="confSenha" type="password" class="form-control" id="confirmaSenha" placeholder="*****" required>
         </div>
     
         <div class="form-group form-check ">
+            <br />
             <input type="checkbox" class="form-check-input" id="mostrarSenha">
             <label class="form-check-label" for="mostrarSenha">Mostrar senha</label>
         </div>
 
-        <br />
 
         <div class="form-group">
+            <br />
             <label for="DepartamentoId">Departamento</label>
                 <select name="IdDpto" class="form-control" id="departamentoUsuario" required>
                     @foreach (var departamento in ViewBag.Departamentos)
@@ -60,6 +64,7 @@ else if (TempData["MensagemSucesso"] != null)
         </div>
 
         <div class="form-group">
+            <br />
             <label for="Status">Status</label>
             <select name="Status" class="form-control" id="statusUsuario">
                 @if (Model.Status == 1)
@@ -77,11 +82,11 @@ else if (TempData["MensagemSucesso"] != null)
 
         <input type="hidden" name="Id" value="@Model.Id" />
 
-        <div class="btnsControle">
+        <br />
 
-        <button type="submit" class="btn btn-primary">Salvar</button>
-        <a href="@Url.Action("Index", "Usuario")" class="btn btn-secondary">Cancelar</a>
-
+        <div class="btnsControles">
+            <button type="submit" class="btn btn-success">CONFIRMAR</button>
+            <a href="@Url.Action("Index", "Usuario")" class="btn btn-danger">CANCELAR</a>
         </div>
 
         <br />

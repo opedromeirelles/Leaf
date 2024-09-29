@@ -1,0 +1,254 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", sans-serif;
+}
+
+body{
+
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.container {
+    margin: 15%, 0 !important;
+
+}
+
+
+/*margem para paginas de cadastro*/
+.paginaPadrao {
+    margin-left: 5%;
+}
+
+
+/* margem para elementos */
+.btnsControles {
+    display: block;
+    text-align: end;
+}
+
+    .btnsControles button {
+        align-items: inherit;
+        width: 15%;
+    }
+
+
+
+/* ================================
+            AREA DE BUSCAS
+   ================================ */
+.cbBusca {
+    margin-top: 0px;
+    margin-right: 18px;
+    max-width: 30%;
+}
+
+/* Estilos para organizar os botões e campos de busca */
+.linha-superior-custom {
+    display: flex; /* Alinha todos os elementos em linha */
+    align-items: center; /* Centraliza verticalmente */
+    gap: 10px; /* Espaçamento entre os elementos */
+    justify-content: space-between; /* Distribui os itens para ocuparem toda a linha */
+}
+
+.grupoBusca-custom {
+    display: flex; /* Mantém os grupos de busca como flex */
+    align-items: center;
+}
+
+/* Estilos para os campos e botões */
+.txtBuscar-custom {
+    min-width: 200px; /* Define um tamanho mínimo para o campo de busca */
+}
+
+/* Aproximação dos elementos para uma organização mais coesa */
+.tipoBusca,
+.botaoBusca,
+.botaoLimpar {
+    margin-left: 0px; /* Aproxima os botões e o select do campo anterior */
+}
+
+.btn-novo-container {
+    margin-left: auto; /* Empurra o botão de cadastro para a direita */
+}
+
+/* Responsividade para dispositivos menores */
+@media (max-width: 857px) {
+    .linha-superior-custom {
+        flex-direction: column; /* Disposição vertical */
+        align-items: stretch; /* Expande cada elemento para 100% */
+        gap: 10px; /* Espaçamento entre elementos */
+    }
+
+    .grupoBusca-custom {
+        width: 100%; /* Cada grupo ocupa 100% da largura */
+        margin-bottom: 10px; /* Espaço adicional entre os grupos */
+    }
+
+    .txtBuscar-custom,
+    .cbBusca-custom,
+    .btnBuscar-custom,
+    .btnLimpar-custom,
+    .btnNovoUsuario-custom {
+        width: 100%; /* Cada elemento ocupa toda a largura */
+    }
+
+    .btn-novo-container {
+        text-align: center; /* Centraliza o botão em telas menores */
+        margin-left: 0; /* Remove o deslocamento para a direita */
+    }
+}
+
+
+/* ================================
+            AREA DO USUARIO
+   ================================ */
+
+
+h2 {
+    text-align: center;
+    padding: 2%;
+}
+
+.controleBusca {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5%;
+}
+
+    .controleBusca .linha-superior {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .controleBusca .input-grupo {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+    }
+
+.txtBuscar {
+    margin-top: 0px;
+    margin-right: 10px;
+}
+
+.btnBuscar, .btnLimpar {
+    margin-right: 10px;
+}
+
+.btnNovoUsuario {
+    margin-left: 10%;
+    background-color: #28a745;
+    color: white;
+    font-weight: bold;
+    max-width: 20%;
+}
+
+.cbDepartamento {
+    margin-right: 10px;
+    margin-top: 0px;
+    padding-top: 0px;
+    width: 300px;
+}
+
+.itnCbDepartamento {
+    font-size: 16px;
+    padding: 10px;
+}
+
+.btnsControleUsuario {
+    display: block;
+    text-align: end;
+}
+
+    .btnsControleUsuario button {
+        align-items: inherit;
+        width: 15%;
+    }
+
+/*Controle de botoes*/
+.btnsControle {
+    display: block;
+    text-align: end;
+}
+
+    .btnsControle button {
+        align-items: inherit;
+    }
+
+
+
+/* ================================
+      DISPOSITIVOS MOVEIS - USUARIOS
+   ================================ */
+@media (max-width: 855px) {
+    
+    .controleBusca {
+        flex-direction: column;
+    }
+
+    .tableUsuarios {
+        margin-right: 10px;
+    }
+
+    .cbDepartamento {
+        margin-right: 10px;
+        margin-top: 0px;
+        padding-top: 0px;
+        width: 300px;
+    }
+
+    .linha-superior {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .input-grupo, .cbDepartamento, .btnNovoUsuario {
+        width: 100%;
+        margin-bottom: 0;
+    }
+
+
+    .btnNovoUsuario {
+        margin-left: 68%;
+        margin-bottom: 0;
+        max-width: 30%;
+    }
+
+    .btn-success {
+        margin-bottom: 0 !important;
+    }
+}
+
+@media (max-width: 765px) {
+
+    
+
+    .btnNovoUsuario {
+        margin-left: 0;
+        margin-right: 70%;
+    }
+}
+
+@media (max-width: 665px) {
+    #gridUsuario {
+        margin-left: 8%;
+        padding: 15px;
+    }
+
+    .btnNovoUsuario {
+        border: none;
+    }
+}
+
+
+
+/* Ajustes para resoluções menores que 996px */
+@media (max-width: 996px) {
+    .hide-column {
+        display: none; /* Esconde colunas secundárias */
+    }
+}
+

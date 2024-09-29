@@ -1,581 +1,118 @@
-
 * {
     margin: 0;
     padding: 0;
     font-family: "Poppins", sans-serif;
 }
 
-/*margem para paginas de cadastro*/
-.paginaPadrao{
-    margin-left:11%;
-    margin-right:6%;
+body{
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
-/*margem para paginas individuias */
-.paginaProdutos {
-    margin-left: 11%;
-    margin-right: 6%;
+/* Titulos de paginas */
+
+.h2titulo {
+    text-align: center;
+    padding: 2%;
 }
 
-/* margem para elementos */
+.h2tituloCadastro {
+    text-align: center;
+}
+
+.paginaPadrao {
+    margin-left: 5%;
+}
+
 .btnsControles {
-    display: block;
-    text-align: end;
+    margin-top:20px;
+    float: right;
 }
-
-    .btnsControles button {
-        align-items: inherit;
-        width: 15%;
-    }
-
-
 
 /* ================================
             AREA DE BUSCAS
    ================================ */
-.cbBusca {
-    margin-top: 20px;
-    margin-right: 18px;
-    max-width: 30%;
-}
-
-
-
-/* ================================
-        MENU LATERAL - HOME
-   ================================ */
-body {
-    display: flex;
-}
-
-.iconMenu {
-    width: 50px;
-}
-
-.cbDepartamentoHome {
-    margin-top: 20px;
-    margin-right: 18px;
-    max-width: 30%;
-}
-
-
-.navegation {
-    position: fixed; /* Garante que o menu fique fixo na lateral */
-    top: 0;
-    height: 100vh; /* Ocupa toda a altura da tela */
-    background: #33752A;
-    width: 80px; /* Largura inicial do menu */
-    overflow-y: auto; /* Controla o scroll vertical */
-    overflow-x: hidden; /* Remove scroll horizontal */
-    transition: width 0.5s;
-    z-index: 1;
-}
-
-    .navegation:hover {
-        width: 190px; /* Aumenta a largura ao passar o mouse */
-    }
-
-    .navegation ul {
-        padding-top: 15px;
-        padding-left: 0px;
-    }
-
-        .navegation ul li {
-            list-style: none;
-            margin-top: 5px;
-        }
-
-            .navegation ul li a {
-                color: white;
-                display: flex;
-                align-items: center; /* Centraliza verticalmente */
-                text-decoration: none;
-                padding: 3px 5px; /* Espaçamento adicional para evitar sobreposição */
-            }
-
-                .navegation ul li a .icon {
-                    margin-top:7px;
-                    min-width: 60px; /* Define um espaço mínimo para o ícone */
-                    text-align: center; /* Centraliza o ícone */
-                }
-
-                    .navegation ul li a .icon .iconMenu {
-                        font-size: 1.5rem;
-                    }
-
-                .navegation ul li a .title {
-                    margin-top: 7px;
-                    padding-left: 15px; /* Espaço entre o ícone e o texto */
-                    white-space: nowrap;
-                }
-
-            .navegation ul li.active {
-                height: 65px;
-                background: #8FD457;
-            }
-
-
-/*PLANO DE FUNDO*/
-
-.logo {
-    width: 50%;
-    max-width: 250px;
-    width: 50%;
-    width: 50%;
-    align-items: center center;
-    position: relative;
-    transform: translate(10%, 80%);
-    margin: auto;
-
-}
-
-.logoHome {
-    text-align: center;
-    display: flex;
-    position: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-
-/* ================================
-   MENSAGENS DE ALERTA - GLOBAL
-   ================================ */
-
-#eventoErro, #eventoSucesso, #eventoAlteracao {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px;
-    border-radius: 5px;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-    z-index: 1000;
-}
-
-#eventoErro {
-    background-color: #f8d7da;
-    color: #EC312F;
-    border: 1px solid #f5c6cb;
-}
-
-#eventoSucesso {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-#eventoAlteracao {
-    background-color: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeeba;
-}
-
-
-
-/* ================================
-            AREA DO LOGIN
-   ================================ */
-
-.login-container {
-    display: flex;
-    height: 100vh;
-    width: 100%;
-}
-
-.login-image {
-    background-color: #4CAF50;
-    color: white;
-    width: 60%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.3s ease-in-out;
-}
-
-    .login-image img {
-        max-width: 30%;
-        height: auto;
-        margin-bottom: 20px;
-    }
-
-.login-form {
-    width: 40%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: #f5f5f5;
-    padding: 60px;
-    transition: all 0.3s ease-in-out;
-}
-
-    .login-form h2 {
-        font-size: 2.5em;
-        margin-bottom: 30px;
-        color: #333;
-    }
-
-.form-group {
-    margin-bottom: 25px;
-    width: 100%;
-}
-
-.input-container {
+/* Estilos para organizar os botões e campos de busca */
+.linha-superior-custom {
     display: flex;
     align-items: center;
-    border-radius: 4px;
-    position: relative;
+    gap: 10px;
+    justify-content: space-between;
 }
 
-.input-icon {
-    width: 55px;
-    height: 75px;
-    margin-right: 35px;
+.grupoBusca-custom {
+    display: flex; 
+    align-items: center;
 }
 
-.form-control {
-    border: none;
-    width: 100%;
-    padding: 10px;
-    outline: none;
-    position: relative;
-}
-
-/*LABEL DE CAMPO REQUERIDO - LOGIN*/
-.text-danger {
-    
-    margin-top: 5px;
-    font-size: 0.875em;
-    color: #d9534f;
-    position: absolute;
-    left: 90px;
-    top: calc(72% + 1px);
-    white-space: nowrap;
-}
-
-.btn-success {
-    width: 100%;
-    padding: 20px;
-    font-size: 1.5em;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-    .btn-success:hover {
-        background-color: #45a049;
-    }
-
-.btn {
-    margin-top: 20px;
+/* Estilos para os campos e botões */
+.txtBuscar-custom {
+    min-width: 200px;
 }
 
 
-/* ================================
-            AREA DO USUARIO
-   ================================ */
-
-#gridUsuario {
-    margin-left: 5%;
+.tipoBusca,
+.botaoBusca,
+.botaoLimpar {
+    margin-left: 0px; /* Aproxima os botões e o select do campo anterior */
 }
 
-h2{
-    text-align:center;
-    padding:2%;
+.btn-novo-container {
+    margin-left: auto; /* Alinha o botão de cadastro para a direita */
 }
 
-.controleBusca {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 5%;
-}
-    
-    .controleBusca .linha-superior {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: -20px;
-    }
-    
-    .controleBusca .input-grupo {
-        display: flex;
-        align-items: center;
-        flex-grow: 1;
-    }
-
-.txtBuscar {
-    margin-top: 20px;
-    margin-right: 10px;
-}
-
-.btnBuscar, .btnLimpar {
-    margin-right: 10px;
-}
-
-.btnNovoUsuario {
-    margin-left: 10%;
-    background-color: #28a745;
-    color: white;
-    font-weight: bold;
-    max-width: 20%;
-}
-
-.cbDepartamento {
-    margin-right: 10px;
-    margin-top: 0px;
-    padding-top: 0px;
-    width: 300px;
-}
-
-.itnCbDepartamento {
-    font-size: 16px;
-    padding: 10px;
-}
-
-.btnsControleUsuario {
-    display: block;
-    text-align: end;
-}
-
-    .btnsControleUsuario button {
-        align-items: inherit;
-        width: 15%;
-    }
-
-/*Controle de botoes*/
-.btnsControle{
-    display:block;
-    text-align:end;
-}
-
-    .btnsControle button {
-       align-items: inherit;
-    }
-
-
-
-/* ================================
-      DISPOSITIVOS MOVEIS - USUARIOS
-   ================================ */
-@media (max-width: 855px) {
-    #gridUsuario {
+/* Responsividade para dispositivos moveis */
+@media (max-width: 1096px) {
+    .paginaPadrao {
         margin-left: 10%;
     }
+    .h2titulo {
+        margin-left: 10%;
+    }
+}
+@media (max-width: 857px) {
 
-    .controleBusca {
+    .paginaPadrao {
+        margin-left: 16%;
+        margin-right: 1%;
+    }
+    .h2titulo {
+        margin-left: 16%;
+    }
+
+    .linha-superior-custom {
         flex-direction: column; 
-        
+        align-items: stretch; 
+        gap: 10px;
     }
 
-    .tableUsuarios {
-        margin-right: 10px;
+    .grupoBusca-custom {
+        width: 100%; 
+        margin-bottom: 10px; 
     }
 
-    .cbDepartamento {
-        margin-right: 10px;
-        margin-top: 0px;
-        padding-top: 0px;
-        width: 300px;
+    .txtBuscar-custom,
+    .cbBusca-custom,
+    .btnBuscar-custom,
+    .btnLimpar-custom,
+    .btnNovoUsuario-custom {
+        width: 100%; /* Cada elemento ocupa toda a largura */
     }
 
-    .linha-superior {
-        flex-direction: column;
-        align-items: flex-start; 
-    }
-
-    .input-grupo, .cbDepartamento, .btnNovoUsuario {
-        width: 100%;
-        margin-bottom: 0; 
-    }
-      
-
-    .btnNovoUsuario {        
-        margin-left: 68%;
-        margin-bottom: 0;
-        max-width: 30%;
-    }
-
-    .btn-success{
-        margin-bottom: 0 !important;
+    .btn-novo-container {
+        text-align: center; /* Centraliza o botão em telas menores */
+        margin-left: 0; /* Remove o deslocamento para a direita */
     }
 }
 
-@media (max-width: 765px) {
-
-    #gridUsuario {
-        margin-left: 2%;
-    }
-
-    .btnNovoUsuario {
-        margin-left: 0;
-        margin-right: 70%;
-
-    }
-
-}
-
-@media (max-width: 665px) {
-    #gridUsuario {
-        margin-left: 8%;
-        padding: 15px;
-    }
-
-    .btnNovoUsuario{
-        border:none;
-    }
-
-       
-}
 
 
 
-/* ================================
-      DISPOSITIVOS MOVEIS - LOGIN
-   ================================ */
-@media (max-width: 1100px) {
-    .login-container {
-        flex-direction: inherit;
-        width: 100%;
-    }
 
-    .login-image {
-        width: 100%;
-        background-color: #4CAF50;
-        padding-top: 15px;
-    }
-
-        .login-image img {
-            max-width: 35%;
-        }
-
-    .login-form {
-        width: 60%;
-        background-color: #f5f5f5;
-        padding: 50px;
-        height: 100%;
-    }
-
-        .login-form h2 {
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-    .input-container {
-        padding: 15px;
-    }
-
-    .input-icon {
-        width: 50px;
-        height: 50px;
-    }
-
-    .btn-success {
-        padding: 20px;
-        font-size: 1.5em;
-    }
-
-    .text-danger {
-        margin-top: 5px;
-        font-size: 0.875em;
-        color: #d9534f;
-        position: absolute;
-        left: 102px;
-        top: calc(72% + 1px);
-        white-space: nowrap;
+/* Ajustes para resoluções menores que 996px - Tabela */
+@media (max-width: 996px) {
+    .hide-column {
+        display: none; /* Esconde colunas secundárias */
     }
 }
 
-@media (max-width: 887px) {
-    .login-container {
-        flex-direction: inherit;
-        width: 100%;
-    }
-
-    .login-image {
-        width: 80%;
-        background-color: #4CAF50;
-        padding-top: 15px;
-    }
-
-        .login-image img {
-            max-width: 35%;
-        }
-
-    .login-form {
-        width: 60%;
-        background-color: #f5f5f5;
-        padding: 50px;
-        height: 100%;
-    }
-
-        .login-form h2 {
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-    .input-container {
-        padding: 15px;
-    }
-
-    .input-icon {
-        width: 50px;
-        height: 50px;
-    }
-
-    .btn-success {
-        padding: 20px;
-        font-size: 1.5em;
-    }
-}
-
-@media (max-width: 846px) {
-    .login-container {
-        flex-direction: column;
-    }
-
-    .login-image {
-        width: 100%;
-        background-color: #4CAF50;
-        padding-top: 15px;
-        align-items: flex-start;
-    }
-
-        .login-image img {
-            max-width: 10%;
-            margin-left: 5%;
-        }
-
-    .login-form {
-        width: 100%;
-        background-color: #f5f5f5;
-        padding: 50px;
-        height: 100%;
-    }
-
-        .login-form h2 {
-            font-size: 2em;
-            margin-top: 10%;
-        }
-
-    .input-container {
-        padding: 15px;
-        margin: 10px;
-    }
-
-    .input-icon {
-        width: 50px;
-        height: 50px;
-    }
-
-    .btn-success {
-        padding: 20px;
-        font-size: 1.5em;
-        margin-bottom: 50%;
-    }
-}

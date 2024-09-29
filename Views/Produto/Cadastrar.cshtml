@@ -14,12 +14,13 @@ else if (TempData["MensagemSucesso"] != null)
 
 <div class="paginaPadrao">
     <br />
-    <h2>Cadastro de Produtos</h2>
+    <h2 class="h2tituloCadastro">Cadastro de Produtos</h2>
     <br />
     <form asp-action="Criar" method="post">
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
+                    <br />
                     <label asp-for="Descricao"></label>
                     <input asp-for="Descricao" class="form-control" placeholder="ex: Alface" required />
                     <span asp-validation-for="Descricao" class="text-danger"></span>
@@ -27,6 +28,7 @@ else if (TempData["MensagemSucesso"] != null)
             </div>
             <div class="col-md-6">
                 <div class="form-group">
+                    <br />
                     <label asp-for="ValorUnitario">Valor Unitário</label>
                     <input asp-for="ValorUnitario" class="form-control" step="0.01" type="text" required />
                     <span asp-validation-for="ValorUnitario" class="text-danger"></span>
@@ -37,17 +39,21 @@ else if (TempData["MensagemSucesso"] != null)
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
+                    <br />
                     <label asp-for="QtdeEstoque">Quantiade em estoque</label>
                     <input asp-for="QtdeEstoque" class="form-control" type="number" min="0" required />
                     <span asp-validation-for="QtdeEstoque" class="text-danger"></span>
                 </div>
             </div>
         </div>
-
+        <br />
         <div class="btnsControles">
             <button type="submit" class="btn btn-success">CONFIRMAR</button>
             <a href="@Url.Action("Index", "Produto")" class="btn btn-danger">DESCARTAR</a>
         </div>
+        <br />
+        <br />
+        <br />
     </form>
 </div>
 

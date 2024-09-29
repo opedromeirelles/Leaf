@@ -70,6 +70,30 @@ namespace Leaf.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult Detalhes(int id)
+        {
+            try
+            {
+                // Buscar a pessoa pelo ID
+                Usuario usuario = _usuarioService.getUsuarioId(id);
+
+                if (usuario == null)
+                {
+                    TempData["MensagemErro"] = "Usuário não encontrada.";
+                    return RedirectToAction("Index");
+                }
+
+                // Retornar para a view de detalhes com a pessoa encontrada
+                return View(usuario);
+            }
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = $"Erro ao buscar os detalhes do usuário: {ex.Message}";
+                return RedirectToAction("Index");
+            }
+        }
+
         public IActionResult Criar()
         {
             List<Departamento> departamentos = _departamentoService.ListaDepartamenos();

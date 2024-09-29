@@ -1,0 +1,94 @@
+﻿@model Leaf.Models.Pessoa
+@{
+    ViewData["Title"] = $"Detalhes de {Model.Nome}";
+}
+
+
+<div class="paginaPadrao">
+    <br />
+    <h2 class="h2tituloCadastro">Detalhes de @Model.Nome</h2>
+    <br />
+
+    <!-- Estrutura de Tabela para Exibir Detalhes -->
+    <table class="table table-bordered table-striped">
+        <tbody>
+            <!-- Nome -->
+            <tr>
+                <th scope="row">Nome</th>
+                <td>@Model.Nome</td>
+            </tr>
+
+            <!-- Tipo -->
+            <tr>
+                <th scope="row">Tipo</th>
+                <td>
+                    @if (Model.Tipo == "PF")
+                    {
+                        <span>Pessoa Física</span>
+                    }
+                    else
+                    {
+                        <span>Pessoa Jurídica</span>
+                    }
+                </td>
+            </tr>
+
+            <!-- CPF -->
+            @if (!string.IsNullOrEmpty(Model.Cpf))
+            {
+                <tr>
+                    <th scope="row">CPF</th>
+                    <td>@Model.Cpf</td>
+                </tr>
+            }
+
+            <!-- CNPJ -->
+            @if (!string.IsNullOrEmpty(Model.Cnpj))
+            {
+                <tr>
+                    <th scope="row">CNPJ</th>
+                    <td>@Model.Cnpj</td>
+                </tr>
+            }
+
+            <!-- Telefone 1 -->
+            <tr>
+                <th scope="row">Telefone 1</th>
+                <td>@Model.Telefone1</td>
+            </tr>
+
+            <!-- Telefone 2 -->
+            @if (!string.IsNullOrEmpty(Model.Telefone2))
+            {
+                <tr>
+                    <th scope="row">Telefone 2</th>
+                    <td>@Model.Telefone2</td>
+                </tr>
+            }
+
+            <!-- Email 1 -->
+            <tr>
+                <th scope="row">Email 1</th>
+                <td>@Model.Email1</td>
+            </tr>
+
+            <!-- Email 2 -->
+            @if (!string.IsNullOrEmpty(Model.Email2))
+            {
+                <tr>
+                    <th scope="row">Email 2</th>
+                    <td>@Model.Email2</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Botões de Ação -->
+    <div class="btnsControles">
+        <div class="btn-group align-items-end">
+            <a href="@Url.Action("Index", "Pessoa")" class="btn btn-primary">Voltar para Lista</a>
+            <a href="@Url.Action("Editar", "Pessoa", new { id = Model.IdPessoa })" class="btn btn-warning">Editar</a>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,75 @@
+﻿@model Leaf.Models.Usuario
+@{
+    ViewData["Title"] = $"Detalhes do Usuário {Model.Nome}";
+}
+
+<div class="paginaPadrao">
+    <br />
+    <h2 class="h2tituloCadastro">Detalhes do Usuário @Model.Nome</h2>
+    <br />
+
+    <!-- Estrutura de Tabela para Exibir Detalhes -->
+    <table class="table table-bordered table-striped">
+        <tbody>
+            <!-- Código do Usuário -->
+            <tr>
+                <th scope="row">Código</th>
+                <td>@Model.Id</td>
+            </tr>
+
+            <!-- Nome -->
+            <tr>
+                <th scope="row">Nome</th>
+                <td>@Model.Nome</td>
+            </tr>
+
+            <!-- Login -->
+            <tr>
+                <th scope="row">Login</th>
+                <td>@Model.Login</td>
+            </tr>
+
+            <!-- Departamento -->
+            <tr>
+                <th scope="row">Departamento</th>
+                <td>
+                    @if (Model.Departamento != null)
+                    {
+                        @Model.Departamento.Descricao
+                    }
+                    else
+                    {
+                        <span>Departamento não encontrado</span>
+                    }
+                </td>
+            </tr>
+
+            <!-- Status -->
+            <tr>
+                <th scope="row">Status</th>
+                <td>
+                    @if (Model.Status == 1)
+                    {
+                        <span>Ativo</span>
+                    }
+                    else if (Model.Status == 0)
+                    {
+                        <span>Desativado</span>
+                    }
+                    else
+                    {
+                        <span>Indefinido</span>
+                    }
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Botões de Ação -->
+    <div class="btnsControles">
+        <div class="btn-group align-items-end">
+            <a href="@Url.Action("Index", "Usuario")" class="btn btn-primary">Voltar para Lista</a>
+            <a href="@Url.Action("Editar", "Usuario", new { id = Model.Id })" class="btn btn-warning">Editar</a>
+        </div>
+    </div>
+</div>
