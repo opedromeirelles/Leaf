@@ -1,0 +1,93 @@
+﻿@model Leaf.Models.Insumo
+@{
+    ViewData["Title"] = $"Detalhes do Insumo {Model.Descricao}";
+}
+
+<div class="paginaPadrao">
+    <br />
+    <h2 class="h2tituloCadastro">Detalhes do Insumo @Model.Descricao</h2>
+    <br />
+
+    <!-- Estrutura de Tabela para Exibir Detalhes -->
+    <table class="table table-bordered table-striped">
+        <tbody>
+            <!-- Código do Insumo -->
+            <tr>
+                <th scope="row">Código</th>
+                <td>@Model.IdInsumo</td>
+            </tr>
+
+            <!-- Código de Barras -->
+            <tr>
+                <th scope="row">Código de Barras</th>
+                <td>@Model.CodBarras</td>
+            </tr>
+
+            <!-- Descrição -->
+            <tr>
+                <th scope="row">Descrição</th>
+                <td>@Model.Descricao</td>
+            </tr>
+
+            <!-- Unidade de Medida -->
+            <tr>
+                <th scope="row">Unidade de Medida</th>
+                <td>@Model.UnidadeMedida</td>
+            </tr>
+
+            <!-- Valor Unitário -->
+            <tr>
+                <th scope="row">Valor Unitário</th>
+                <td>@Model.ValorUnitario.ToString("C")</td>
+            </tr>
+
+            <!-- Quantidade em Estoque -->
+            <tr>
+                <th scope="row">Quantidade em Estoque</th>
+                <td>@Model.QtdeEstoque</td>
+            </tr>
+
+            <!-- Pessoa Associada (Nome / CNPJ) -->
+            <tr>
+                <th scope="row">Pessoa Associada (Nome / CNPJ)</th>
+                <td>
+                    @if (Model.Pessoa != null)
+                    {
+                        <span> @Model.Pessoa.Nome / @Model.Pessoa.Cnpj </span>
+                    }
+                    else
+                    {
+                        <span>Pessoa não associada</span>
+                    }
+                </td>
+            </tr>
+
+            <!-- Status -->
+            <tr>
+                <th scope="row">Status</th>
+                <td>
+                    @if (Model.Status == 1)
+                    {
+                        <span>Ativo</span>
+                    }
+                    else if (Model.Status == 0)
+                    {
+                        <span>Desativado</span>
+                    }
+                    else
+                    {
+                        <span>Indefinido</span>
+                    }
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Botões de Ação -->
+    <div class="btnsControles">
+        <div class="btn-group align-items-end">
+            <a href="@Url.Action("Index", "Insumo")" class="btn btn-primary">Voltar para Lista</a>
+            <a href="@Url.Action("Editar", "Insumo", new { id = Model.IdInsumo })" class="btn btn-warning">Editar</a>
+        </div>
+    </div>
+</div>

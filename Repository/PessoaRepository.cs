@@ -99,6 +99,30 @@ namespace Leaf.Repository
             return pessoas;
         }
 
+        public Pessoa GetPessoaComCnpj(string cnpj)
+        {
+            string sql = @"SELECT * from pessoa where cnpj = @cnpj";
+
+
+            using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+                SqlCommand command = new SqlCommand(sql, conn);
+                command.Parameters.AddWithValue("@cnpj", cnpj);
+
+                SqlDataReader reader = command.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    return MapearPessoa(reader);
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+        }
+
         public Pessoa GetPessoaById(int idPessoa)
         {
             using (SqlConnection conn = _dbConnectionManager.GetConnection())

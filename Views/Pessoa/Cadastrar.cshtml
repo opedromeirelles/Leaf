@@ -13,143 +13,102 @@ else if (TempData["MensagemSucesso"] != null)
 }
 
 <div class="paginaPadrao">
-    <br />
     <h2 class="h2tituloCadastro">Cadastro de Pessoa</h2>
-    <br />
+
     <form asp-action="Criar" method="post">
         <div class="row">
-            <!-- Campo Nome -->
-            <div class="col-md-6">
-                <div class="form-group">
-                    <br />
-                    <label asp-for="Nome">Nome</label>
-                    <input asp-for="Nome" class="form-control" placeholder="ex: João da Silva" required />
-                    <span asp-validation-for="Nome" class="text-danger"></span>
-                </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="Nome">Nome</label>
+                <input asp-for="Nome" class="form-control" placeholder="ex: João da Silva" required />
+                <span asp-validation-for="Nome" class="text-danger"></span>
             </div>
-          
-            <!-- Campo Tipo com RadioButton -->
-            <div class="col-md-6">
-                <div class="form-group">
-                    <br />
-                    <label asp-for="Tipo">Tipo</label>
-                    <div class="form-check">
-                        <input type="radio" id="tipo-pf" name="Tipo" value="PF" class="form-check-input" />
-                        <label for="tipo-pf" class="form-check-label">Pessoa Física</label>
-                    </div>
-                    <div class="form-check">
-                        <input type="radio" id="tipo-pj" name="Tipo" value="PJ" class="form-check-input" checked />
-                        <label for="tipo-pj" class="form-check-label">Pessoa Jurídica</label>
-                    </div>
-                    <span asp-validation-for="Tipo" class="text-danger"></span>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="Tipo">Tipo</label>
+                <div class="form-check">
+                    <input type="radio" id="tipo-pf" name="Tipo" value="PF" class="form-check-input" />
+                    <label for="tipo-pf" class="form-check-label">Pessoa Física</label>
                 </div>
+                <div class="form-check">
+                    <input type="radio" id="tipo-pj" name="Tipo" value="PJ" class="form-check-input" checked />
+                    <label for="tipo-pj" class="form-check-label">Pessoa Jurídica</label>
+                </div>
+                <span asp-validation-for="Tipo" class="text-danger"></span>
             </div>
         </div>
 
         <div class="row">
-            <!-- Campo CPF -->
-            <div class="col-md-6">
-                <div class="form-group" id="cpf-field">
-                    <br />
-                    <label asp-for="Cpf">CPF</label>
-                    <input asp-for="Cpf" id="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" disabled />
-                    <span asp-validation-for="Cpf" class="text-danger"></span>
-                </div>
+            <div class="col-md-6 mb-3" id="cpf-field">
+                <label asp-for="Cpf">CPF</label>
+                <input asp-for="Cpf" id="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" disabled />
+                <span asp-validation-for="Cpf" class="text-danger"></span>
             </div>
 
-            <!-- Campo CNPJ -->
-            <div class="col-md-6">
-                <div class="form-group" id="cnpj-field">
-                    <br />
-                    <label asp-for="Cnpj">CNPJ</label>
-                    <input asp-for="Cnpj" id="cnpj" class="form-control" placeholder="00.000.000/0000-00" maxlength="18" />
-                    <span asp-validation-for="Cnpj" class="text-danger"></span>
-                </div>
+            <div class="col-md-6 mb-3" id="cnpj-field">
+                <label asp-for="Cnpj">CNPJ</label>
+                <input asp-for="Cnpj" id="cnpj" class="form-control" placeholder="00.000.000/0000-00" maxlength="18" />
+                <span asp-validation-for="Cnpj" class="text-danger"></span>
             </div>
         </div>
 
         <div class="row">
-            <!-- Campo Telefone1 -->
-            <div class="col-md-6">
-                <div class="form-group">
-                    <br />
-                    <label asp-for="Telefone1">Telefone 1</label>
-                    <input asp-for="Telefone1" id="telefone1" class="form-control" placeholder="(99) 99999-9999" maxlength="15" required />
-                    <span asp-validation-for="Telefone1" class="text-danger"></span>
-                </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="Telefone1">Telefone 1</label>
+                <input asp-for="Telefone1" id="telefone1" class="form-control" placeholder="(99) 99999-9999" maxlength="15" required />
+                <span asp-validation-for="Telefone1" class="text-danger"></span>
             </div>
 
-            <!-- Campo Telefone2 -->
-            <div class="col-md-6">
-                <div class="form-group">
-                    <br />
-                    <label asp-for="Telefone2">Telefone 2</label>
-                    <input asp-for="Telefone2" id="telefone2" class="form-control" placeholder="(99) 99999-9999" maxlength="15" />
-                    <span asp-validation-for="Telefone2" class="text-danger"></span>
-                </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="Telefone2">Telefone 2</label>
+                <input asp-for="Telefone2" id="telefone2" class="form-control" placeholder="(99) 99999-9999" maxlength="15" />
+                <span asp-validation-for="Telefone2" class="text-danger"></span>
             </div>
         </div>
 
         <div class="row">
-            <!-- Campo Email1 -->
-            <div class="col-md-6">
-                <div class="form-group">
-                    <br />
-                    <label asp-for="Email1">Email 1</label>
-                    <input asp-for="Email1" class="form-control" placeholder="exemplo@dominio.com" required />
-                    <span asp-validation-for="Email1" class="text-danger"></span>
-                </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="Email1">Email 1</label>
+                <input asp-for="Email1" class="form-control" placeholder="exemplo@dominio.com" required />
+                <span asp-validation-for="Email1" class="text-danger"></span>
             </div>
-           
-            <!-- Campo Email2 -->
-            <div class="col-md-6">
-                <div class="form-group">
-                    <br />
-                    <label asp-for="Email2">Email 2</label>
-                    <input asp-for="Email2" class="form-control" placeholder="exemplo@dominio.com" />
-                    <span asp-validation-for="Email2" class="text-danger"></span>
-                </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="Email2">Email 2</label>
+                <input asp-for="Email2" class="form-control" placeholder="exemplo@dominio.com" />
+                <span asp-validation-for="Email2" class="text-danger"></span>
             </div>
         </div>
-        <br />
-        <!-- Botões de Controle -->
-        <div class="btnsControles">
+
+        <div class="btnsControles mt-4">
             <button type="submit" class="btn btn-success">CONFIRMAR</button>
             <a href="@Url.Action("Index", "Pessoa")" class="btn btn-danger">DESCARTAR</a>
         </div>
-        <br />
-        <br />
-        <br />
     </form>
 </div>
 
-
-<!-- Script para Exibir/Desabilitar Campos -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        // Definir o estado inicial com base no tipo selecionado
         toggleFields();
 
-        // Controle de exibição com radio buttons
         $('input[name="Tipo"]').on('change', function () {
             toggleFields();
         });
 
-        // Aplicar máscara de CPF e CNPJ enquanto digita
         $('#cpf').on('input', function () {
             let value = $(this).val().replace(/\D/g, ''); // Remove caracteres não numéricos
-            value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4"); // Aplica a máscara CPF
+            if (value.length > 11) value = value.substring(0, 11); // Limita o valor a 11 dígitos
+            value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
             $(this).val(value);
         });
 
         $('#cnpj').on('input', function () {
             let value = $(this).val().replace(/\D/g, ''); // Remove caracteres não numéricos
-            value = value.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5"); // Aplica a máscara CNPJ
+            if (value.length > 14) value = value.substring(0, 14); // Limita o valor a 14 dígitos
+            value = value.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
             $(this).val(value);
         });
 
-        // Função para alternar campos com base no tipo selecionado
         function toggleFields() {
             if ($('input[name="Tipo"]:checked').val() === 'PF') {
                 $('#cpf').prop('disabled', false).attr('placeholder', '000.000.000-00');

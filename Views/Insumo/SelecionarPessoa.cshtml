@@ -1,0 +1,28 @@
+﻿@model IEnumerable<Leaf.Models.Pessoa>
+@{
+    ViewData["Title"] = "Selecionar Pessoa Jurídica";
+}
+
+<h2>Selecione a Pessoa Jurídica</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>CNPJ</th>
+            <th>Ação</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var pessoa in Model)
+        {
+            <tr>
+                <td>@pessoa.Nome</td>
+                <td>@pessoa.Cnpj</td>
+                <td>
+                    <a href="@Url.Action("SelecionarPessoa", "Insumo", new { idPessoa = pessoa.IdPessoa })" class="btn btn-primary">Selecionar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

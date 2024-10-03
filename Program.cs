@@ -25,6 +25,8 @@ builder.Services.AddTransient<UsuarioServices>();
 builder.Services.AddTransient<DepartamentoServices>();
 builder.Services.AddTransient<ProdutoServices>();
 builder.Services.AddTransient<PessoaServices>();
+builder.Services.AddTransient<InsumoServices>();
+
 
 
 
@@ -32,6 +34,8 @@ builder.Services.AddTransient<PessoaServices>();
 builder.Services.AddTransient<UsuarioRepository>();
 builder.Services.AddTransient<DepartamentoRepository>();
 builder.Services.AddTransient<PessoaRepository>();
+builder.Services.AddTransient<InsumoRepository>();
+
 
 
 // Configurar a cultura padrão

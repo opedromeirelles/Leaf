@@ -1,6 +1,6 @@
-﻿@model IEnumerable<Leaf.Models.Produto>
+﻿@model IEnumerable<Leaf.Models.Insumo>
 @{
-    ViewData["Title"] = "Produtos";
+    ViewData["Title"] = "Insumos";
 }
 
 @if (TempData["MensagemErro"] != null)
@@ -13,16 +13,21 @@ else if (TempData["MensagemSucesso"] != null)
 }
 
 <br />
-<h2 class="h2titulo">PRODUTOS</h2>
+<h2 class="h2titulo">INSUMOS</h2>
 
 <div class="paginaPadrao">
     <!-- Controle de Busca -->
     <div class="controleBusca">
         <form asp-action="Buscar" method="get">
             <div class="linha-superior-custom">
-                <!-- Campo de busca por Nome -->
+                <!-- Campo de busca por Descrição -->
                 <div class="grupoBusca-custom">
-                    <input type="text" class="form-control txtBuscar-custom" placeholder="Descrição do Produto..." name="descricao" aria-label="Recipient's username">
+                    <input type="text" class="form-control txtBuscar-custom" placeholder="Insumo..." name="descricao" aria-label="Recipient's username">
+                </div>
+
+                <!-- Campo de busca por Pessoa (CNPJ) -->
+                <div class="grupoBusca-custom">
+                    <input type="text" class="form-control txtBuscar-custom" placeholder="CNPJ da Pessoa..." name="pessoaNomeCnpj" aria-label="Recipient's username">
                 </div>
 
                 <!-- Filtro por Status -->
@@ -44,9 +49,9 @@ else if (TempData["MensagemSucesso"] != null)
                     <button type="reset" class="btn btn-outline-secondary btnLimpar-custom" onclick="location.href='@Url.Action("Index")'">Limpar</button>
                 </div>
 
-                <!-- Botão Novo Cadastro de Produto -->
+                <!-- Botão Novo Cadastro de Insumo -->
                 <div class="grupoBusca-custom btn-novo-container">
-                    <button type="button" class="btn btn-success btnNovoUsuario-custom" onclick="location.href='@Url.Action("Cadastrar")'">Cadastrar Produto</button>
+                    <button type="button" class="btn btn-success btnNovoUsuario-custom" onclick="location.href='@Url.Action("Cadastrar")'">Cadastrar Insumo</button>
                 </div>
             </div>
         </form>
@@ -63,25 +68,36 @@ else if (TempData["MensagemSucesso"] != null)
                         <th scope="col">Código</th>
                         <th scope="col">Descrição</th>
                         <th scope="col" class="hide-column">Valor Unitário</th>
-                        <th scope="col">Estoque</th>
+                        <th scope="col">Quantidade</th>
+                        <th scope="col" class="hide-column">Pessoa (CNPJ)</th>
                         <th scope="col" class="hide-column">Status</th>
                         <th scope="col">Ferramentas</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var produto in Model)
+                    @foreach (var insumo in Model)
                     {
                         <tr>
-                            <td>@produto.IdProduto</td>
-                            <td>@produto.Descricao</td>
-                            <td class="hide-column">@produto.ValorUnitario.ToString("C")</td>
-                            <td>@produto.QtdeEstoque</td>
+                            <td>@insumo.IdInsumo</td>
+                            <td>@insumo.Descricao</td>
+                            <td class="hide-column">@insumo.ValorUnitario.ToString("C")</td>
+                            <td>@insumo.QtdeEstoque</td>
                             <td class="hide-column">
-                                @if (produto.Status == 1)
+                                @if (insumo.Pessoa != null)
+                                {
+                                    <span> @insumo.Pessoa.Nome / @insumo.Pessoa.Cnpj </span>
+                                 }
+                                else
+                                {
+                                    <span>Pessoa não associada</span>
+                                }
+                            </td>
+                            <td class="hide-column">
+                                @if (insumo.Status == 1)
                                 {
                                     <span>Ativo</span>
                                 }
-                                else if (produto.Status == 0)
+                                else if (insumo.Status == 0)
                                 {
                                     <span>Desativado</span>
                                 }
@@ -91,8 +107,8 @@ else if (TempData["MensagemSucesso"] != null)
                                 }
                             </td>
                             <td>
-                                <a href="@Url.Action("Editar", "Produto", new { id = produto.IdProduto })">Editar</a> |
-                                <a href="@Url.Action("Detalhes", "Produto", new { id = produto.IdProduto })">Detalhes</a>
+                                <a href="@Url.Action("Editar", "Insumo", new { id = insumo.IdInsumo })">Editar</a> |
+                                <a href="@Url.Action("Detalhes", "Insumo", new { id = insumo.IdInsumo })">Detalhes</a>
                             </td>
                         </tr>
                     }

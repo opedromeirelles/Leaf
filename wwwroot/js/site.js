@@ -1,6 +1,5 @@
 ﻿
 // ANIMAÇÃO MENU
-// ANIMAÇÃO MENU
 const list = document.querySelectorAll('.list');
 
 // Função para adicionar a classe 'active' ao item clicado
@@ -237,6 +236,17 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+// Tratando unidade de medida
+document.addEventListener('DOMContentLoaded', function () {
+    // Seleciona o campo pelo ID (ou use name se preferir)
+    const unidadeMedidaInput = document.getElementById('unidadeMedida');
 
+    if (unidadeMedidaInput) {
+        // Adiciona um evento 'input' para transformar o valor em maiúsculas enquanto o usuário digita
+        unidadeMedidaInput.addEventListener('input', function () {
+            this.value = this.value.toUpperCase();
+        });
+    }
+});
 
 

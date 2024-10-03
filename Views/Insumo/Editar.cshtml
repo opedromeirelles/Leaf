@@ -1,0 +1,122 @@
+﻿@model Leaf.Models.Insumo
+@{
+    ViewData["Title"] = $"Editar Insumo {Model.Descricao}";
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+    <span id="eventoErro">@TempData["MensagemErro"]</span>
+}
+else if (TempData["MensagemSucesso"] != null)
+{
+    <span id="eventoSucesso">@TempData["MensagemSucesso"]</span>
+}
+
+<div class="paginaPadrao">
+    <br />
+    <h2 class="h2tituloCadastro">Editar Insumo @Model.Descricao</h2>
+    <br />
+    <form asp-action="Atualizar" method="post">
+        <div class="row">
+            <!-- Campo Código de Barras -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label asp-for="CodBarras">Código de Barras</label>
+                    <input asp-for="CodBarras" value="@Model.CodBarras" class="form-control" placeholder="ex: 1234567890123" maxlength="15" required />
+                    <span asp-validation-for="CodBarras" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Campo Descrição -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label asp-for="Descricao">Descrição do Insumo</label>
+                    <input asp-for="Descricao" value="@Model.Descricao" class="form-control" placeholder="ex: Fertilizante X" maxlength="100" required />
+                    <span asp-validation-for="Descricao" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Campo Unidade de Medida -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label asp-for="UnidadeMedida">Unidade de Medida</label>
+                    <input asp-for="UnidadeMedida" value="@Model.UnidadeMedida" class="form-control" placeholder="ex: KG" maxlength="3" required />
+                    <span asp-validation-for="UnidadeMedida" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Campo Valor Unitário -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label asp-for="ValorUnitario">Valor Unitário</label>
+                    <input asp-for="ValorUnitario" value="@Model.ValorUnitario" class="form-control" step="0.01" type="number" min="0" required />
+                    <span asp-validation-for="ValorUnitario" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Campo Quantidade em Estoque -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label asp-for="QtdeEstoque">Quantidade em Estoque</label>
+                    <input asp-for="QtdeEstoque" value="@Model.QtdeEstoque" class="form-control" type="number" min="0" required />
+                    <span asp-validation-for="QtdeEstoque" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Campo Pessoa (Nome / ID Pessoa) -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label asp-for="IdPessoa">Pessoa (ID)</label>
+                    <input asp-for="IdPessoa" value="@Model.IdPessoa" class="form-control" placeholder="ex: 123" required />
+                    <span asp-validation-for="IdPessoa" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Campo Status -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label asp-for="Status">Status</label>
+                    <select asp-for="Status" class="form-control">
+                        @if (Model.Status == 1)
+                        {
+                            <option value="1" selected>Ativo</option>
+                            <option value="0">Desativado</option>
+                        }
+                        else if (Model.Status == 0)
+                        {
+                            <option value="1">Ativo</option>
+                            <option value="0" selected>Desativado</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Campo oculto com o ID do insumo para referência -->
+        <input type="hidden" asp-for="IdInsumo" value="@Model.IdInsumo" />
+
+        <br />
+        <!-- Botões de Controle -->
+        <div class="btnsControles">
+            <button type="submit" class="btn btn-success">CONFIRMAR</button>
+            <a href="@Url.Action("Index", "Insumo")" class="btn btn-danger">DESCARTAR</a>
+        </div>
+        <br />
+        <br />
+        <br />
+    </form>
+</div>

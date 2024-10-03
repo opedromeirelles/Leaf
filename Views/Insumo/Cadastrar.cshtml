@@ -1,0 +1,167 @@
+﻿@model Leaf.Models.Insumo
+
+@{
+    ViewData["Title"] = "Cadastro de Insumos";
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+    <span id="eventoErro">@TempData["MensagemErro"]</span>
+}
+else if (TempData["MensagemSucesso"] != null)
+{
+    <span id="eventoSucesso">@TempData["MensagemSucesso"]</span>
+}
+
+<div class="paginaPadrao">
+    <h2 class="h2tituloCadastro">Cadastro de Insumos</h2>
+
+    <form asp-action="Criar" method="post" id="formCadastroInsumo">
+        <div class="row">
+            <!-- Campo Pessoa Associada (Nome ou CPF/CNPJ) -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="cnpjPessoa">Pessoa Associada (CNPJ)</label>
+                    <div class="input-group">
+                        <input type="text" id="inpCnpj" class="form-control" placeholder="Digite o CNPJ da Pessoa" maxlength="18" />
+                        <button type="button" id="btnValidarCnpj" class="btn btn-info">Validar Pessoa</button>
+                    </div>
+                    <span id="spnValidacao" class="text-danger">*Validação Obrigatória</span>
+                    <span id="spnPessoaNome" class="text-success d-block"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Campo Oculto para Armazenar o ID da Pessoa Selecionada -->
+        <input type="hidden" id="idPessoa" name="IdPessoa" />
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label asp-for="CodBarras">Código de Barras</label>
+                    <input asp-for="CodBarras" class="form-control" placeholder="ex: 1234567890123" maxlength="15" required />
+                    <span asp-validation-for="CodBarras" class="text-danger"></span>
+              
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label asp-for="Descricao">Descrição do Insumo</label>
+                    <input asp-for="Descricao" class="form-control" placeholder="ex: Fertilizante X" maxlength="100" required />
+                    <span asp-validation-for="Descricao" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label asp-for="UnidadeMedida">Unidade de Medida</label>
+                    <input asp-for="UnidadeMedida" class="form-control" placeholder="ex: KG" maxlength="3" required />
+                    <span asp-validation-for="UnidadeMedida" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label asp-for="ValorUnitario">Valor Unitário</label>
+                    <input asp-for="ValorUnitario" class="form-control" step="0.01" type="number" min="0" required />
+                    <span asp-validation-for="ValorUnitario" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label asp-for="QtdeEstoque">Quantidade em Estoque</label>
+                    <input asp-for="QtdeEstoque" class="form-control" type="number" min="0" required />
+                    <span asp-validation-for="QtdeEstoque" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label asp-for="Status">Status</label>
+                    <select asp-for="Status" class="form-control">
+                        <option value="1" selected>Ativo</option>
+                        <option value="0">Desativado</option>
+                    </select>
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="btnsControles mt-4">
+            <button type="submit" name="action" value="salvar" class="btn btn-success" id="btnSubmit" disabled>CONFIRMAR</button>
+            <a href="@Url.Action("Index", "Insumo")" class="btn btn-danger">DESCARTAR</a>
+        </div>
+    </form>
+</div>
+
+<!-- Script de Validação e Interação com o AJAX -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#btnSubmit').prop('disabled', true);
+
+        // Adicionar máscara de CNPJ enquanto o usuário digita
+        $('#inpCnpj').on('input', function () {
+            let value = $(this).val().replace(/\D/g, ''); // Remove caracteres não numéricos
+            if (value.length > 14) value = value.substring(0, 14); // Limita o valor a 14 dígitos
+            value = value.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
+            $(this).val(value);
+        });
+
+        $('#btnValidarCnpj').click(function () {
+            var cnpjPessoa = $('#inpCnpj').val();
+
+            if (cnpjPessoa.trim() === "" || cnpjPessoa.length !== 18) {
+                $('#spnValidacao').html('Por favor, digite um CNPJ válido.').removeClass('text-success').addClass('text-danger');
+                $('#spnPessoaNome').html('');
+                $('#btnSubmit').prop('disabled', true);
+                return;
+            }
+
+            $.ajax({
+                url: '/Insumo/ValidarPessoa',
+                type: 'GET',
+                data: { cnpj: cnpjPessoa },
+
+                beforeSend: function () {
+                    $('#btnValidarCnpj').html('Validando...').prop('disabled', true);
+                },
+
+                success: function (pessoa) {
+                    if (pessoa) {
+                        $('#spnValidacao').html('Pessoa verificada.').removeClass('text-danger').addClass('text-success');
+                        $('#spnPessoaNome').html(`Nome: ${pessoa.nome}`);
+                        $('#idPessoa').val(pessoa.idpessoa);
+                        $('#inpCnpj').val(pessoa.cnpj);
+                        $('#btnSubmit').prop('disabled', false);
+                    } else {
+                        $('#spnValidacao').html('Pessoa Inválida.').removeClass('text-success').addClass('text-danger');
+                        $('#spnPessoaNome').html('');
+                        $('#btnSubmit').prop('disabled', true);
+                    }
+                },
+                complete: function () {
+                    $('#btnValidarCnpj').html('Validar Pessoa').prop('disabled', false);
+                }
+            });
+        });
+
+        $('#inpCnpj').on('input', function () {
+            $('#btnSubmit').prop('disabled', true);
+            $('#spnValidacao').html('*Validação Obrigatória').removeClass('text-success').addClass('text-danger');
+            $('#spnPessoaNome').html('');
+        });
+    });
+</script>
