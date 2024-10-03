@@ -58,7 +58,7 @@ namespace Leaf.Repository
             }
         }
 
-        public List<Insumo> GetInsumosFiltro(string descricao, string pessoaNome, int status)
+        public List<Insumo> GetInsumosFiltro(string descricao, string cnpj, int status)
         {
             List<Insumo> insumos = new List<Insumo>();
 
@@ -78,11 +78,11 @@ namespace Leaf.Repository
                 parametros.Add(new SqlParameter("@descricao", "%" + descricao + "%"));
             }
 
-            // Condição para o nome da pessoa, considerando apenas quem tem CNPJ
-            if (!string.IsNullOrEmpty(pessoaNome))
+            // Condição para o CNPJ
+            if (!string.IsNullOrEmpty(cnpj))
             {
-                sql += " AND p.nome LIKE @pessoaNome AND p.cnpj IS NOT NULL";
-                parametros.Add(new SqlParameter("@pessoaNome", "%" + pessoaNome + "%"));
+                sql += " AND p.cnpj LIKE @cnpj";
+                parametros.Add(new SqlParameter("@cnpj", cnpj));
             }
 
             // Condição para o status se fornecido
@@ -171,7 +171,7 @@ namespace Leaf.Repository
                                cod_barras = @cod_barras,
                                descricao = @descricao,
                                unidade_medida = @unidade_medida,
-                               status = @status,  // Alterado para int
+                               status = @status,
                                valor_unitario = @valor_unitario,
                                qtde_estoque = @qtde_estoque,
                                id_pessoa = @id_pessoa
@@ -184,7 +184,7 @@ namespace Leaf.Repository
                     new SqlParameter("@cod_barras", insumo.CodBarras),
                     new SqlParameter("@descricao", insumo.Descricao),
                     new SqlParameter("@unidade_medida", insumo.UnidadeMedida),
-                    new SqlParameter("@status", insumo.Status),  // Alterado para int
+                    new SqlParameter("@status", insumo.Status),
                     new SqlParameter("@valor_unitario", insumo.ValorUnitario),
                     new SqlParameter("@qtde_estoque", insumo.QtdeEstoque),
                     new SqlParameter("@id_pessoa", insumo.IdPessoa)
