@@ -130,5 +130,25 @@ namespace Leaf.Controllers
                 return View("Editar", pessoa);
             }
         }
+
+
+        [HttpGet]
+        public JsonResult ValidarPessoa(string cnpj)
+        {
+            if (!string.IsNullOrEmpty(cnpj) && cnpj.Length == 18)
+            {
+                Pessoa pessoa = _pessoaServices.PessoaComCnpj(cnpj);
+                if (pessoa != null)
+                {
+                    return Json(new
+                    {
+                        idpessoa = pessoa.IdPessoa,
+                        nome = pessoa.Nome,
+                        cnpj = pessoa.Cnpj
+                    });
+                }
+            }
+            return Json(null);
+        }
     }
 }

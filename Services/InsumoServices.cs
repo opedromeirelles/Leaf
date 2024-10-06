@@ -28,6 +28,46 @@ namespace Leaf.Services
             }
         }
 
+        // Listar todos os insumos
+        public List<Insumo> ListarInsumos(string descricao)
+        {
+            InsumoRepository _insumoRepository = new InsumoRepository(_dbConnectionManager);
+            try
+            {
+                return _insumoRepository.GetInsumosFiltroDescricao(descricao);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao listar os insumos, erro: {ex.Message}");
+            }
+        }
+
+        // Listar insumos por pessoa
+        public List<Insumo> ListarInsumosForPessoa(int idPessoa)
+        {
+            InsumoRepository _insumoRepository = new InsumoRepository(_dbConnectionManager);
+            try
+            {
+                return _insumoRepository.GetInsumosForPessoa(idPessoa);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao listar os insumos, erro: {ex.Message}");
+            }
+        }
+        public List<Insumo> ListarInsumosForPessoa(int idPessoa, string descicao)
+        {
+            InsumoRepository _insumoRepository = new InsumoRepository(_dbConnectionManager);
+            try
+            {
+                return _insumoRepository.GetInsumosForPessoa(idPessoa, descicao);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao listar os insumos, erro: {ex.Message}");
+            }
+        }
+
         // Listar insumos filtrados por descrição, pessoa e status
         public List<Insumo> ListarInsumosFiltrados(string descricao, string pessoaNome, int status)
         {

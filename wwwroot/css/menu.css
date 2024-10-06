@@ -17,7 +17,7 @@ body {
     top: 0;
     height: 100vh;
     background: #33752A;
-    width: 80px;
+    width: 72px;
     overflow-y: auto;
     overflow-x: hidden;
     transition: width 0.5s;
@@ -25,7 +25,7 @@ body {
 }
 
     .navegation:hover {
-        width: 190px;
+        width: 200px;
     }
 
     .navegation ul {
@@ -35,7 +35,7 @@ body {
 
         .navegation ul li {
             list-style: none;
-            margin-top: 5px;
+            margin-top: 3px;
         }
 
             .navegation ul li a {
@@ -43,7 +43,7 @@ body {
                 display: flex;
                 align-items: center;
                 text-decoration: none;
-                padding: 3px 5px;
+                padding: 1px 5px;
             }
 
                 .navegation ul li a .icon {
@@ -53,12 +53,12 @@ body {
                 }
 
                     .navegation ul li a .icon .iconMenu {
-                        font-size: 1.5rem;
+                        font-size: 10px;
                     }
 
                 .navegation ul li a .title {
                     margin-top: 7px;
-                    padding-left: 15px;
+                    padding-left: 20px;
                     white-space: nowrap;
                 }
 
@@ -89,3 +89,27 @@ body {
     flex-direction: column;
     justify-content: center;
 }
+
+
+@media (max-height: 595px) {
+    .navegation ul li {
+        margin-top: 0px;
+    }
+
+        .navegation ul li a {
+            padding: 0px 5px;
+        }
+}
+
+@media (min-height: 650px) {
+    .navegation ul li {
+        margin-top: 5px;
+    }
+
+        .navegation ul li a {
+            padding: 5px 5px;
+        }
+}
+
+
+

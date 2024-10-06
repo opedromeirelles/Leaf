@@ -24,24 +24,37 @@ namespace Leaf.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-
-            List<Usuario> usuarios = _usuarioService.ListaUsuarios();
-            List<Departamento> departamentos = _departamentoService.ListaDepartamenos();
-
-            if (usuarios == null)
+            try
             {
-                TempData["MensagemErro"] = "Ops, não encontramos os dados solicitados.";
-                usuarios = new List<Usuario>();
+                List<Usuario> usuarios = _usuarioService.ListaUsuarios();
+                List<Departamento> departamentos = _departamentoService.ListaDepartamenos();
+
+                if (usuarios == null)
+                {
+                    TempData["MensagemErro"] = "Ops, não encontramos os dados solicitados.";
+                    usuarios = new List<Usuario>();
+                }
+                if (departamentos == null)
+                {
+                    TempData["MensagemErro"] = "Ops, não encontramos os departamentos solicitados.";
+
+                    departamentos = new List<Departamento>();
+                }
+
+                ViewBag.Departamentos = departamentos;
+                return View(usuarios);
+
             }
-            if (departamentos == null)
+            catch (Exception ex)
             {
-                TempData["MensagemErro"] = "Ops, não encontramos os departamentos solicitados.";
+                TempData["MensagemErro"] = "Não foi possivel estabelecer conexão, erro: " + ex.Message;
+                List<Usuario> usuarioNull = new List<Usuario>();
+                List<Departamento> departamentoNull = new List<Departamento>();
+                ViewBag.Departamentos = departamentoNull;
+                return View(usuarioNull);
 
-                departamentos = new List<Departamento>();
             }
 
-            ViewBag.Departamentos = departamentos;
-            return View(usuarios); 
         }
 
         [HttpGet]

@@ -123,6 +123,43 @@ namespace Leaf.Repository
             }
         }
 
+        public Pessoa GetPessoaCnpjNome(string dadosPessoa)
+        {
+            string sql = @"SELECT * from pessoa where 1=1";
+
+            using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+                SqlCommand command = new SqlCommand(sql, conn);
+
+                if (!string.IsNullOrEmpty(dadosPessoa))
+                {
+                    sql += "AND cnpj LIKE @cnpj";
+                    command.Parameters.AddWithValue("@cnpj", dadosPessoa);
+                }
+                if (!string.IsNullOrEmpty(dadosPessoa))
+                {
+                    sql += " AND nome LIKE @nome AND cnpj IS NOT NULL";
+                    command.Parameters.AddWithValue("@nome", dadosPessoa);
+                }
+                if (string.IsNullOrEmpty(dadosPessoa))
+                {
+                    return null;
+                }
+
+                SqlDataReader reader = command.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    return MapearPessoa(reader);
+                }
+                else
+                {
+                    return null;
+                }
+
+            }
+        }
+
         public Pessoa GetPessoaById(int idPessoa)
         {
             using (SqlConnection conn = _dbConnectionManager.GetConnection())

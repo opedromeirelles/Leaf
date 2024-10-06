@@ -30,6 +30,12 @@
                     <span class="title">Pedidos</span>
                 </a>
             </li>
+            <li class="list @(ViewContext.RouteData.Values["controller"]?.ToString() == "Compra" ? "active" : "")">
+                <a asp-action="Index" asp-controller="Compra">
+                    <span class="icon"><img class="iconMenu" src="/imgs/icons/svg/compra.svg" alt="COMPRAS"></span>
+                    <span class="title">Compras</span>
+                </a>
+            </li>
             <li class="list @(ViewContext.RouteData.Values["controller"]?.ToString() == "Produto" ? "active" : "")">
                 <a asp-action="Index" asp-controller="Produto">
                     <span class="icon"><img class="iconMenu" src="/imgs/icons/svg/produtos.svg" alt="PRODUTOS"></span>

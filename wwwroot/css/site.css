@@ -33,6 +33,7 @@ body{
 /* ================================
             AREA DE BUSCAS
    ================================ */
+
 /* Estilos para organizar os botões e campos de busca */
 .linha-superior-custom {
     display: flex;
@@ -55,11 +56,11 @@ body{
 .tipoBusca,
 .botaoBusca,
 .botaoLimpar {
-    margin-left: 0px; /* Aproxima os botões e o select do campo anterior */
+    margin-left: 0px; 
 }
 
 .btn-novo-container {
-    margin-left: auto; /* Alinha o botão de cadastro para a direita */
+    margin-left: auto; 
 }
 
 /* Responsividade para dispositivos moveis */
@@ -96,13 +97,13 @@ body{
     .cbBusca-custom,
     .btnBuscar-custom,
     .btnLimpar-custom,
-    .btnNovoUsuario-custom {
-        width: 100%; /* Cada elemento ocupa toda a largura */
+    .btnNovoCadastro-custom {
+        width: 100%; 
     }
 
     .btn-novo-container {
-        text-align: center; /* Centraliza o botão em telas menores */
-        margin-left: 0; /* Remove o deslocamento para a direita */
+        text-align: center;
+        margin-left: 0; 
     }
 }
 
@@ -113,7 +114,7 @@ body{
 /* Ajustes para resoluções menores que 996px - Tabela */
 @media (max-width: 996px) {
     .hide-column {
-        display: none; /* Esconde colunas secundárias */
+        display: none; 
     }
 }
 

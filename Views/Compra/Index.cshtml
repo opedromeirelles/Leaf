@@ -1,0 +1,99 @@
+﻿@model IEnumerable<Leaf.Models.Compra>
+@{
+    ViewData["Title"] = "Compra";
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+    <span id="eventoErro">@TempData["MensagemErro"]</span>
+}
+else if (TempData["MensagemSucesso"] != null)
+{
+    <span id="eventoSucesso">@TempData["MensagemSucesso"]</span>
+}
+
+<br />
+<h2 class="h2titulo">COMPRAS</h2>
+
+<div class="paginaPadrao">
+    <!-- Controle de Busca -->
+    <div class="controleBusca">
+
+        <form asp-action="Buscar" method="get">
+            <div class="linha-superior-custom">
+                <!-- Campo de busca por numero -->
+                <div class="grupoBusca-custom">
+                    <input type="text" class="form-control txtBuscar-custom" placeholder="Nº da Compra" name="idOc" aria-label="Recipient's username">
+                </div>
+
+                <!-- Filtro por status -->
+                <div class="grupoBusca-custom tipoBusca">
+                    <select class="form-control cbBusca-custom bg-secondary text-light" name="status">
+                        <option value="">Tipo</option>
+                        <option value="EM">Emitido</option>
+                        <option value="BX">Baixado</option>
+                        <option value="CA">Cancelado</option>
+
+                    </select>
+                </div>
+
+                <!-- Botão Buscar -->
+                <div class="grupoBusca-custom botaoBusca">
+                    <button class="btn btn-outline-secondary btnBuscar-custom" type="submit">Buscar</button>
+                </div>
+
+                <!-- Botão Limpar -->
+                <div class="grupoBusca-custom botaoLimpar">
+                    <button type="reset" class="btn btn-outline-secondary btnLimpar-custom" onclick="location.href='@Url.Action("Index")'">Limpar</button>
+                </div>
+
+                <!-- Botão Nova Ordem de Compra -->
+                <div class="grupoBusca-custom btn-novo-container">
+                    <button type="button" class="btn btn-success btnNovoCadastro-custom" onclick="location.href='@Url.Action("NovaCompra")'">Nova Compra</button>
+                </div>
+            </div>
+        </form>
+        <br />
+        <br />
+
+    </div>
+
+    <!-- Tabela Responsiva -->
+    <div class="container">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Nº Compra</th>
+                        <th scope="col">Valor Total</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" class="hide-column">Pessoa</th>
+                        <th scope="col" class="hide-column">Data Emissão</th>
+                        <th scope="col" class="hide-column">Data Baixa</th>
+                        <th scope="col" class="hide-column">Data Cancelamento</th>
+                        <th scope="col" class="hide-column">Vendedor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var compra in Model)
+                    {
+                        <tr>
+                            <td>@compra.IdOc</td>
+                            <td>@compra.ValorTotal</td>
+                            <td>@compra.Pessoa?.Nome</td>
+                            <td class="hide-column">@compra.DtaEmissao</td>
+                            <td class="hide-column">@compra.DtaBaixa</td>
+                            <td class="hide-column">@compra.DtaCancelamento</td>
+                            <td class="hide-column">@compra.usuario?.Nome</td>
+
+                            <td>
+                                <a href="@Url.Action("Editar", "Pessoa", new { id = compra.IdOc })">Editar</a> |
+                                <a href="@Url.Action("Detalhes", "Pessoa", new { id = compra.IdOc })">Detalhes</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

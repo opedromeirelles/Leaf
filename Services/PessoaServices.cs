@@ -70,6 +70,21 @@ namespace Leaf.Services
             }
         }
 
+        // Buscar pessoa por com CNPJ ou NOME
+        public Pessoa PessoaNomeCnpj(string dadosPessoa)
+        {
+            PessoaRepository _pessoaRepository = new PessoaRepository(_dbConnectionManager);
+            try
+            {
+                return _pessoaRepository.GetPessoaCnpjNome(dadosPessoa);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao buscar pessoa com CNPJ e Nome, erro: {ex.Message}");
+            }
+        }
+
+
         // Método para atualizar o status de uma pessoa (por exemplo, tipo)
         public bool AtualizarStatusPessoa(int idPessoa, string tipo)
         {

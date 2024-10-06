@@ -26,8 +26,8 @@ builder.Services.AddTransient<DepartamentoServices>();
 builder.Services.AddTransient<ProdutoServices>();
 builder.Services.AddTransient<PessoaServices>();
 builder.Services.AddTransient<InsumoServices>();
-
-
+builder.Services.AddTransient<CompraServices>();
+builder.Services.AddTransient<ItemCompraServices>();
 
 
 //Repositories:
@@ -35,6 +35,9 @@ builder.Services.AddTransient<UsuarioRepository>();
 builder.Services.AddTransient<DepartamentoRepository>();
 builder.Services.AddTransient<PessoaRepository>();
 builder.Services.AddTransient<InsumoRepository>();
+builder.Services.AddTransient<CompraRepository>();
+builder.Services.AddTransient<ItemCompraRepository>();
+
 
 
 

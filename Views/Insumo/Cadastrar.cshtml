@@ -16,7 +16,7 @@ else if (TempData["MensagemSucesso"] != null)
 <div class="paginaPadrao">
     <h2 class="h2tituloCadastro">Cadastro de Insumos</h2>
 
-    <form asp-action="Criar" method="post" id="formCadastroInsumo">
+    <form asp-action="Criar" asp-controller="Insumo" method="post" id="formCadastroInsumo">
         <div class="row">
             <!-- Campo Pessoa Associada (Nome ou CPF/CNPJ) -->
             <div class="col-md-6">
@@ -108,60 +108,22 @@ else if (TempData["MensagemSucesso"] != null)
 
 <!-- Script de Validação e Interação com o AJAX -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/validacao.js"></script>
 <script>
     $(document).ready(function () {
-        $('#btnSubmit').prop('disabled', true);
+        iniciarValidacaoPessoa(
+            'btnSubmit',           // ID do botão de confirmação
+            'inpCnpj',             // ID do campo CNPJ
+            'btnValidarCnpj',      // ID do botão de validação
+            'spnValidacao',        // ID do label de validação
+            'spnPessoaNome',       // ID do label de nome da pessoa
+            'idPessoa'             // ID do campo oculto para armazenar o ID da pessoa
+        );
 
-        // Adicionar máscara de CNPJ enquanto o usuário digita
-        $('#inpCnpj').on('input', function () {
-            let value = $(this).val().replace(/\D/g, ''); // Remove caracteres não numéricos
-            if (value.length > 14) value = value.substring(0, 14); // Limita o valor a 14 dígitos
-            value = value.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
-            $(this).val(value);
-        });
-
-        $('#btnValidarCnpj').click(function () {
-            var cnpjPessoa = $('#inpCnpj').val();
-
-            if (cnpjPessoa.trim() === "" || cnpjPessoa.length !== 18) {
-                $('#spnValidacao').html('Por favor, digite um CNPJ válido.').removeClass('text-success').addClass('text-danger');
-                $('#spnPessoaNome').html('');
-                $('#btnSubmit').prop('disabled', true);
-                return;
-            }
-
-            $.ajax({
-                url: '/Insumo/ValidarPessoa',
-                type: 'GET',
-                data: { cnpj: cnpjPessoa },
-
-                beforeSend: function () {
-                    $('#btnValidarCnpj').html('Validando...').prop('disabled', true);
-                },
-
-                success: function (pessoa) {
-                    if (pessoa) {
-                        $('#spnValidacao').html('Pessoa verificada.').removeClass('text-danger').addClass('text-success');
-                        $('#spnPessoaNome').html(`Nome: ${pessoa.nome}`);
-                        $('#idPessoa').val(pessoa.idpessoa);
-                        $('#inpCnpj').val(pessoa.cnpj);
-                        $('#btnSubmit').prop('disabled', false);
-                    } else {
-                        $('#spnValidacao').html('Pessoa Inválida.').removeClass('text-success').addClass('text-danger');
-                        $('#spnPessoaNome').html('');
-                        $('#btnSubmit').prop('disabled', true);
-                    }
-                },
-                complete: function () {
-                    $('#btnValidarCnpj').html('Validar Pessoa').prop('disabled', false);
-                }
-            });
-        });
-
-        $('#inpCnpj').on('input', function () {
-            $('#btnSubmit').prop('disabled', true);
-            $('#spnValidacao').html('*Validação Obrigatória').removeClass('text-success').addClass('text-danger');
-            $('#spnPessoaNome').html('');
+        // Sobrescreva a URL para a validação específica de Pessoa
+        $.ajaxSetup({
+            url: '/Pessoa/ValidarPessoa' // Alterar aqui para a rota correta
         });
     });
 </script>
+

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using Leaf.Data;
 using Leaf.Models;
-using Leaf.Services;
 
 namespace Leaf.Repository
 {
@@ -112,6 +110,100 @@ namespace Leaf.Repository
 
             return insumos;
         }
+        public List<Insumo> GetInsumosFiltroDescricao(string descricao)
+        {
+            List<Insumo> insumos = new List<Insumo>();
+            string sql = @"select * from insumo where descricao like @descricao";
+
+            using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+                SqlCommand command = new SqlCommand(sql, conn);
+                command.Parameters.AddWithValue("@descricao", "%" + descricao + "%");
+                SqlDataReader reader = command.ExecuteReader();
+
+                try
+                {
+                    while (reader.Read())
+                    {
+                        insumos.Add(MapearInsumo(reader));
+                    }
+
+                    return insumos;
+                }
+                catch (SqlException ex)
+                {
+                    throw new Exception("Não foi possivel listar os insumos por descrição, erro: " + ex.Message);
+                }
+                
+            }
+
+        }
+
+
+        public List<Insumo> GetInsumosForPessoa(int idPessoa)
+        {
+            string sql = @"select * from insumo where id_pessoa = @idPessoa";
+            List<Insumo> insumos = new List<Insumo>();
+
+            using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+                SqlCommand command = new SqlCommand(sql, conn);
+                command.Parameters.AddWithValue("@idPessoa", idPessoa);
+                SqlDataReader raeder = command.ExecuteReader();
+
+                try
+                {
+                    while (raeder.Read())
+                    {
+                        insumos.Add(MapearInsumo(raeder));
+                    }
+
+                    return insumos;
+                }
+                catch (SqlException ex)
+                {
+
+                    throw new Exception("Erro ao listar insumos filtrado por pessoas, erro: " + ex.Message);
+                }
+
+              
+                
+            }
+        }
+        public List<Insumo> GetInsumosForPessoa(int idPessoa, string descicao)
+        {
+            string sql = @"select * from insumo where id_pessoa = @idPessoa and descricao like @descicao";
+
+            List<Insumo> insumos = new List<Insumo>();
+
+            using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+                SqlCommand command = new SqlCommand(sql, conn);
+                command.Parameters.AddWithValue("@idPessoa", idPessoa);
+                command.Parameters.AddWithValue("@descicao", "%" + descicao + "%");
+
+                SqlDataReader raeder = command.ExecuteReader();
+
+                try
+                {
+                    while (raeder.Read())
+                    {
+                        insumos.Add(MapearInsumo(raeder));
+                    }
+
+                    return insumos;
+                }
+                catch (SqlException ex)
+                {
+
+                    throw new Exception("Erro ao listar insumos filtrado por pessoas, erro: " + ex.Message);
+                }
+
+
+
+            }
+        }
+
 
         public Insumo GetInsumoById(int idInsumo)
         {
