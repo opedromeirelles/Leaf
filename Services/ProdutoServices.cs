@@ -41,6 +41,12 @@ namespace Leaf.Services
             }
         }
 
+        public int GetQuantidadeEstoque(int idProduto)
+        {
+            ProdutoRepository _produtosRepository = new ProdutoRepository(_dbConnectionManager);
+            return _produtosRepository.ConsultaEstoqueProduto(idProduto);
+        }
+
         public Produto GetProduto(int idProduto)
         {
             ProdutoRepository _produtosRepository = new ProdutoRepository(_dbConnectionManager);

@@ -1,10 +1,12 @@
 ﻿using Leaf.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace Leaf.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         
@@ -19,6 +21,5 @@ namespace Leaf.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        
     }
 }

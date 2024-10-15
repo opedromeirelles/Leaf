@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+
+@{
+    var departamento = User.FindFirst(ClaimTypes.Role)?.Value;
+}
+
+
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="utf-8" />
@@ -10,6 +17,7 @@
     <link rel="stylesheet" href="~/css/alertaEstilos.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Leaf.styles.css" asp-append-version="true" />
     <link rel="icon" type="image/png" href="~/imgs/icons/png/IconFolha.png" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 <body>
@@ -24,50 +32,81 @@
                     <span class="title">Home</span>
                 </a>
             </li>
-            <li class="list">
-                <a href="#">
-                    <span class="icon"><img class="iconMenu" src="/imgs/icons/svg/pedidos.svg" alt="PEDIDOS"></span>
-                    <span class="title">Pedidos</span>
-                </a>
-            </li>
-            <li class="list @(ViewContext.RouteData.Values["controller"]?.ToString() == "Compra" ? "active" : "")">
-                <a asp-action="Index" asp-controller="Compra">
-                    <span class="icon"><img class="iconMenu" src="/imgs/icons/svg/compra.svg" alt="COMPRAS"></span>
-                    <span class="title">Compras</span>
-                </a>
-            </li>
-            <li class="list @(ViewContext.RouteData.Values["controller"]?.ToString() == "Produto" ? "active" : "")">
-                <a asp-action="Index" asp-controller="Produto">
-                    <span class="icon"><img class="iconMenu" src="/imgs/icons/svg/produtos.svg" alt="PRODUTOS"></span>
-                    <span class="title">Produtos</span>
-                </a>
-            </li>
-            <li class="list @(ViewContext.RouteData.Values["controller"]?.ToString() == "Insumo" ? "active" : "")">
-                <a asp-action="Index" asp-controller="Insumo">
-                    <span class="icon"><img class="iconMenu" src="/imgs/icons/svg/insumos.svg" alt="INSUMOS"></span>
-                    <span class="title">Insumos</span>
-                </a>
-            </li>
-            <li class="list @(ViewContext.RouteData.Values["controller"]?.ToString() == "Pessoa" ? "active" : "")">
-                <a asp-action="Index" asp-controller="Pessoa">
-                    <span class="icon"><img class="iconMenu" src="/imgs/icons/svg/pessoas.svg" alt="PESSOAS"></span>
-                    <span class="title">Pessoas</span>
-                </a>
-            </li>
-            <li class="list @(ViewContext.RouteData.Values["controller"]?.ToString() == "Usuario" ? "active" : "")">
-                <a asp-action="Index" asp-controller="Usuario">
-                    <span class="icon"><img class="iconMenu" src="/imgs/icons/svg/usuarios.svg" alt="USUÁRIOS"></span>
-                    <span class="title">Usuários</span>
-                </a>
-            </li>
-            <li class="list">
-                <a href="#">
-                    <span class="icon"><img class="iconMenu" src="/imgs/icons/svg/relatorios.svg" alt="RELATÓRIOS"></span>
-                    <span class="title">Relatórios</span>
-                </a>
-            </li>
-            <li class="list">
-                <a href="#">
+
+            @if (departamento == "Gerencia" || departamento == "Admin Sistema" || departamento == "Administrativo")
+            {
+                <li class="list  @(ViewContext.RouteData.Values["controller"]?.ToString() == "Pedido" ? "active" : "")">
+                    <a asp-action="Index" asp-controller="Pedido">
+                        <span class="icon"><img class="iconMenu" src="/imgs/icons/svg/pedidos.svg" alt="PEDIDOS"></span>
+                        <span class="title">Pedidos</span>
+                    </a>
+                </li>
+            }
+
+            @if (departamento == "Gerencia" || departamento == "Admin Sistema" || departamento == "Administrativo")
+            {
+                <li class="list @(ViewContext.RouteData.Values["controller"]?.ToString() == "Compra" ? "active" : "")">
+                    <a asp-action="Index" asp-controller="Compra">
+                        <span class="icon"><img class="iconMenu" src="/imgs/icons/svg/compra.svg" alt="COMPRAS"></span>
+                        <span class="title">Compras</span>
+                    </a>
+                </li>
+            }            
+
+            @if (departamento == "Gerencia" || departamento == "Admin Sistema" || departamento == "Administrativo")
+            {
+                <li class="list @(ViewContext.RouteData.Values["controller"]?.ToString() == "Produto" ? "active" : "")">
+                    <a asp-action="Index" asp-controller="Produto">
+                        <span class="icon"><img class="iconMenu" src="/imgs/icons/svg/produtos.svg" alt="PRODUTOS"></span>
+                        <span class="title">Produtos</span>
+                    </a>
+                </li>
+            }
+            
+
+            @if (departamento == "Gerencia" || departamento == "Admin Sistema" || departamento == "Administrativo")
+            {
+                <li class="list @(ViewContext.RouteData.Values["controller"]?.ToString() == "Insumo" ? "active" : "")">
+                    <a asp-action="Index" asp-controller="Insumo">
+                        <span class="icon"><img class="iconMenu" src="/imgs/icons/svg/insumos.svg" alt="INSUMOS"></span>
+                        <span class="title">Insumos</span>
+                    </a>
+                </li>
+            }
+           
+
+            @if (departamento == "Gerencia" || departamento == "Admin Sistema" || departamento == "Administrativo")
+            {
+                <li class="list @(ViewContext.RouteData.Values["controller"]?.ToString() == "Pessoa" ? "active" : "")">
+                    <a asp-action="Index" asp-controller="Pessoa">
+                        <span class="icon"><img class="iconMenu" src="/imgs/icons/svg/pessoas.svg" alt="PESSOAS"></span>
+                        <span class="title">Pessoas</span>
+                    </a>
+                </li>
+            }
+            
+            @if (departamento == "Gerencia" || departamento == "Admin Sistema")
+            {
+                <li class="list">
+                    <a href="#">
+                        <span class="icon"><img class="iconMenu" src="/imgs/icons/svg/relatorios.svg" alt="RELATÓRIOS"></span>
+                        <span class="title">Relatórios</span>
+                    </a>
+                </li>
+            }
+
+            @if (departamento == "Admin Sistema")
+            {
+                <li class="list @(ViewContext.RouteData.Values["controller"]?.ToString() == "Usuario" ? "active" : "")">
+                    <a asp-action="Index" asp-controller="Usuario">
+                        <span class="icon"><img class="iconMenu" src="/imgs/icons/svg/usuarios.svg" alt="USUÁRIOS"></span>
+                        <span class="title">Usuários</span>
+                    </a>
+                </li>
+            }           
+            
+            <li class="list @(ViewContext.RouteData.Values["controller"]?.ToString() == "Login" ? "active" : "")">
+                <a asp-action="Sair" asp-controller="Login">
                     <span class="icon" id="sair"><img class="iconMenu" src="/imgs/icons/svg/logoff.svg" alt="SAIR"></span>
                     <span class="title">Sair</span>
                 </a>

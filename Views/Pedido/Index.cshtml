@@ -1,0 +1,91 @@
+﻿@model IEnumerable<Leaf.Models.PedidoViewModel>
+@{
+    ViewData["Title"] = "Usuários";
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+    <span id="eventoErro">@TempData["MensagemErro"]</span>
+}
+else if (TempData["MensagemSucesso"] != null)
+{
+    <span id="eventoSucesso">@TempData["MensagemSucesso"]</span>
+}
+
+<br />
+<h2 class="h2titulo">PEDIDOS</h2>
+
+<div class="paginaPadrao">
+    <!-- Controle de Busca -->
+    <div class="controleBusca">
+        <form asp-action="Buscar" asp-controller="Pedido" method="get">
+            <div class="linha-superior-custom">
+                <!-- Campo de busca por Nome -->
+                <div class="grupoBusca-custom">
+                    <input type="text" class="form-control txtBuscar-custom" placeholder="Nº Pedido" name="numeroPedido" aria-label="Recipient's username">
+                </div>
+
+                <!-- Filtro por Departamento -->
+                <div class="grupoBusca-custom tipoBusca">
+                    <select class="form-control cbBusca-custom bg-secondary text-light" id="statusPedido" name="status">
+                        <option value="EM">Emitido</option>
+                    </select>
+                </div>
+
+                <!-- Botão Buscar -->
+                <div class="grupoBusca-custom botaoBusca">
+                    <button class="btn btn-outline-secondary btnBuscar-custom" type="submit">Buscar</button>
+                </div>
+
+                <!-- Botão Limpar -->
+                <div class="grupoBusca-custom botaoLimpar">
+                    <button type="reset" class="btn btn-outline-secondary btnLimpar-custom" onclick="location.href='@Url.Action("Index")'">Limpar</button>
+                </div>
+
+                <div class="grupoBusca-custom btn-novo-container">
+                </div>
+            </div>
+        </form>
+        <br />
+        <br />
+    </div>
+
+    <!-- Tabela Responsiva -->
+    <div class="container">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Nº</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Pessoa</th>
+                        <th scope="col" class="hide-column">Entregador</th>
+                        <th scope="col" class="hide-column">Vendedor</th>
+                        <th scope="col" class="hide-column">Data Emissão</th>
+                        <th scope="col">Ferramentas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var pedidoViewModel in Model)
+                    {
+                        <tr>
+                            <td>@pedidoViewModel.Pedido.IdPedido</td>
+                            <td>@pedidoViewModel.Pedido.Stauts</td>
+                            <td>@pedidoViewModel.Pedido.ValorToal</td>
+                            <td>@pedidoViewModel.Pedido.Pessoa.Nome</td>
+
+                            <td class="hide-column">@pedidoViewModel.Pedido.Entregador.Nome</td>
+                            <td class="hide-column">@pedidoViewModel.Pedido.Vendedor.Nome</td>
+                            <td class="hide-column">@pedidoViewModel.Pedido.DtaEmissao</td>
+                            
+                            <td>
+                                <a href="@Url.Action("Atualizar", "Pedido", new { id = @pedidoViewModel.Pedido.IdPedido })">Atualizar</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

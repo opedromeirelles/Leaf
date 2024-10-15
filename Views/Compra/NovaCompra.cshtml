@@ -14,25 +14,24 @@ else if (TempData["MensagemSucesso"] != null)
 }
 
 <div class="paginaPadrao">
-    <h2 class="h2tituloCadastro">Nova Ordem de Compra</h2>
+    <h2 class="h2tituloCadastro">Nova Orde de Compra</h2>
 
     <form asp-action="Emitir" asp-controller="Compra" method="post" id="formCadastroCompra">
        
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    @await Html.PartialAsync("PartialView/BuscarInsumo")
+                    <span>Adicione uma pessoa á compra: </span> @await Html.PartialAsync("PartialView/BuscarPessoa")
                 </div>
-
             </div>
 
             <div class="col-md-6">
                 <div class="form-group">
-                   @await Html.PartialAsync("PartialView/BuscarPessoa")
+                    <span>Adicione insumos á compra: </span> @await Html.PartialAsync("PartialView/BuscarInsumo")
                 </div>
             </div>
         </div>
-
+       
         <input type="text" id="idUsuario" name="IdUsuario" hidden />
        
 
@@ -52,8 +51,31 @@ else if (TempData["MensagemSucesso"] != null)
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="~/js/validacao.js"></script>
 <script>
+    $(document).ready(function (){
+
+        //Adicionar pessoa
+        $('#btnAdicionarPessoa').click( function(){
+
+            //Buscar Lista de pessoas:
+            $.ajax({
+                url: '/Compra/Pessoas',
+                type: 'GET',
+
+                success : function(pessoa){
+                    if(pessoa){
+
+                    }
+                },
+                error: function(){
+                    console.log("Erro ao trazer lista de pessoas");
+                }
+            })
+        });
+    })
+
+
     $(document).ready(function () {
-        // Importando Função para validar pessoa
+
         iniciarValidacaoPessoa(
             'btnSubmit',          // ID do botão de confirmação
             'inpCnpj',            // ID do campo CNPJ
@@ -63,138 +85,41 @@ else if (TempData["MensagemSucesso"] != null)
             'idPessoa'            // ID do campo oculto para armazenar o ID da pessoa
         );
 
-        // Sobrescreva a URL para a validação específica de Pessoa para validação
+        // Sobrescreva a URL para a validação específica de Pessoa
         $.ajaxSetup({
             url: '/Pessoa/ValidarPessoa'
         });
 
+        // Rotina para buscar insumos
+        $('#btnBuscaProduto').click(function () {
+            var descricao = $('#inputBuscaProduto').val();
 
-
-        // Função para exibir insumos na tabela
-        function exibirInsumos(insumos, listaElementoId, mensagemElementoId) {
-            // Verifica se a lista está vazia
-            if (insumos.length === 0) {
-                $(`#${mensagemElementoId}`).html('<div class="alert alert-warning text-center">Nenhum insumo encontrado.</div>');
-                return;
-            }
-
-            // Limpa a mensagem e a lista antes de popular
-            $(`#${mensagemElementoId}`).html('');
-            $(`#${listaElementoId}`).html('');
-
-            // Popula a tabela com os insumos
-            $.each(insumos, function (index, insumo) {
-                $(`#${listaElementoId}`).append(`
-                        <tr>
-                            <td>${insumo.descricao}</td>
-                            <td>R$ ${insumo.valorUnitario}</td>
-                            <td><input type="number" class="w-50" id="idQuantidade_${index}" /></td>
-                            <td>${insumo.pessoa?.nome ?? '-'}</td>
-                            <td><a href="#" id="adicionarInsumo_${index}" class="btn btn-primary w-70">Adicionar</a></td>
-                        </tr>
-                    `);
-            });
-        }
-
-
-
-        // Rotina de listar produtos já com a pessoa preenchida - case 1:
-        $('#btnModalInsumo').click(function () {
-
-            // Captar a pessoa se já estiver preenchida
-            var idPessoa = 0;
-            var nomePessoa = $('#spnPessoaNome').text();
-
-            // Verifica se o campo CNPJ está vazio
-            if ($('#inpCnpj').val().trim() === "") {
-                idPessoa = 0;
-                $('#pessoaVinculada').html('');
-            } else {
-                idPessoa = $('#idPessoa').val();
-                $('#pessoaVinculada').html(`<br>${nomePessoa}`);
-            }
-
-            // Limpar todos os elementos antes de popular
-            $('#listaInsumo').html('');
-            $('#mensagemControle').html('');
-            $('#inputBuscaInsumo').val('');
-
-            // Acionar a action de listar insumos para a pessoa
             $.ajax({
-                url: '/Compra/ListarInsumos',
+                url: '/Compra/ListaInsumo',
                 type: 'GET',
-                data: { idPessoa: idPessoa },
-                dataType: 'json',
+                data: { descricaoInsumo: descricao },
 
-                // Retornando a lista
                 success: function (insumos) {
-                    // Exibe os insumos usando a função
-                    exibirInsumos(insumos, 'listaInsumo', 'mensagemControle');
-
-                     },
-                error: function () {
+                    // Limpar a lista antes de popular
                     $('#listaInsumo').html('');
-                    $('#mensagemControle').html('<div class="alert alert-warning">Erro ao consultar insumos.</div>');
-                }
-            });
 
-            //Busca dentro do modal ja aberto
-            $('#btnBuscaInsumo').click(function () {
-
-                // Verifica se o campo CNPJ está vazio
-                if ($('#inpCnpj').val().trim() === "") {
-                    idPessoa = 0;
-                } else {
-                    idPessoa = $('#idPessoa').val();
-                }
-
-                // Pega a descrição
-                var descricao = $('#inputBuscaInsumo').val();
-
-                //chama rota para buscar
-                $.ajax({
-                    url: '/Compra/ListarInsumoPessoa',
-                    type: 'GET',
-                    data: { idPessoa: idPessoa, descricao: descricao },
-                    dataType: 'json',
-
-                    //Retorno
-                    success: function (insumos) {
-                        $('#listaInsumo').html('');
-                        // Exibe os insumos usando a função
-                        exibirInsumos(insumos, 'listaInsumo', 'mensagemControle');
-
-                    },
-                    error: function () {
-                        $('#listaInsumo').html('');
-                        $('#mensagemControle').html('<div class="alert alert-warning">Erro ao consultar insumos filtrado</div>');
-                    }
-                });
-            });
-        });
-
-        //Limpar dentro do modal ja aberto
-        $('#btnLimparBusca').click(function () {
-
-            // Limpar busca
-            $('#inputBuscaInsumo').val('');
-
-            // Acionar a action de listar insumos para a pessoa
-            $.ajax({
-                url: '/Compra/ListarInsumos',
-                type: 'GET',
-                data: { idPessoa: idPessoa },
-                dataType: 'json',
-
-                // Retornando a lista
-                success: function (insumos) {
-                    // Exibe os insumos usando a função
-                    exibirInsumos(insumos, 'listaInsumo', 'mensagemControle');
-
+                    // Iterar sobre a lista de insumos retornada
+                    $.each(insumos, function (index, valor) {
+                        $('#listaInsumo').append(`
+                            <tr>
+                               <td>${valor.descricao}</td>
+                               <td>$R$ ${valor.valorUnitario}</td>
+                               <td><input type="text" id="idQuantidade_${index}" /></td>
+                               <td><a href="#" id="adicionarInsumo_${index}" class="btn btn-primary">Adicionar</a></td>
+                            </tr>
+                        `
+                             #(adicionarInsumo_${index}).clck( )
+                        );
+                    });
                 },
+
                 error: function () {
-                    $('#listaInsumo').html('');
-                    $('#mensagemControle').html('<div class="alert alert-warning">Erro ao consultar insumos.</div>');
+                    console.log("Erro ao buscar insumo");
                 }
             });
         });

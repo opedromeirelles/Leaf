@@ -1,12 +1,14 @@
 ﻿using Leaf.Models;
 using Leaf.Repository;
 using Leaf.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Collections.Generic;
 
 namespace Leaf.Controllers
 {
+    [Authorize]
     public class UsuarioController : Controller
     {
         //injetar os serviços no meu construtor
@@ -89,7 +91,7 @@ namespace Leaf.Controllers
             try
             {
                 // Buscar a pessoa pelo ID
-                Usuario usuario = _usuarioService.getUsuarioId(id);
+                Usuario usuario = _usuarioService.GetUsuarioId(id);
 
                 if (usuario == null)
                 {
@@ -167,7 +169,7 @@ namespace Leaf.Controllers
         public IActionResult Editar(int id)
         {
             // Chama o serviço ou repositório para buscar o usuário pelo id
-            Usuario usuario = _usuarioService.getUsuarioId(id);
+            Usuario usuario = _usuarioService.GetUsuarioId(id);
 
             if (usuario == null)
             {

@@ -5,7 +5,7 @@ namespace Leaf.Models
     public class Compra
     {
         public int IdOc { get; set; }
-        public string status { get; set; }
+        public string Status { get; set; }
         public Decimal ValorTotal { get; set; }
 
         [Required(ErrorMessage = "O código da pessoa é obrigatório")]
@@ -17,11 +17,11 @@ namespace Leaf.Models
 
         [Required(ErrorMessage = "O código do Usuario é obrigatório")]
         public int IdUsuario { get; set; }
-        public Usuario? usuario { get; set; }
+        public Usuario? Usuario { get; set; }
 
         public Compra(DateTime dtaEmissao)
         {
-            status = "EM";
+            Status = "EM";
             DtaEmissao = dtaEmissao;
             DtaBaixa = null;
             DtaCancelamento = null;

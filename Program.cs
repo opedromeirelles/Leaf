@@ -18,6 +18,17 @@ builder.Services.AddSingleton<DbConnectionManager>(sp =>
     return new DbConnectionManager(connectionString);
 });
 
+// Configuração da Autenticação de Cookies
+builder.Services.AddAuthentication("CookieAuthentication")
+        .AddCookie("CookieAuthentication", options =>
+        {
+            options.Cookie.Name = "UserLoginCookie"; // Nome do cookie
+            options.LoginPath = "/Login";    // Caminho da página de login
+            options.AccessDeniedPath = "/Login/ErrorLogin"; // Caminho de acesso negado
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(30);  // Tempo de expiração do cookie
+        });
+
+
 // Adicionar minhas camadas de serviços
 
 //Services Area:
@@ -28,6 +39,11 @@ builder.Services.AddTransient<PessoaServices>();
 builder.Services.AddTransient<InsumoServices>();
 builder.Services.AddTransient<CompraServices>();
 builder.Services.AddTransient<ItemCompraServices>();
+builder.Services.AddTransient<PedidoServices>();
+builder.Services.AddTransient<PedidoFacedeServices>();
+builder.Services.AddTransient<ItemPedidoServices>();
+
+
 
 
 //Repositories:
@@ -37,6 +53,10 @@ builder.Services.AddTransient<PessoaRepository>();
 builder.Services.AddTransient<InsumoRepository>();
 builder.Services.AddTransient<CompraRepository>();
 builder.Services.AddTransient<ItemCompraRepository>();
+builder.Services.AddTransient<PedidoRepository>();
+builder.Services.AddTransient<ItemPedidoRepository>();
+
+
 
 
 
@@ -70,6 +90,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

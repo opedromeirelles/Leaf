@@ -37,6 +37,41 @@ namespace Leaf.Repository
             };
         }
 
+        // VALIDAR USUARIO
+        public Usuario ValidarUsuario(string username, string senha)
+        {
+            
+            string sql = @"SELECT u.idusuario, u.nome, u.login, u.senha, u.status, u.id_dpto, d.descricao
+                               FROM Usuario u
+                               INNER JOIN Departamento d ON u.id_dpto = d.idDpto
+                               WHERE login = @username and senha = @senha";
+
+            using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+                SqlCommand command = new SqlCommand(sql, conn);
+                command.Parameters.AddWithValue("@username", username);
+                command.Parameters.AddWithValue("@senha", senha);
+
+                try
+                {
+                    SqlDataReader reader = command.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        Usuario usuario = MapearUsuario(reader);
+                        return usuario;
+                    }
+
+                    return new Usuario();
+                }
+                catch (SqlException ex)
+                {
+
+                    throw new Exception("Erro ao consultar usuario, erro: " + ex.Message);
+                }
+
+            }
+        }
+
 
         // MÉTODOS DE BUSCA
         public List<Usuario> GetUsuarios()
@@ -111,8 +146,6 @@ namespace Leaf.Repository
             return usuariosFiltrados;
         }
 
-
-
         public Usuario? GetUsuarioById(int id)
         {
             using (SqlConnection conn = _dbConnectionManager.GetConnection())
@@ -138,6 +171,30 @@ namespace Leaf.Repository
                 }
 
             }
+        }
+
+        public List<Usuario> GetListaEntregador()
+        {
+            List<Usuario> usuarios = new List<Usuario>();
+
+            using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+                // Fazer o join com a tabela Departamento
+                string sql = @"SELECT u.idusuario, u.nome, u.login, u.senha, u.status, u.id_dpto, d.descricao
+                               FROM Usuario u
+                               INNER JOIN Departamento d ON u.id_dpto = d.idDpto
+                               where u.id_dpto = 6";
+
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    usuarios.Add(MapearUsuario(reader));
+                }
+            }
+
+            return usuarios;
         }
 
 

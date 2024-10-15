@@ -1,10 +1,7 @@
 ﻿using System.Data.SqlClient;
-using Microsoft.Data;
+using System.Data;
 using Leaf.Data;
 using Leaf.Models;
-using System.Globalization;
-using System.Xml.Serialization;
-using Microsoft.IdentityModel.Protocols;
 
 namespace Leaf.Repository
 {

@@ -1,6 +1,10 @@
 ﻿@{
-   
     ViewData["Title"] = "Home Page";
+    var nomeUsuario = User.Identity?.Name;
+    @if (!string.IsNullOrEmpty(nomeUsuario))
+    {
+        <span id="eventoSucesso">Olá @nomeUsuario</span>
+    }
 }
 
 

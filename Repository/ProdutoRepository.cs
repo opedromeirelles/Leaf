@@ -126,6 +126,36 @@ namespace Leaf.Repository
                 return null;
         }
 
+        //Consultar quantidade estoque
+        public int ConsultaEstoqueProduto(int idProduto)
+        {
+            string sql = @"select p.qtde_estoque from produto p where idproduto = @idProduto";
+            int qtdeEstoque = 0;
+
+            using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+                SqlCommand command = new SqlCommand(sql, conn);
+                command.Parameters.AddWithValue("@idProduto", idProduto);
+                SqlDataReader reader = command.ExecuteReader();
+                try
+                {
+                    if (reader.Read())
+                    {
+                        qtdeEstoque = Convert.ToInt32(reader["qtde_estoque"]);
+                        return qtdeEstoque;
+                    }
+
+                    return qtdeEstoque;
+
+                }
+                catch (SqlException ex)
+                {
+
+                    throw new Exception("Erro ao consultar estoque, erro: " + ex.Message);
+                }
+                
+            }
+        }
 
 
         //MÉTODOS DE AÇÃO

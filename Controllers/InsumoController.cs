@@ -2,9 +2,11 @@
 using Leaf.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Leaf.Controllers
 {
+    [Authorize]
     public class InsumoController : Controller
     {
         private readonly PessoaServices _pessoaServices;

@@ -3,9 +3,11 @@ using Leaf.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Globalization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Leaf.Controllers
 {
+    [Authorize]
     public class ProdutoController : Controller
     {
         private readonly ProdutoServices _produtoServices;

@@ -24,7 +24,7 @@
                 return new Compra
                 {
                     IdOc = Convert.ToInt32(reader["idoc"]),
-                    status = reader["status"].ToString(),
+                    Status = reader["status"].ToString(),
                     IdPessoa = Convert.ToInt32(reader["id_pessoa"]),
                     DtaEmissao = Convert.ToDateTime(reader["dta_emissao"], new CultureInfo("pt-BR")),
                     DtaBaixa = Convert.ToDateTime(reader["dta_baixa"], new CultureInfo("pt-BR")),
@@ -45,7 +45,7 @@
                     SqlCommand command = new SqlCommand(sql, conn);
 
                     // Adicionar parâmetros
-                    command.Parameters.Add(new SqlParameter("@status", compra.status));
+                    command.Parameters.Add(new SqlParameter("@status", compra.Status));
                     command.Parameters.Add(new SqlParameter("@id_pessoa", compra.IdPessoa));
                     command.Parameters.Add(new SqlParameter("@dta_emissao", compra.DtaEmissao));
                     command.Parameters.Add(new SqlParameter("@dta_baixa", compra.DtaBaixa.HasValue ? compra.DtaBaixa.Value : DBNull.Value));

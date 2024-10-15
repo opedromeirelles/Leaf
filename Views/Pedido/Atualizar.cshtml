@@ -1,0 +1,131 @@
+﻿@model Leaf.Models.PedidoViewModel
+@{
+	ViewData["Title"] = "Detalhes do Pedido - Atualizar";
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+	<span id="eventoErro" class="alert alert-danger">@TempData["MensagemErro"]</span>
+}
+else if (TempData["MensagemSucesso"] != null)
+{
+	<span id="eventoSucesso" class="alert alert-success">@TempData["MensagemSucesso"]</span>
+}
+
+
+
+<div class="container mt-5 mp-5 pl-5 mb-5" style="padding-left: 70px">
+	<!-- Informações principais do pedido -->
+	<form asp-action="AtualizarStatus" method="post">
+		<input type="hidden" asp-for="IdPedido" />
+
+		<div class="card shadow-sm">
+			<div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+				<h3 class="card-title mb-0">Detalhes do Pedido #@Model.Pedido.IdPedido</h3>
+				<span class="badge badge-pill
+                        @(Model.Pedido.Stauts == "EM" ? "badge-info" : Model.Pedido.Stauts == "BX" ? "badge-success" : Model.Pedido.Stauts == "CA" ? "badge-danger" : "badge-secondary")">
+					@Model.Pedido.Stauts
+				</span>
+			</div>
+
+			<div class="card-body">
+				<!-- Sessão 1: Informações do Pedido -->
+				<div class="row mb-4">
+					<div class="col-md-4 mb-3">
+						<div class="card border-0">
+							<div class="card-body">
+								<h5 class="card-title"><i class="fas fa-info-circle"></i> Informações do Pedido</h5>
+								<br />
+								<p><strong>Vendedor: </strong>@(@Model.Pedido.Vendedor?.Nome.ToString() ?? "Não atribuído")</p>
+								<p><strong>Data de Emissão: </strong>@(@Model.Pedido.DtaEmissao?.ToString("dd/MM/yyyy"))</p>
+								<p><strong>Valor Total:</strong> R$ @Model.Pedido.ValorToal.ToString("F2")</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4 mb-3">
+						<div class="card border-0">
+							<div class="card-body">
+								<h5 class="card-title"><i class="fas fa-user"></i> Cliente</h5>
+								<p><strong>Nome: </strong>@(@Model.Pedido.Pessoa?.Nome.ToString() ?? "Nome não disponível")</p>
+								@if (Model.Pedido.Pessoa?.Tipo == "PF")
+								{
+									<p><strong>CPF: </strong>@(@Model.Pedido.Pessoa?.Cpf.ToString() ?? "CPF não disponível")</p>
+								}
+								else
+								{
+									<p><strong>CNPJ: </strong>@(@Model.Pedido.Pessoa?.Cnpj.ToString() ?? "CNPJ não disponível")</p>
+
+								}
+								<p><strong>Telefone: </strong>@(@Model.Pedido.Pessoa?.Telefone1.ToString() ?? "Telefone não disponível")</p>
+							</div>
+						</div>
+					</div>
+					<!-- Atribuir Entregador -->
+					<div class="col-md-4 mb-4">
+						<div class="card border-0 shadow">
+							<div class="card-header bg-warning text-dark text-center">
+
+								<i class="fas fa-truck"></i> Atribuir Entregador
+							</div>
+							<div class="card-body">
+								<select class="form-control cbBusca-custom bg-secondary text-light" id="statusPedido" name="entregadores">
+									@if (Model.Pedido.IdEntregador != 0)
+									{
+										<option value="@Model.Pedido.IdEntregador">@Model.Pedido.Entregador.Nome</option>
+									}
+									else
+									{
+										<option value="">Selecionar</option>
+									}
+									@foreach (var item in ViewData?["Entregadores"] as List<Leaf.Models.Usuario>)
+									{
+										@if (item.Id != @Model.Pedido.IdEntregador)
+										{
+											<option value="@item?.Id">@item?.Nome</option>
+										}
+									}
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Sessão 2: Lista de Produtos do Pedido -->
+				<h5 class="mt-4"><i class="fas fa-boxes"></i> Itens do Pedido</h5>
+				<div class="table-responsive mt-3">
+					<table class="table table-hover table-bordered">
+						<thead class="bg-dark text-white">
+							<tr>
+								<th>Descrição</th>
+								<th>Quantidade</th>
+								<th>Valor Unitário</th>
+								<th>Subtotal</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var item in Model.ItensPedido)
+							{
+								<tr>
+									<td>@(item.Produto?.Descricao ?? "Produto não encontrado")</td>
+									<td>@item.Quantidade</td>
+									<td>R$ @(item.Produto?.ValorUnitario.ToString("F2") ?? "0.00")</td>
+									<td>R$ @item.SubTotal.ToString("F2")</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- Botões de Controle -->
+			<div class="text-right m-3">
+				<button type="submit" class="btn btn-success mr-2"><i class="fas fa-check"></i> Confirmar</button>
+				<a href="@Url.Action("Index", "Pedido")" class="btn btn-danger"><i class="fas fa-times"></i> Cancelar</a>
+			</div>
+			<br />
+		</div>		
+	</form>
+</div>
+
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>

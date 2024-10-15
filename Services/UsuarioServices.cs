@@ -30,6 +30,20 @@ namespace Leaf.Services
             }
         }
 
+        public List<Usuario> ListaEntregadores()
+        {
+            UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);
+            try
+            {
+                return _usuarioRepository.GetListaEntregador();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"Erro ao acessar a lista de usuários: {ex.Message}");
+            }
+        }
+
         public List<Usuario> ListaUsuariosFiltro(string nome, int idDpto)
         {
             UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);
@@ -75,7 +89,7 @@ namespace Leaf.Services
 
         }
 
-        public Usuario getUsuarioId(int id)
+        public Usuario GetUsuarioId(int id)
         {
             try
             {
@@ -107,6 +121,16 @@ namespace Leaf.Services
             {
                 throw new Exception($"Erro ao atualizar status do usuário: {ex.Message}");
             }
+        }
+
+        public Usuario ValidarLogin(string username, string senha)
+        {
+            UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);
+            if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(senha))
+            {
+                return _usuarioRepository.ValidarUsuario(username, senha);
+            }
+            return new Usuario();
         }
 
     }

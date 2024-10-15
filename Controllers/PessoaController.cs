@@ -1,9 +1,11 @@
 ﻿using Leaf.Services;
 using Leaf.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Leaf.Controllers
 {
+    [Authorize]
     public class PessoaController : Controller
     {
         private readonly PessoaServices _pessoaServices;
@@ -77,6 +79,9 @@ namespace Leaf.Controllers
                 return RedirectToAction("Index");
             }
         }
+
+
+
 
         // Exibir a tela de cadastro de nova pessoa
         public IActionResult Cadastrar()

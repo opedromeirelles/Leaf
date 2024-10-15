@@ -1,9 +1,11 @@
 ﻿using Leaf.Models;
 using Leaf.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Leaf.Controllers
 {
+    [Authorize]
     public class CompraController : Controller
     {
         
@@ -43,7 +45,7 @@ namespace Leaf.Controllers
             IdUsuario = 1;
             compra.IdUsuario = IdUsuario;
             compra.DtaEmissao = DateTime.Now;
-            compra.status = "EM";
+            compra.Status = "EM";
 
             // Se a compra foi cadastrada com sucesso, redireciona para a Index
             if (_compraServices.NovaCompra(compra) != 0)
