@@ -1,7 +1,7 @@
 ﻿using Leaf.Data;
-using Leaf.Models;
 using System.Data.SqlClient;
 using System.Data;
+using Leaf.Models;
 
 namespace Leaf.Repository
 {
@@ -195,6 +195,108 @@ namespace Leaf.Repository
             }
 
         }
+
+
+        // Relatorios de pedido
+        public List<Pedido> GetListPedidosPeriodo(DateTime dataInicio, DateTime dataFim, int idVendedor, string status)
+        {
+            string sql = @"SELECT * FROM pedido
+                           WHERE 1=1
+                           AND dta_emissao >= @dataInicio 
+                           AND dta_emissao <= @dataFim";
+
+			List<Pedido> pedidos = new List<Pedido>();
+
+            using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+
+                SqlCommand command = new SqlCommand(sql, conn);
+
+                //Obrigatóriamente havera duas duas datas
+                command.Parameters.AddWithValue("@dataInicio", dataInicio);
+                command.Parameters.AddWithValue("@dataFim", dataFim);
+
+                //Pega o status
+                if (status != "" && !string.IsNullOrEmpty(status))
+                {
+                    sql += " AND status = @status";
+                    command.Parameters.AddWithValue("@status", status);
+                }
+
+                //Se tiver vendedor filtre por vendedor
+                if (idVendedor != 0)
+                {
+                    sql += " AND id_vendedor = @idVendedor";
+					command.Parameters.AddWithValue("@idVendedor", idVendedor);
+				}
+
+				// Atualizar o texto da consulta, já que ele é modificado dinamicamente
+				command.CommandText = sql;
+
+				try
+                {
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        pedidos.Add(MapearPedido(reader));
+                    }
+
+                    //verifico se esta preenchido, se não, retorno a lista vazia
+                    return pedidos.Any() ? pedidos : new List<Pedido>();
+				}
+                catch (SqlException ex)
+                {
+                    // Tratar erro e lançar exceção, se necessário
+                    throw new Exception("Erro ao tentar buscar pedidos, erro: " + ex.Message);
+                }
+            } 				
+        }
+        
+        public List<Pedido> GetListPedidosEntregador(DateTime? dataInicio, DateTime? dataFim, int idEntregador)
+        {
+            string sql = @"SELECT * FROM pedido
+                           WHERE 1=1
+                           AND id_entregador = @idEntregador ";
+
+			List<Pedido> pedidos = new List<Pedido>();
+
+			using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+                SqlCommand command = new SqlCommand(sql, conn);
+                command.Parameters.AddWithValue("@idEntregador", idEntregador);
+
+                if (dataInicio != null && dataFim != null)
+                {
+                    sql += "AND dta_emissao >= @dataInicio AND dta_emissao <= @dataFim";
+					command.Parameters.AddWithValue("@dataInicio", dataInicio);
+					command.Parameters.AddWithValue("@dataFim", dataFim);
+				}
+
+				try
+				{
+					SqlDataReader reader = command.ExecuteReader();
+
+					while (reader.Read())
+					{
+						pedidos.Add(MapearPedido(reader));
+					}
+
+					if (pedidos.Any() && pedidos != null)
+					{
+						return pedidos;
+					}
+
+					return new List<Pedido>();
+				}
+				catch (SqlException ex)
+				{
+					// Tratar erro e lançar exceção, se necessário
+					throw new Exception("Erro ao tentar buscar pedidos, erro: " + ex.Message);
+				}
+			}
+        }
+
 
     }
 }

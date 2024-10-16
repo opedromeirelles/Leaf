@@ -1,7 +1,7 @@
 ﻿using Leaf.Services;
-using Leaf.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Leaf.Models;
 
 namespace Leaf.Controllers
 {

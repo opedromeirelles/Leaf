@@ -23,7 +23,7 @@ namespace Leaf.Models
 
         public Departamento? Departamento { get; set; }
 
-        
+
     }
 
 

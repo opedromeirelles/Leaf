@@ -4,7 +4,7 @@ namespace Leaf.Models
 {
     public class Pessoa
     {
-        
+
         public int IdPessoa { get; set; }
 
         [Required(ErrorMessage = "O nome é obrigatório")]

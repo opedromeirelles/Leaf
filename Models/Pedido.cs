@@ -20,7 +20,7 @@
         public Usuario Entregador { get; set; }
         public Usuario Vendedor { get; set; }
 
-        
+
     }
 
 }

@@ -42,8 +42,8 @@ builder.Services.AddTransient<ItemCompraServices>();
 builder.Services.AddTransient<PedidoServices>();
 builder.Services.AddTransient<PedidoFacedeServices>();
 builder.Services.AddTransient<ItemPedidoServices>();
-
-
+builder.Services.AddTransient<LoteProducaoServices>();
+builder.Services.AddTransient<ItemLoteProducaoServices>();
 
 
 //Repositories:
@@ -55,10 +55,8 @@ builder.Services.AddTransient<CompraRepository>();
 builder.Services.AddTransient<ItemCompraRepository>();
 builder.Services.AddTransient<PedidoRepository>();
 builder.Services.AddTransient<ItemPedidoRepository>();
-
-
-
-
+builder.Services.AddTransient<LoteProducaoRepository>();
+builder.Services.AddTransient<ItemLoteProducaoRepository>();
 
 
 // Configurar a cultura padrão

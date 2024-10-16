@@ -1,10 +1,10 @@
-﻿using Leaf.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using Leaf.Services;
+using Leaf.Models;
 
 namespace Leaf.Controllers
 {

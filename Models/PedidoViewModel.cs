@@ -11,14 +11,14 @@
 
         public PedidoViewModel(Pedido pedido, List<ItemPedido> itensPedido)
         {
-            this.Pedido = pedido;
-            this.IdPedido = pedido.IdPedido;
-            this.ItensPedido = itensPedido;
+            Pedido = pedido;
+            IdPedido = pedido.IdPedido;
+            ItensPedido = itensPedido;
         }
 
         public PedidoViewModel()
         {
-            
+
         }
 
 

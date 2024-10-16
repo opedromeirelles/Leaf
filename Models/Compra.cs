@@ -6,7 +6,7 @@ namespace Leaf.Models
     {
         public int IdOc { get; set; }
         public string Status { get; set; }
-        public Decimal ValorTotal { get; set; }
+        public decimal ValorTotal { get; set; }
 
         [Required(ErrorMessage = "O código da pessoa é obrigatório")]
         public int IdPessoa { get; set; }
@@ -28,7 +28,7 @@ namespace Leaf.Models
         }
         public Compra()
         {
-            
+
         }
 
     }

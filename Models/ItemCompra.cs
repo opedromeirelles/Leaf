@@ -9,7 +9,7 @@ namespace Leaf.Models
 
         [Required(ErrorMessage = "A quantidade é obrigatório")]
         public int Quantidade { get; set; }
-        public Decimal SubTotal { get; set; }
+        public decimal SubTotal { get; set; }
         public int IdOc { get; set; }
         public List<Insumo> itemCompras { get; set; }
     }

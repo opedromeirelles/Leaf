@@ -1,6 +1,7 @@
-﻿@model Leaf.Models.PedidoViewModel
+﻿@model PedidoViewModel
 @{
 	ViewData["Title"] = "Detalhes do Pedido - Atualizar";
+	var listaEntregadores = ViewData?["Entregadores"];
 }
 
 @if (TempData["MensagemErro"] != null)
@@ -78,7 +79,7 @@ else if (TempData["MensagemSucesso"] != null)
 									{
 										<option value="">Selecionar</option>
 									}
-									@foreach (var item in ViewData?["Entregadores"] as List<Leaf.Models.Usuario>)
+									@foreach (var item in listaEntregadores as List<Usuario>)
 									{
 										@if (item.Id != @Model.Pedido.IdEntregador)
 										{

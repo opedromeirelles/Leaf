@@ -1,0 +1,13 @@
+﻿@model IEnumerable<PedidoViewModel>
+@{
+    ViewData["Title"] = "Relatório de Compras";
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+    <span id="eventoErro">@TempData["MensagemErro"]</span>
+}
+else if (TempData["MensagemSucesso"] != null)
+{
+    <span id="eventoSucesso">@TempData["MensagemSucesso"]</span>
+}
