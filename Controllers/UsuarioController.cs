@@ -1,4 +1,4 @@
-﻿using Leaf.Models;
+﻿using Leaf.Models.Domain;
 using Leaf.Repository;
 using Leaf.Services;
 using Microsoft.AspNetCore.Authorization;

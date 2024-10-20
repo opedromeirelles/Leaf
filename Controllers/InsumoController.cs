@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using Microsoft.AspNetCore.Authorization;
-using Leaf.Models;
+using Leaf.Models.Domain;
 
 namespace Leaf.Controllers
 {

@@ -1,4 +1,4 @@
-﻿@model LoginModelView
+﻿@model Leaf.Models.ViewModels.LoginModelView
 @{
     Layout = "_LayoutLogin";
     ViewData["Title"] = "Área de Acesso ";
@@ -29,7 +29,7 @@
                     </div>
                     <div class="form-group-custom">
                         <input asp-for="Username" type="text" id="login" class="form-input-custom" placeholder="Insira seu Login" required />
-                        @Html.ValidationMessageFor(x => x.Username, "", new { @class = "text-danger-login" })
+                        
                     </div>
                 </div>
             </div>
@@ -40,7 +40,6 @@
                     </div>
                     <div class="form-group-custom">
                         <input asp-for="Senha" type="password" id="senha" class="form-input-custom" placeholder="Insira sua Senha" required />
-                        @Html.ValidationMessageFor(x => x.Senha, "", new { @class = "text-danger-login" })
                     </div>
                 </div>
             </div>

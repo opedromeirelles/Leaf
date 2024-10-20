@@ -1,4 +1,6 @@
-﻿namespace Leaf.Models
+﻿using Leaf.Models.Domain;
+
+namespace Leaf.Models.ItensDomain
 {
     public class ItemPedido
     {

@@ -1,5 +1,5 @@
 ﻿using Leaf.Data;
-using Leaf.Models;
+using Leaf.Models.Domain;
 using Leaf.Repository;
 
 namespace Leaf.Services
@@ -41,6 +41,14 @@ namespace Leaf.Services
                 throw new Exception($"Erro ao listar as pessoas com filtro, erro: {ex.Message}");
             }
         }
+
+        // Método para consultar apenas fornecedores - Pessoas que contém insumos vinculados
+        public List<Pessoa> GetFornecedores()
+        {
+            PessoaRepository pessoaRepository = new PessoaRepository(_dbConnectionManager);
+            return pessoaRepository.GetFornecedores();
+        }
+
 
         // Método para consultar uma pessoa pelo ID
         public Pessoa GetPessoa(int idPessoa)

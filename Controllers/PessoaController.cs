@@ -1,7 +1,7 @@
 ﻿using Leaf.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Leaf.Models;
+using Leaf.Models.Domain;
 
 namespace Leaf.Controllers
 {
@@ -79,8 +79,6 @@ namespace Leaf.Controllers
                 return RedirectToAction("Index");
             }
         }
-
-
 
 
         // Exibir a tela de cadastro de nova pessoa

@@ -1,0 +1,197 @@
+﻿@model IEnumerable<Leaf.Models.ViewModels.CompraViewModel>
+@{
+	ViewData["Title"] = "Relatório de Compras";
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+	<span id="eventoErro">@TempData["MensagemErro"]</span>
+}
+else if (TempData["MensagemSucesso"] != null)
+{
+	<span id="eventoSucesso">@TempData["MensagemSucesso"]</span>
+}
+
+<div class="container" style="padding-left: 70px">
+	<h2 class="h2titulo">@ViewData["Title"]</h2>
+	@await Html.PartialAsync("_LoadingSpinner")
+
+	<form method="get" asp-action="Buscar" onsubmit="mostrarCarregando()">
+		<div class="row">
+			<!-- Nº Compra -->
+			<div class="col-12 col-lg-3">
+				<div class="form-group">
+					<label>Número da Compra:</label>
+					<input type="text" class="form-control txtBuscar-custom" placeholder="Nº... " name="numeroCompra" aria-label="Buscar por número da compra">
+				</div>
+				<div class="form-group">
+					<select class="form-control cbBusca-custom bg-secondary text-light" name="status">
+						<option value="">Todos status</option>
+						<option value="EM">Emitido</option>
+						<option value="BX">Baixado</option>
+						<option value="CA">Cancelado</option>
+
+					</select>
+				</div>
+			</div>
+
+			<!-- Data Início e Data Fim para Mobile (vertical) e Desktop (horizontal) -->
+			<div class="col-12 col-lg-6">
+				<div class="row">
+					<div class="col-12 col-md-6">
+						<div class="form-group">
+							<label for="dataInicio">Data Início:</label>
+							<input type="date" class="form-control txtBuscar-custom" id="dataInicio" name="dataInicio" aria-label="Data de Início">
+						</div>
+					</div>
+					<div class="col-12 col-md-6">
+						<div class="form-group">
+							<label for="dataFim">Data Fim:</label>
+							<input type="date" class="form-control txtBuscar-custom" id="dataFim" name="dataFim" aria-label="Data de Fim">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12 col-md-6">
+						<div class="form-group">
+							<select class="form-control cbBusca-custom bg-secondary text-light" name="fornecedor">
+								<option value="0">Todos Fornecedores</option>
+								@foreach (var forn in ViewBag.Fornecedores)
+								{
+									<option value="@forn.IdPessoa">@forn.Nome</option>
+								}
+
+							</select>
+						</div>
+					</div>
+					<div class="col-12 col-md-6">
+						<div class="form-group">
+							<select class="form-control cbBusca-custom bg-secondary text-light" name="solicitante">
+								<option value="0">Todos Administrativo</option>
+								@foreach (var admin in ViewBag.Administrativo)
+								{
+									<option value="@admin.Id">@admin.Nome</option>
+								}
+
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<br />
+			<div class="col-12 col-lg-3">
+				<br />
+				<div class="grupoBusca-custom d-flex mt-2">
+					<div class="grupoBusca-custom botaoBusca ml-2">
+						<button class="btn btn-outline-secondary btnBuscar-custom" type="submit">Buscar</button>
+					</div>
+					<div class="grupoBusca-custom botaoLimpar ml-2">
+						<button type="reset" class="btn btn-outline-secondary btnLimpar-custom" onclick="location.href='@Url.Action("Index")'">Limpar Busca</button>
+					</div>
+				</div>
+				@if (Model != null && Model.Any())
+				{
+					<!-- Botão Imprimir Relatório -->
+					<div class="text-center mt-3">
+						<a href="@Url.Action("Imprimir", "RelatorioCompras", new {
+						numeroCompra = ViewContext.HttpContext.Request.Query["numeroCompra"],
+						status = ViewContext.HttpContext.Request.Query["status"],
+						dataInicio = ViewContext.HttpContext.Request.Query["dataInicio"],
+						dataFim = ViewContext.HttpContext.Request.Query["dataFim"],
+						fornecedor = ViewContext.HttpContext.Request.Query["fornecedor"],
+						solicitante = ViewContext.HttpContext.Request.Query["solicitante"]
+						})" class="btn btn-warning btn-block" target="_blank">
+							Imprimir Relatório <i class="fas fa-print"></i>
+						</a>
+					</div>
+				}
+			</div>
+
+		</div>
+	</form>
+</div>
+<br />
+<br />
+
+<!-- Tabela Responsiva -->
+<div class="container" style="padding-left: 70px">
+	<div class="table-responsive">
+		<table class="table table-hover table-striped">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">Nº Compra</th>
+					<th scope="col">Fornecedor</th>
+					<th scope="col" class="hide-column">Solicitante</th>
+					<th scope="col" class="hide-column">Itens</th>
+					<th scope="col" class="hide-column">Total</th>
+					<th scope="col">Status</th>
+					<th scope="col" class="text-center">Ações</th>
+				</tr>
+			</thead>
+			<tbody>
+				@if (Model != null && Model.Any())
+				{
+					foreach (var compra in Model)
+					{
+						<tr>
+							<td class="text-center">@compra.IdCompra</td>
+							<td>
+								@if (compra.Fornecedor != null)
+								{
+									<span>@compra.Fornecedor.Nome / @compra.Fornecedor.Cnpj</span>
+								}
+								else
+								{
+									<span>Fornecedor não associado</span>
+								}
+							</td>
+							<td class="hide-column">
+								@if (compra.Vendedor != null)
+								{
+									<span>@compra.Vendedor.Nome</span>
+								}
+								else
+								{
+									<span>Solicitante não associado</span>
+								}
+							</td>
+							<td class="hide-column text-center">@(compra.ItensCompra != null ? compra.ItensCompra.Count : 0)</td>
+
+							<td class="hide-column">
+								@(compra.ItensCompra != null ? compra.ItensCompra.Sum(item => item.SubTotal).ToString("#,##0.00") : 0)
+							</td>
+
+
+							<td class="text-center">
+								@{
+									var status = compra?.Compra?.Status ?? "Indefinido";
+									string statusClass = status switch
+									{
+										"EM" => "text-primary",
+										"BX" => "text-success",
+										"CA" => "text-danger",
+										_ => ""
+									};
+								}
+								<span class="@statusClass">@status</span>
+
+							</td>
+							<td class="text-center">
+								<a class="btn btn-sm btn-info ml-1" href="@Url.Action("Detalhes", "RelatorioCompras", new { id = compra?.IdCompra })">Detalhes</a>
+							</td>
+						</tr>
+					}
+				}
+				else
+				{
+					<tr>
+						<td colspan="7" class="text-center">Nenhuma compra encontrada.</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+

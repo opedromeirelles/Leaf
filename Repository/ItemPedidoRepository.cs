@@ -2,7 +2,7 @@
 using System.Data.SqlClient;
 using System.Data;
 using System.Collections.Generic;
-using Leaf.Models;
+using Leaf.Models.ItensDomain;
 
 namespace Leaf.Repository
 {

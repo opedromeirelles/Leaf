@@ -1,7 +1,7 @@
 ﻿using System.Data.SqlClient;
 using System.Data;
 using Leaf.Data;
-using Leaf.Models;
+using Leaf.Models.ItensDomain;
 
 namespace Leaf.Repository
 {
@@ -18,12 +18,13 @@ namespace Leaf.Repository
         {
             return new ItemCompra
             {
-                IdItemOc = Convert.ToInt32(reader["iditemoc"]),
-                IdInsumo = Convert.ToInt32(reader["id_insumo"]),
-                Quantidade = Convert.ToInt32(reader["quantidade"]),
-                SubTotal = Convert.ToDecimal(reader["subtotal"]),
-                IdOc = Convert.ToInt32(reader["id_oc"])
+                IdItemOc = reader["iditemoc"] != DBNull.Value ? Convert.ToInt32(reader["iditemoc"]) : 0,
+                IdInsumo = reader["id_insumo"] != DBNull.Value ? Convert.ToInt32(reader["id_insumo"]) : 0,
+                Quantidade = reader["qtde"] != DBNull.Value ? Convert.ToInt32(reader["qtde"]) : 0,
+                SubTotal = reader["sub_total"] != DBNull.Value ? Convert.ToDecimal(reader["sub_total"]) : 0.0m,
+                IdOc = reader["id_oc"] != DBNull.Value ? Convert.ToInt32(reader["id_oc"]) : 0
             };
+
         }
 
         public bool NovoItemCompra(int idOc, ItemCompra itemCompra)
@@ -60,6 +61,36 @@ namespace Leaf.Repository
                 }
 
             }
+        }
+
+
+        public List<ItemCompra> GetItemCompra(int idCompra)
+        {
+            List<ItemCompra> itemCompras = new List<ItemCompra>();
+            string sql = @"select * from ITEM_OC where id_oc = @idCompra";
+
+            using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+                SqlCommand command = new SqlCommand(sql, conn);
+                command.Parameters.AddWithValue("@idCompra", idCompra);
+                try
+                {
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        itemCompras.Add(MapearItemCompra(reader));
+                    }
+
+                    return itemCompras ?? new List<ItemCompra>();
+                }
+                catch (Exception ex)
+                {
+
+                    throw new Exception("Erro ao consultar itens da compra, erro: " + ex.Message);
+                }
+            }
+
+
         }
 
 

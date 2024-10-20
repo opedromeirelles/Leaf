@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Leaf.Models.Domain;
 
-namespace Leaf.Models
+namespace Leaf.Models.ItensDomain
 {
     public class ItemLote
     {

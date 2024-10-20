@@ -1,5 +1,5 @@
 ﻿using Leaf.Data;
-using Leaf.Models;
+using Leaf.Models.Domain;
 using Leaf.Repository;
 using System.Diagnostics.CodeAnalysis;
 
@@ -44,7 +44,21 @@ namespace Leaf.Services
             }
         }
 
-        public List<Usuario> ListaUsuariosFiltro(string nome, int idDpto)
+		public List<Usuario> ListaAdministrativo()
+		{
+			UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);
+			try
+			{
+				return _usuarioRepository.GetListaAdministrativo();
+			}
+			catch (Exception ex)
+			{
+
+				throw new Exception($"Erro ao acessar a lista de usuários: {ex.Message}");
+			}
+		}
+
+		public List<Usuario> ListaUsuariosFiltro(string nome, int idDpto)
         {
             UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);
             try

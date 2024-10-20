@@ -1,6 +1,8 @@
-﻿using Leaf.Models;
+﻿using Leaf.Models.Domain;
+using Leaf.Models.ItensDomain;
+using Leaf.Models.ViewModels;
 
-namespace Leaf.Services
+namespace Leaf.Services.Facede
 {
     public class PedidoFacedeServices
     {
@@ -36,20 +38,20 @@ namespace Leaf.Services
 
                 foreach (var item in pedidos)
                 {
-                     // Busca os itens desse pedido encontrado
-                List<ItemPedido> itensPedido = GetItemPedidos(item.IdPedido);
+                    // Busca os itens desse pedido encontrado
+                    List<ItemPedido> itensPedido = GetItemPedidos(item.IdPedido);
 
-                // Popular os produtos dentro dos itens
-                itensPedido = PopularProdutosEmItens(itensPedido);
+                    // Popular os produtos dentro dos itens
+                    itensPedido = PopularProdutosEmItens(itensPedido);
 
-                // Monta um objeto central, passando o pedido e os itens
-                PedidoViewModel pedidoPreenchido = new PedidoViewModel(item, itensPedido);
+                    // Monta um objeto central, passando o pedido e os itens
+                    PedidoViewModel pedidoPreenchido = new PedidoViewModel(item, itensPedido);
 
-                // Popular Entidades: Pessoa, Vendedor e Entregador para ter acesso a suas informações
-                pedidoPreenchido = PopularElementos(pedidoPreenchido, item.IdPessoa, item.IdVendedor, item.IdEntregador);
+                    // Popular Entidades: Pessoa, Vendedor e Entregador para ter acesso a suas informações
+                    pedidoPreenchido = PopularElementos(pedidoPreenchido, item.IdPessoa, item.IdVendedor, item.IdEntregador);
 
-                //Adiciono na lista de pedidos preechidos
-                listPedidoPreenchido.Add(pedidoPreenchido);
+                    //Adiciono na lista de pedidos preechidos
+                    listPedidoPreenchido.Add(pedidoPreenchido);
 
                 }
                 if (listPedidoPreenchido != null && listPedidoPreenchido.Any())
@@ -57,7 +59,7 @@ namespace Leaf.Services
                     return listPedidoPreenchido;
                 }
                 return new List<PedidoViewModel>();
-                
+
             }
             else
             {
@@ -142,7 +144,7 @@ namespace Leaf.Services
         {
 
             //Para cada item do meu pedido, preciso verificar se há a quantidade em estoque para fazer a liberação
-            
+
 
             List<Produto> produtosNegativos = new List<Produto>(); //listar os produtos negativos em minha View
 
@@ -172,7 +174,7 @@ namespace Leaf.Services
             return produtosNegativos; // Passo para minha view os produtos negativos
         }
 
-       
+
 
 
         //Buscar Pedido
@@ -210,7 +212,7 @@ namespace Leaf.Services
         }
 
         //Popular elementos e adicionar ao pedido
-        public PedidoViewModel PopularElementos(PedidoViewModel pedido ,int idPessoa, int idVendedor, int idEntregador)
+        public PedidoViewModel PopularElementos(PedidoViewModel pedido, int idPessoa, int idVendedor, int idEntregador)
         {
             pedido.Pedido.Pessoa = GetPessoaPedido(idPessoa);
             pedido.Pedido.Vendedor = GetUsuarioPedido(idVendedor);

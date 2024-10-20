@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Pessoa>
+﻿@model IEnumerable<Leaf.Models.Domain.Pessoa>
 @{
     ViewData["Title"] = "Pessoas";
 }
@@ -71,18 +71,31 @@ else if (TempData["MensagemSucesso"] != null)
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var pessoa in Model)
+                    @if (Model.Any() && Model != null)
+                    {
+                        @foreach (var pessoa in Model)
+                        {
+                            <tr>
+                                <td>@(string.IsNullOrEmpty(pessoa.Cpf) ? pessoa.Cnpj : pessoa.Cpf)</td>
+                                <td>@pessoa.Nome</td>
+                                <td class="hide-column">@pessoa.Tipo</td>
+                                <td class="hide-column">@pessoa.Telefone1</td>
+                                <td class="hide-column">@pessoa.Email1</td>
+                                <td>
+                                    <a href="@Url.Action("Editar", "Pessoa", new { id = pessoa.IdPessoa })">Editar</a> |
+                                    <a href="@Url.Action("Detalhes", "Pessoa", new { id = pessoa.IdPessoa })">Detalhes</a>
+                                </td>
+                            </tr>
+                        }
+
+                    }
+                    else
                     {
                         <tr>
-                            <td>@(string.IsNullOrEmpty(pessoa.Cpf) ? pessoa.Cnpj : pessoa.Cpf)</td>
-                            <td>@pessoa.Nome</td>
-                            <td class="hide-column">@pessoa.Tipo</td>
-                            <td class="hide-column">@pessoa.Telefone1</td>
-                            <td class="hide-column">@pessoa.Email1</td>
-                            <td>
-                                <a href="@Url.Action("Editar", "Pessoa", new { id = pessoa.IdPessoa })">Editar</a> |
-                                <a href="@Url.Action("Detalhes", "Pessoa", new { id = pessoa.IdPessoa })" >Detalhes</a>
-                            </td>
+                            <td colspan="8" class="text-center"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="8" class="text-center">Nenhuma pessoa encontrada.</td>
                         </tr>
                     }
                 </tbody>

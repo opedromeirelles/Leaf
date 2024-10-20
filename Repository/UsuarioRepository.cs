@@ -4,6 +4,7 @@ using System.Data.SqlTypes;
 using System.Security.Cryptography.Pkcs;
 using Leaf.Data;
 using Leaf.Models;
+using Leaf.Models.Domain;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.IdentityModel.Tokens;
 
@@ -173,7 +174,30 @@ namespace Leaf.Repository
             }
         }
 
-        public List<Usuario> GetListaEntregador()
+		public List<Usuario> GetListaAdministrativo()
+		{
+			List<Usuario> usuarios = new List<Usuario>();
+
+			using (SqlConnection conn = _dbConnectionManager.GetConnection())
+			{
+				// Fazer o join com a tabela Departamento
+				string sql = @"SELECT u.idusuario, u.nome, u.login, u.senha, u.status, u.id_dpto, d.descricao
+                               FROM Usuario u
+                               INNER JOIN Departamento d ON u.id_dpto = d.idDpto
+                               where u.id_dpto = 1";
+
+				SqlCommand cmd = new SqlCommand(sql, conn);
+				SqlDataReader reader = cmd.ExecuteReader();
+
+				while (reader.Read())
+				{
+					usuarios.Add(MapearUsuario(reader));
+				}
+			}
+
+			return usuarios;
+		}
+		public List<Usuario> GetListaEntregador()
         {
             List<Usuario> usuarios = new List<Usuario>();
 

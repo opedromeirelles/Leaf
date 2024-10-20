@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Leaf.Models
+namespace Leaf.Models.ViewModels
 {
     public class LoginModelView
     {

@@ -1,4 +1,4 @@
-﻿namespace Leaf.Models
+﻿namespace Leaf.Models.Domain
 {
     public class Pedido
     {

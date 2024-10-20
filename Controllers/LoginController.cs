@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using Leaf.Services;
-using Leaf.Models;
+using Leaf.Models.Domain;
+using Leaf.Models.ViewModels;
 
 namespace Leaf.Controllers
 {

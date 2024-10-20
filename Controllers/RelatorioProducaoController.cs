@@ -4,9 +4,12 @@ namespace Leaf.Controllers
 {
 	public class RelatorioProducaoController : Controller
 	{
-		public IActionResult Index()
+        private readonly string _pathIndex = "~/Views/Relatorios/Producao/Index.cshtml";
+
+        [Route("relatorio-producao")]
+        public IActionResult Index()
 		{
-			return View();
+			return View(_pathIndex);
 		}
 	}
 }

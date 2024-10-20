@@ -5,6 +5,7 @@ using Leaf.Data;
 using Leaf.Repository;
 using Leaf.Services;
 using System.Globalization;
+using Leaf.Services.Facede;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +45,8 @@ builder.Services.AddTransient<PedidoFacedeServices>();
 builder.Services.AddTransient<ItemPedidoServices>();
 builder.Services.AddTransient<LoteProducaoServices>();
 builder.Services.AddTransient<ItemLoteProducaoServices>();
+builder.Services.AddTransient<CompraFacedeServices>();
+
 
 
 //Repositories:
@@ -91,6 +94,14 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+	// Configuração de uma rota com area
+	endpoints.MapControllerRoute(
+		name: "default",
+		pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+});
 
 app.MapControllerRoute(
     name: "default",

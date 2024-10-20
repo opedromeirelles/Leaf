@@ -1,7 +1,7 @@
 ﻿using Leaf.Data;
 using System.Data.SqlClient;
 using System.Collections.Generic;
-using Leaf.Models;
+using Leaf.Models.ItensDomain;
 
 namespace Leaf.Repository
 {

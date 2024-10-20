@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Insumo>
+﻿@model IEnumerable<Leaf.Models.Domain.Insumo>
 @{
     ViewData["Title"] = "Insumos";
 }
@@ -75,41 +75,54 @@ else if (TempData["MensagemSucesso"] != null)
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var insumo in Model)
+                    @if (Model.Any() && Model != null)
+                    {
+                        @foreach (var insumo in Model)
+                        {
+                            <tr>
+                                <td>@insumo.IdInsumo</td>
+                                <td>@insumo.Descricao</td>
+                                <td class="hide-column">@insumo.ValorUnitario.ToString("C")</td>
+                                <td>@insumo.QtdeEstoque</td>
+                                <td class="hide-column">
+                                    @if (insumo.Pessoa != null)
+                                    {
+                                        <span> @insumo.Pessoa.Nome / @insumo.Pessoa.Cnpj </span>
+                                    }
+                                    else
+                                    {
+                                        <span>Pessoa não associada</span>
+                                    }
+                                </td>
+                                <td class="hide-column">
+                                    @if (insumo.Status == 1)
+                                    {
+                                        <span>Ativo</span>
+                                    }
+                                    else if (insumo.Status == 0)
+                                    {
+                                        <span>Desativado</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Indefinido</span>
+                                    }
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("Editar", "Insumo", new { id = insumo.IdInsumo })">Editar</a> |
+                                    <a href="@Url.Action("Detalhes", "Insumo", new { id = insumo.IdInsumo })">Detalhes</a>
+                                </td>
+                            </tr>
+                        }
+
+                    }
+                    else
                     {
                         <tr>
-                            <td>@insumo.IdInsumo</td>
-                            <td>@insumo.Descricao</td>
-                            <td class="hide-column">@insumo.ValorUnitario.ToString("C")</td>
-                            <td>@insumo.QtdeEstoque</td>
-                            <td class="hide-column">
-                                @if (insumo.Pessoa != null)
-                                {
-                                    <span> @insumo.Pessoa.Nome / @insumo.Pessoa.Cnpj </span>
-                                 }
-                                else
-                                {
-                                    <span>Pessoa não associada</span>
-                                }
-                            </td>
-                            <td class="hide-column">
-                                @if (insumo.Status == 1)
-                                {
-                                    <span>Ativo</span>
-                                }
-                                else if (insumo.Status == 0)
-                                {
-                                    <span>Desativado</span>
-                                }
-                                else
-                                {
-                                    <span>Indefinido</span>
-                                }
-                            </td>
-                            <td>
-                                <a href="@Url.Action("Editar", "Insumo", new { id = insumo.IdInsumo })">Editar</a> |
-                                <a href="@Url.Action("Detalhes", "Insumo", new { id = insumo.IdInsumo })">Detalhes</a>
-                            </td>
+                            <td colspan="8" class="text-center"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="8" class="text-center">Nenhum insumo encontrado.</td>
                         </tr>
                     }
                 </tbody>

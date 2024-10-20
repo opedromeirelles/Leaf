@@ -1,103 +1,115 @@
-﻿@model IEnumerable<Produto>
+﻿@model IEnumerable<Leaf.Models.Domain.Produto>
 @{
-    ViewData["Title"] = "Produtos";
+	ViewData["Title"] = "Produtos";
 }
 
 @if (TempData["MensagemErro"] != null)
 {
-    <span id="eventoErro">@TempData["MensagemErro"]</span>
+	<span id="eventoErro">@TempData["MensagemErro"]</span>
 }
 else if (TempData["MensagemSucesso"] != null)
 {
-    <span id="eventoSucesso">@TempData["MensagemSucesso"]</span>
+	<span id="eventoSucesso">@TempData["MensagemSucesso"]</span>
 }
 
 <br />
 <h2 class="h2titulo">PRODUTOS</h2>
 
 <div class="paginaPadrao">
-    <!-- Controle de Busca -->
-    <div class="controleBusca">
-        <form asp-action="Buscar" method="get">
-            <div class="linha-superior-custom">
-                <!-- Campo de busca por Nome -->
-                <div class="grupoBusca-custom">
-                    <input type="text" class="form-control txtBuscar-custom" placeholder="Descrição do Produto..." name="descricao" aria-label="Recipient's username">
-                </div>
+	<!-- Controle de Busca -->
+	<div class="controleBusca">
+		<form asp-action="Buscar" method="get">
+			<div class="linha-superior-custom">
+				<!-- Campo de busca por Nome -->
+				<div class="grupoBusca-custom">
+					<input type="text" class="form-control txtBuscar-custom" placeholder="Descrição do Produto..." name="descricao" aria-label="Recipient's username">
+				</div>
 
-                <!-- Filtro por Status -->
-                <div class="grupoBusca-custom tipoBusca">
-                    <select class="form-control cbBusca-custom bg-secondary text-light" name="status">
-                        <option value="1">Ativo</option>
-                        <option value="0">Desativado</option>
-                        <option value="3">Todos</option>
-                    </select>
-                </div>
+				<!-- Filtro por Status -->
+				<div class="grupoBusca-custom tipoBusca">
+					<select class="form-control cbBusca-custom bg-secondary text-light" name="status">
+						<option value="1">Ativo</option>
+						<option value="0">Desativado</option>
+						<option value="3">Todos</option>
+					</select>
+				</div>
 
-                <!-- Botão Buscar -->
-                <div class="grupoBusca-custom botaoBusca">
-                    <button class="btn btn-outline-secondary btnBuscar-custom" type="submit">Buscar</button>
-                </div>
+				<!-- Botão Buscar -->
+				<div class="grupoBusca-custom botaoBusca">
+					<button class="btn btn-outline-secondary btnBuscar-custom" type="submit">Buscar</button>
+				</div>
 
-                <!-- Botão Limpar -->
-                <div class="grupoBusca-custom botaoLimpar">
-                    <button type="reset" class="btn btn-outline-secondary btnLimpar-custom" onclick="location.href='@Url.Action("Index")'">Limpar</button>
-                </div>
+				<!-- Botão Limpar -->
+				<div class="grupoBusca-custom botaoLimpar">
+					<button type="reset" class="btn btn-outline-secondary btnLimpar-custom" onclick="location.href='@Url.Action("Index")'">Limpar</button>
+				</div>
 
-                <!-- Botão Novo Cadastro de Produto -->
-                <div class="grupoBusca-custom btn-novo-container">
-                    <button type="button" class="btn btn-success btnNovoCadastro-custom" onclick="location.href='@Url.Action("Cadastrar")'">Cadastrar Produto</button>
-                </div>
-            </div>
-        </form>
-        <br />
-        <br />
-    </div>
+				<!-- Botão Novo Cadastro de Produto -->
+				<div class="grupoBusca-custom btn-novo-container">
+					<button type="button" class="btn btn-success btnNovoCadastro-custom" onclick="location.href='@Url.Action("Cadastrar")'">Cadastrar Produto</button>
+				</div>
+			</div>
+		</form>
+		<br />
+		<br />
+	</div>
 
-    <!-- Tabela Responsiva -->
-    <div class="container">
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Código</th>
-                        <th scope="col">Descrição</th>
-                        <th scope="col" class="hide-column">Valor Unitário</th>
-                        <th scope="col">Estoque</th>
-                        <th scope="col" class="hide-column">Status</th>
-                        <th scope="col">Ferramentas</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var produto in Model)
-                    {
-                        <tr>
-                            <td>@produto.IdProduto</td>
-                            <td>@produto.Descricao</td>
-                            <td class="hide-column">@produto.ValorUnitario.ToString("C")</td>
-                            <td>@produto.QtdeEstoque</td>
-                            <td class="hide-column">
-                                @if (produto.Status == 1)
-                                {
-                                    <span>Ativo</span>
-                                }
-                                else if (produto.Status == 0)
-                                {
-                                    <span>Desativado</span>
-                                }
-                                else
-                                {
-                                    <span>Indefinido</span>
-                                }
-                            </td>
-                            <td>
-                                <a href="@Url.Action("Editar", "Produto", new { id = produto.IdProduto })">Editar</a> |
-                                <a href="@Url.Action("Detalhes", "Produto", new { id = produto.IdProduto })">Detalhes</a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
+	<!-- Tabela Responsiva -->
+	<div class="container">
+		<div class="table-responsive">
+			<table class="table">
+				<thead>
+					<tr>
+						<th scope="col">Código</th>
+						<th scope="col">Descrição</th>
+						<th scope="col" class="hide-column">Valor Unitário</th>
+						<th scope="col">Estoque</th>
+						<th scope="col" class="hide-column">Status</th>
+						<th scope="col">Ferramentas</th>
+					</tr>
+				</thead>
+				<tbody>
+					@if (Model.Any() && Model != null)
+					{
+						@foreach (var produto in Model)
+						{
+							<tr>
+								<td>@produto.IdProduto</td>
+								<td>@produto.Descricao</td>
+								<td class="hide-column">@produto.ValorUnitario.ToString("C")</td>
+								<td>@produto.QtdeEstoque</td>
+								<td class="hide-column">
+									@if (produto.Status == 1)
+									{
+										<span>Ativo</span>
+									}
+									else if (produto.Status == 0)
+									{
+										<span>Desativado</span>
+									}
+									else
+									{
+										<span>Indefinido</span>
+									}
+								</td>
+								<td>
+									<a href="@Url.Action("Editar", "Produto", new { id = produto.IdProduto })">Editar</a> |
+									<a href="@Url.Action("Detalhes", "Produto", new { id = produto.IdProduto })">Detalhes</a>
+								</td>
+							</tr>
+						}
+					}
+					else
+					{
+						<tr>
+							<td colspan="8" class="text-center"></td>
+						</tr>
+						<tr>
+							<td colspan="8" class="text-center">Nenhum produto encontrado.</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>

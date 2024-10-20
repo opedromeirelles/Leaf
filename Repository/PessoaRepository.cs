@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using Leaf.Data;
-using Leaf.Models;
+using Leaf.Models.Domain;
 
 namespace Leaf.Repository
 {
@@ -178,6 +178,39 @@ namespace Leaf.Repository
             }
             return null;
         }
+
+        public List<Pessoa> GetFornecedores()
+        {
+            string sql = @"select distinct p.idpessoa, p.nome, p.tipo, p.cpf, p.cnpj, p.telefone1, p.telefone2, p.email1, p.email2
+                           from pessoa p
+                           inner join insumo i
+                           on p.idpessoa = i.id_pessoa;";
+
+            List<Pessoa> fornecedores = new List<Pessoa>();
+
+            using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+                SqlCommand command = new SqlCommand(sql, conn);
+                try
+                {
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        fornecedores.Add(MapearPessoa(reader));
+                    }
+
+                    return fornecedores ?? new List<Pessoa>();
+				}
+                catch (SqlException ex)
+                {
+                    throw new Exception("Não foi possivel acessar os dados solicitados, erro: " + ex.Message);
+                }
+               
+            }
+
+        }
+
+
 
         // MÉTODOS DE AÇÃO
 

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Compra>
+﻿@model IEnumerable<Leaf.Models.Domain.Compra>
 @{
     ViewData["Title"] = "Compra";
 }
@@ -75,21 +75,34 @@ else if (TempData["MensagemSucesso"] != null)
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var compra in Model)
+                    @if (Model.Any() && Model != null)
+                    {
+                        @foreach (var compra in Model)
+                        {
+                            <tr>
+                                <td>@compra.IdOc</td>
+                                <td>@compra.ValorTotal</td>
+                                <td>@compra.Pessoa?.Nome</td>
+                                <td class="hide-column">@compra.DtaEmissao</td>
+                                <td class="hide-column">@compra.DtaBaixa</td>
+                                <td class="hide-column">@compra.DtaCancelamento</td>
+                                <td class="hide-column">@compra.Usuario?.Nome</td>
+
+                                <td>
+                                    <a href="@Url.Action("Editar", "Pessoa", new { id = compra.IdOc })">Editar</a> |
+                                    <a href="@Url.Action("Detalhes", "Pessoa", new { id = compra.IdOc })">Detalhes</a>
+                                </td>
+                            </tr>
+                        }
+
+                    }
+                    else
                     {
                         <tr>
-                            <td>@compra.IdOc</td>
-                            <td>@compra.ValorTotal</td>
-                            <td>@compra.Pessoa?.Nome</td>
-                            <td class="hide-column">@compra.DtaEmissao</td>
-                            <td class="hide-column">@compra.DtaBaixa</td>
-                            <td class="hide-column">@compra.DtaCancelamento</td>
-                            <td class="hide-column">@compra.Usuario?.Nome</td>
-
-                            <td>
-                                <a href="@Url.Action("Editar", "Pessoa", new { id = compra.IdOc })">Editar</a> |
-                                <a href="@Url.Action("Detalhes", "Pessoa", new { id = compra.IdOc })">Detalhes</a>
-                            </td>
+                            <td colspan="8" class="text-center"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="8" class="text-center">Nenhuma compra encontrada.</td>
                         </tr>
                     }
                 </tbody>

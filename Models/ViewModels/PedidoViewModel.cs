@@ -1,4 +1,7 @@
-﻿namespace Leaf.Models
+﻿using Leaf.Models.Domain;
+using Leaf.Models.ItensDomain;
+
+namespace Leaf.Models.ViewModels
 {
     public class PedidoViewModel
     {

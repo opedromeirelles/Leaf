@@ -1,6 +1,6 @@
 ﻿using Leaf.Repository;
 using Leaf.Data;
-using Leaf.Models;
+using Leaf.Models.Domain;
 
 namespace Leaf.Services
 {

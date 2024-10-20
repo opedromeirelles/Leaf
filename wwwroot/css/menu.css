@@ -24,14 +24,25 @@ body {
     z-index: 1;
 }
 
+
+    /* Expansão normal ao passar o mouse - largura padrão */
     .navegation:hover {
         width: 200px;
+        transition: width 0.5s ease;
     }
 
-    .navegation ul {
-        padding-top: 15px;
-        padding-left: 0px;
+    /* Classe para expandir a barra lateral quando Relatórios estiver ativo */
+    .navegation.expanded {
+        width: 350px; /* Largura desejada ao clicar em Relatórios */
+        transition: width 0.5s ease;
     }
+
+        
+
+.navegation ul {
+    padding-top: 15px;
+    padding-left: 0px;
+}
 
         .navegation ul li {
             list-style: none;
@@ -47,7 +58,7 @@ body {
             }
 
                 .navegation ul li a .icon {
-                    margin-top: 7px;
+                    margin-top: 5px;
                     min-width: 60px;
                     text-align: center;
                 }
@@ -63,9 +74,62 @@ body {
                 }
 
             .navegation ul li.active {
-                height: 65px;
+                padding-top: 0px;
+                height: 60px;
                 background: #8FD457;
             }
+#relatorio{
+    z-index: 100;
+}
+
+/* Estilo para o submenu */
+.submenu {
+    margin-left: 180px;
+    margin-top: -54px;
+    left: 100%; /* Posiciona à direita do item pai */
+    top: 0; /* Alinha ao topo do item pai */
+    padding: 3px;
+    z-index: 100 !important; /* Garante que fique acima dos outros itens */
+    transition: all 0.5s ease; /* Transição suave para exibição */
+    z-index: 2;
+    background-color: #8FD457;
+}
+
+    .submenu li {
+        margin: 15px 45px; /* Espaçamento entre os itens */
+        z-index: 100;
+    }
+
+
+        .submenu li a {
+            z-index: 100;
+            color: white;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            padding: 1px 5px;
+        }
+
+/* Mostrar submenu quando o item 'Relatórios' estiver ativo ou com hover */
+.list.relatorios:hover .submenu,
+.list.relatorios.active .submenu {
+    opacity:1;
+    display: block; /* Exibe o submenu ao passar o mouse ou quando está ativo */
+}
+
+/* Garantir que o menu pai tenha position relativa para alinhar o submenu */
+.list {
+    position: relative; /* Necessário para que o submenu seja posicionado em relação ao item pai */
+}
+
+
+
+
+
+
+
+
+
 
 
 /*PLANO DE FUNDO*/
@@ -97,19 +161,16 @@ body {
     }
 
         .navegation ul li a {
-            padding: 0px 5px;
+            padding: 1px 5px;
         }
 }
 
-@media (min-height: 650px) {
+@media (min-height: 563px) {
     .navegation ul li {
         margin-top: 5px;
     }
 
         .navegation ul li a {
-            padding: 5px 5px;
+            padding: 1px 5px;
         }
 }
-
-
-

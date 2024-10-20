@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Usuario>
+﻿@model IEnumerable<Leaf.Models.Domain.Usuario>
 @{
     ViewData["Title"] = "Usuários";
 }
@@ -72,41 +72,54 @@ else if (TempData["MensagemSucesso"] != null)
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var usuario in Model)
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var usuario in Model)
+                        {
+                            <tr>
+                                <td>@usuario.Id</td>
+                                <td class="hide-column">@usuario.Nome</td>
+                                <td>@usuario.Login</td>
+                                <td class="hide-column">@usuario.Senha</td>
+                                <td class="hide-column">
+                                    @if (@usuario.Departamento != null)
+                                    {
+                                        @usuario.Departamento.Descricao
+                                    }
+                                    else
+                                    {
+                                        <span>Departamento não encontrado</span>
+                                    }
+                                </td>
+                                <td class="hide-column">
+                                    @if (usuario.Status == 1)
+                                    {
+                                        <span>Ativo</span>
+                                    }
+                                    else if (usuario.Status == 0)
+                                    {
+                                        <span>Desativado</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Indefinido</span>
+                                    }
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("Editar", "Usuario", new { id = usuario.Id })">Editar</a> |
+                                    <a href="@Url.Action("Detalhes", "Usuario", new { id = usuario.Id })">Detalhes</a>
+                                </td>
+                            </tr>
+                        }
+
+                    }
+                    else
                     {
                         <tr>
-                            <td>@usuario.Id</td>
-                            <td class="hide-column">@usuario.Nome</td>
-                            <td >@usuario.Login</td>
-                            <td class="hide-column">@usuario.Senha</td>
-                            <td class="hide-column">
-                                @if (@usuario.Departamento != null)
-                                {
-                                    @usuario.Departamento.Descricao
-                                }
-                                else
-                                {
-                                    <span>Departamento não encontrado</span>
-                                }
-                            </td>
-                            <td class="hide-column">
-                                @if (usuario.Status == 1)
-                                {
-                                    <span>Ativo</span>
-                                }
-                                else if (usuario.Status == 0)
-                                {
-                                    <span>Desativado</span>
-                                }
-                                else
-                                {
-                                    <span>Indefinido</span>
-                                }
-                            </td>
-                            <td>
-                                <a href="@Url.Action("Editar", "Usuario", new { id = usuario.Id })">Editar</a> |
-                                <a href="@Url.Action("Detalhes", "Usuario", new { id = usuario.Id })">Detalhes</a>
-                            </td>
+                            <td colspan="8" class="text-center"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="8" class="text-center">Nenhum usuário encontrado.</td>
                         </tr>
                     }
                 </tbody>

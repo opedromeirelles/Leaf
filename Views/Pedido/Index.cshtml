@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PedidoViewModel>
+﻿@model IEnumerable<Leaf.Models.ViewModels.PedidoViewModel>
 @{
     ViewData["Title"] = "Usuários";
 }
@@ -60,28 +60,37 @@ else if (TempData["MensagemSucesso"] != null)
                         <th scope="col">Status</th>
                         <th scope="col">Total</th>
                         <th scope="col">Pessoa</th>
-                        <th scope="col" class="hide-column">Entregador</th>
                         <th scope="col" class="hide-column">Vendedor</th>
                         <th scope="col" class="hide-column">Data Emissão</th>
                         <th scope="col">Ferramentas</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var pedidoViewModel in Model)
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var pedidoViewModel in Model)
+                        {
+                            <tr>
+                                <td>@pedidoViewModel.Pedido.IdPedido</td>
+                                <td>@pedidoViewModel.Pedido.Stauts</td>
+                                <td>@pedidoViewModel.Pedido.ValorToal</td>
+                                <td>@pedidoViewModel.Pedido.Pessoa.Nome</td>
+                                <td class="hide-column">@pedidoViewModel.Pedido.Vendedor.Nome</td>
+                                <td class="hide-column">@pedidoViewModel.Pedido.DtaEmissao</td>
+
+                                <td class="text-center">
+                                    <a href="@Url.Action("Atualizar", "Pedido", new { id = @pedidoViewModel.Pedido.IdPedido })">Atualizar</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
                     {
                         <tr>
-                            <td>@pedidoViewModel.Pedido.IdPedido</td>
-                            <td>@pedidoViewModel.Pedido.Stauts</td>
-                            <td>@pedidoViewModel.Pedido.ValorToal</td>
-                            <td>@pedidoViewModel.Pedido.Pessoa.Nome</td>
-
-                            <td class="hide-column">@pedidoViewModel.Pedido.Entregador.Nome</td>
-                            <td class="hide-column">@pedidoViewModel.Pedido.Vendedor.Nome</td>
-                            <td class="hide-column">@pedidoViewModel.Pedido.DtaEmissao</td>
-                            
-                            <td>
-                                <a href="@Url.Action("Atualizar", "Pedido", new { id = @pedidoViewModel.Pedido.IdPedido })">Atualizar</a>
-                            </td>
+                            <td colspan="8" class="text-center"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="8" class="text-center">Nenhum pedido encontrado.</td>
                         </tr>
                     }
                 </tbody>
