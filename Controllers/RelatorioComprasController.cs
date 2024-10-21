@@ -3,15 +3,19 @@ using Leaf.Services.Facede;
 using Leaf.Models.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Leaf.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Leaf.Controllers
 {
+	[Authorize]
     public class RelatorioComprasController : Controller
     {
         private readonly string _pathIndex = "~/Views/Relatorios/Compras/Index.cshtml";
 		private readonly string _pathDetalhes = "~/Views/Relatorios/Compras/Detalhes.cshtml";
+        private readonly string _pathImprimir = "~/Views/Relatorios/Compras/Imprimir.cshtml";
 
-		private readonly PessoaServices _pessoaServices;
+
+        private readonly PessoaServices _pessoaServices;
         private readonly UsuarioServices _usuarioServices;
         private readonly CompraFacedeServices _compraFacedeServices;
 
@@ -37,15 +41,8 @@ namespace Leaf.Controllers
 			GetAdministrativos();
 			GetFornecedores();
 
-            //Tratamente de nuancias:
-			int idFornecedor = int.TryParse(fornecedor, out int fornecedorInt) ? fornecedorInt : 0;
-			int idUsuario = int.TryParse(solicitante, out int solicitanteInt) ? solicitanteInt : 0;
-
-			DateTime? dtaInicio = DateTime.TryParse(dataInicio, out DateTime parsedDataInicio) ? parsedDataInicio : (DateTime?)null;
-            DateTime? dtaFim = DateTime.TryParse(dataFim, out DateTime parsedDataFim) ? parsedDataFim : (DateTime?)null;
-
-			DateTime inicio = dtaInicio ?? new DateTime(1800, 1, 1);
-			DateTime fim = dtaFim ?? DateTime.Now;
+            //Tratamento:
+            var (idFornecedor, idUsuario, inicio, fim) = ConverterParametrosBuscaFornecedorUsuario(fornecedor, solicitante, dataInicio, dataFim);
 
             //Tratamento de valores:
             if (fim < inicio)
@@ -79,48 +76,15 @@ namespace Leaf.Controllers
             }
         }
 
-
-		[HttpGet]
-		[Route("relatorio-compras/detalhes/{id}")]
-		public async Task<IActionResult> Detalhes(int id)
-		{
-			try
-			{
-				// Buscar os detalhes da compra pelo ID
-				CompraViewModel compraViewModel = await _compraFacedeServices.MapearCompraAsync(id);
-
-				if (compraViewModel == null)
-				{
-					TempData["MensagemErro"] = "Compra não encontrada.";
-					return RedirectToAction("Index");
-				}
-
-				return View(_pathDetalhes, compraViewModel);
-			}
-			catch (Exception ex)
-			{
-				TempData["MensagemErro"] = "Ocorreu um erro ao tentar buscar os detalhes da compra: " + ex.Message;
-				return RedirectToAction("Index");
-			}
-		}
-
 		[HttpGet]
 		[Route("relatorio-compras/imprimir")]
 		public async Task<IActionResult> Imprimir(string numeroCompra, string status, string dataInicio, string dataFim, string fornecedor, string solicitante)
 		{
-			// Obter os filtros e fazer a busca
-			int idFornecedor = int.TryParse(fornecedor, out int fornecedorInt) ? fornecedorInt : 0;
-			int idUsuario = int.TryParse(solicitante, out int solicitanteInt) ? solicitanteInt : 0;
+            // Obter os filtros e fazer a busca
+            var (idFornecedor, idUsuario, inicio, fim) = ConverterParametrosBuscaFornecedorUsuario(fornecedor, solicitante, dataInicio, dataFim);
 
-
-			DateTime? dtaInicio = DateTime.TryParse(dataInicio, out DateTime parsedDataInicio) ? parsedDataInicio : (DateTime?)null;
-			DateTime? dtaFim = DateTime.TryParse(dataFim, out DateTime parsedDataFim) ? parsedDataFim : (DateTime?)null;
-
-			DateTime inicio = dtaInicio ?? new DateTime(1800, 1, 1);
-			DateTime fim = dtaFim ?? DateTime.Now;
-
-			// Realizar a busca com base nos filtros
-			List<CompraViewModel> compraViewModels = await _compraFacedeServices.GetComprasFiltrosAsync(inicio, fim, idFornecedor, status, numeroCompra, idUsuario);
+            // Realizar a busca com base nos filtros
+            List<CompraViewModel> compraViewModels = await _compraFacedeServices.GetComprasFiltrosAsync(inicio, fim, idFornecedor, status, numeroCompra, idUsuario);
 
 			// Armazenar os filtros no ViewBag para passar para a view de impressão
 			ViewBag.NumeroCompra = numeroCompra;
@@ -145,9 +109,33 @@ namespace Leaf.Controllers
             }
 
 			// Retornar a view de impressão com os dados e filtros
-			return View("~/Views/Relatorios/Compras/Imprimir.cshtml", compraViewModels);
+			return View(_pathImprimir, compraViewModels);
 		}
 
+
+		[HttpGet]
+		[Route("relatorio-compras/detalhes/{id}")]
+		public async Task<IActionResult> Detalhes(int id)
+		{
+			try
+			{
+				// Buscar os detalhes da compra pelo ID
+				CompraViewModel compraViewModel = await _compraFacedeServices.MapearCompraAsync(id);
+
+				if (compraViewModel == null)
+				{
+					TempData["MensagemErro"] = "Compra não encontrada.";
+					return RedirectToAction("Index");
+				}
+
+				return View(_pathDetalhes, compraViewModel);
+			}
+			catch (Exception ex)
+			{
+				TempData["MensagemErro"] = "Ocorreu um erro ao tentar buscar os detalhes da compra: " + ex.Message;
+				return RedirectToAction("Index");
+			}
+		}
 
 
 		// POPULAR VIEW BAGS
@@ -174,5 +162,22 @@ namespace Leaf.Controllers
 		}
 
 
-	}
+        // Converter parametros
+        public (int idFornecedor, int idUsuario, DateTime inicio, DateTime fim) ConverterParametrosBuscaFornecedorUsuario(string fornecedor, string solicitante, string dataInicio, string dataFim)
+        {
+            int idFornecedor = int.TryParse(fornecedor, out int fornecedorInt) ? fornecedorInt : 0;
+            int idUsuario = int.TryParse(solicitante, out int solicitanteInt) ? solicitanteInt : 0;
+
+            DateTime? dtaInicio = DateTime.TryParse(dataInicio, out DateTime parsedDataInicio) ? parsedDataInicio : (DateTime?)null;
+            DateTime? dtaFim = DateTime.TryParse(dataFim, out DateTime parsedDataFim) ? parsedDataFim : (DateTime?)null;
+
+            DateTime inicio = dtaInicio ?? new DateTime(1800, 1, 1);
+            DateTime fim = dtaFim ?? DateTime.Now;
+
+            return (idFornecedor, idUsuario, inicio, fim);
+        }
+
+
+
+    }
 }

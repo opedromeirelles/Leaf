@@ -3,11 +3,12 @@ using Leaf.Services.Facede;
 using Leaf.Models.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Leaf.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Leaf.Controllers
 {
-	
-	public class RelatorioEntregasController : Controller
+    [Authorize]
+    public class RelatorioEntregasController : Controller
 	{
 		private readonly string _pathIndex = "~/Views/Relatorios/Entregas/Index.cshtml";
 		private readonly string _pathDetalhes = "~/Views/Relatorios/Entregas/Detalhes.cshtml";
@@ -125,8 +126,6 @@ namespace Leaf.Controllers
 				return RedirectToAction("Index");
 			}
 		}
-
-
 
 
         //Converter parametros:

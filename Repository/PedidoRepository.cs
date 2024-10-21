@@ -253,7 +253,7 @@ namespace Leaf.Repository
         }
 
         //Vendedor:
-        public async Task<List<Pedido>> GetListPedidosPeriodoAsync(DateTime dataInicio, DateTime dataFim, int idEntregador, int idPedido, string status, int idVendedor)
+        public async Task<List<Pedido>> GetListPedidosPeriodoAsync(DateTime dataInicio, DateTime dataFim, int idVendedor, int idPedido, string status)
         {
             string sql = @"SELECT * FROM pedido
                    WHERE 1=1
@@ -271,15 +271,11 @@ namespace Leaf.Repository
                 sql += " AND idpedido = @idPedido";
             }
 
-            if (idEntregador != 0)
-            {
-                sql += " AND id_entregador = @idEntregador";
-            }
-
             if (idVendedor != 0)
             {
                 sql += " AND id_vendedor = @idVendedor";
             }
+
 
             var pedidos = new List<Pedido>();
 
@@ -301,12 +297,7 @@ namespace Leaf.Repository
                 {
                     command.Parameters.AddWithValue("@idPedido", idPedido);
                 }
-
-                if (idEntregador != 0)
-                {
-                    command.Parameters.AddWithValue("@idEntregador", idEntregador);
-                }
-
+                
                 if (idVendedor != 0)
                 {
                     command.Parameters.AddWithValue("@idVendedor", idVendedor);

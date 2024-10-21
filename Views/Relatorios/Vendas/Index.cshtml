@@ -1,13 +1,155 @@
 ﻿@model IEnumerable<Leaf.Models.ViewModels.PedidoViewModel>
 @{
-    ViewData["Title"] = "Relatório de Vendas";
+	ViewData["Title"] = "Relatório de Vendas";
 }
 
 @if (TempData["MensagemErro"] != null)
 {
-    <span id="eventoErro">@TempData["MensagemErro"]</span>
+	<span id="eventoErro">@TempData["MensagemErro"]</span>
 }
 else if (TempData["MensagemSucesso"] != null)
 {
-    <span id="eventoSucesso">@TempData["MensagemSucesso"]</span>
+	<span id="eventoSucesso">@TempData["MensagemSucesso"]</span>
 }
+
+<div class="container" style="padding-left: 70px">
+	<h2 class="h2titulo">@ViewData["Title"]</h2>
+	@await Html.PartialAsync("_LoadingSpinner")
+
+	<form method="get" asp-action="Buscar" onsubmit="mostrarCarregando()">
+		<div class="row">
+			<!-- Nº Pedido -->
+			<div class="col-12 col-lg-3">
+				<div class="form-group">
+					<label>Número do Pedido:</label>
+					<input type="text" class="form-control txtBuscar-custom" placeholder="Nº... " name="numeroPedido" aria-label="Buscar por número do pedido">
+				</div>
+				<div class="form-group">
+					<select class="form-control cbBusca-custom bg-secondary text-light" name="vendedor">
+						<option value="">Todos Vendedores</option>
+						@foreach (var vendedor in ViewBag.Vendedores)
+						{
+							<option value="@vendedor.Id">@vendedor.Nome</option>
+						}
+
+					</select>
+				</div>
+			</div>
+
+			<!-- Data Início e Data Fim -->
+			<div class="col-12 col-lg-6">
+				<div class="row">
+					<div class="col-12 col-md-6">
+						<div class="form-group">
+							<label for="dataInicio">Data Início:</label>
+							<input type="date" class="form-control txtBuscar-custom" id="dataInicio" name="dataInicio" aria-label="Data de Início">
+						</div>
+					</div>
+					<div class="col-12 col-md-6">
+						<div class="form-group">
+							<label for="dataFim">Data Fim:</label>
+							<input type="date" class="form-control txtBuscar-custom" id="dataFim" name="dataFim" aria-label="Data de Fim">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12 col-md-6">
+						<div class="form-group">
+							<select class="form-control cbBusca-custom bg-secondary text-light" name="status">
+								<option value="">Todos Status</option>
+								<option value="EM">Emitido</option>
+								<option value="RT">Rota de Entrega</option>
+								<option value="BX">Baixado</option>
+								<option value="CA">Cancelado</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<br />
+			<div class="col-12 col-lg-3">
+				<br />
+				<div class="grupoBusca-custom d-flex mt-2">
+					<div class="grupoBusca-custom botaoBusca ml-2">
+						<button class="btn btn-outline-secondary btnBuscar-custom" type="submit">Buscar</button>
+					</div>
+					<div class="grupoBusca-custom botaoLimpar ml-2">
+						<button type="reset" class="btn btn-outline-secondary btnLimpar-custom" onclick="location.href='@Url.Action("Index")'">Limpar Busca</button>
+					</div>
+				</div>
+				@if (Model != null && Model.Any())
+				{
+					<!-- Botão Imprimir Relatório -->
+					<div class="text-center mt-3">
+						<a href="@Url.Action("Imprimir", "RelatorioVendas", new {
+                            numeroPedido = ViewContext.HttpContext.Request.Query["numeroPedido"],
+                            vendedor = ViewContext.HttpContext.Request.Query["vendedor"],
+                            status = ViewContext.HttpContext.Request.Query["status"],
+                            dataInicio = ViewContext.HttpContext.Request.Query["dataInicio"],
+                            dataFim = ViewContext.HttpContext.Request.Query["dataFim"]
+                        })" class="btn btn-warning btn-block" target="_blank">
+							Imprimir Relatório <i class="fas fa-print"></i>
+						</a>
+					</div>
+				}
+			</div>
+		</div>
+	</form>
+</div>
+<br />
+<br />
+
+<!-- Tabela Responsiva -->
+<div class="container" style="padding-left: 70px">
+	<div class="table-responsive">
+		<table class="table table-hover table-striped">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">Nº Pedido</th>
+					<th scope="col">Cliente</th>
+					<th scope="col">Vendedor</th>
+					<th scope="col" class="hide-column">Entregador</th>
+					<th scope="col" class="hide-column">Itens</th>
+					<th scope="col">Total</th>
+					<th scope="col">Status</th>
+
+					<th scope="col" class="text-center">Ações</th>
+				</tr>
+			</thead>
+			<tbody>
+				@if (Model != null && Model.Any())
+				{
+					@foreach (var pedido in Model)
+					{
+						<tr>
+							<td class="text-center">@pedido.IdPedido</td>
+							<td>@(@pedido.Cliente?.Nome ?? "Cliente não atribuído")</td>
+							<td>@(@pedido.Vendedor?.Nome ?? "Vendedor não atribuído")</td>
+							<td class="hide-column">@(@pedido.Enregador?.Nome ?? "Entregador não atribuído")</td>
+
+							<td class="text-center">@(@pedido.ItensPedido.Count() != 0 ? pedido.ItensPedido.Count().ToString() : "0")</td>
+							<td>R$
+								@(pedido.ItensPedido != null && pedido.ItensPedido.Any()
+									? pedido.ItensPedido.Sum(item => item.SubTotal).ToString("#,##0.00")
+									: "0,00")
+							</td>
+							<td class="text-center">@(pedido.Pedido.Stauts ?? "INDEFINIDO")</td>
+							<td class="text-center">
+								<a class="btn btn-sm btn-info ml-1" href="@Url.Action("Detalhes", "RelatorioVendas", new { id = pedido.IdPedido })">Detalhes</a>
+							</td>
+						</tr>
+					}
+				}
+				else
+				{
+					<tr>
+						<td colspan="8" class="text-center">Nenhum pedido encontrado.</td>
+					</tr>
+				}
+
+
+			</tbody>
+		</table>
+	</div>
+</div>

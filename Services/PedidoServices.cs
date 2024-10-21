@@ -115,5 +115,21 @@ namespace Leaf.Services
             }
         }
 
-    }
+		//Vendas
+		public async Task<List<Pedido>> GetPedidosFiltroAsync(DateTime dtInicio, DateTime dtFim, int idVendedor, int idPedido, string status)
+		{
+			PedidoRepository _pedidoRepository = new PedidoRepository(_dbConnectionManager);
+			try
+			{
+				List<Pedido> pedidos = await _pedidoRepository.GetListPedidosPeriodoAsync(dtInicio, dtFim, idVendedor, idPedido, status);
+				return pedidos ?? new List<Pedido>();
+			}
+			catch (Exception ex)
+			{
+
+				throw new Exception("Erro ao consultar pedido, erro: " + ex.Message);
+			}
+		}
+
+	}
 }

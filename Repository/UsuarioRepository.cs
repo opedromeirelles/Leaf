@@ -197,33 +197,59 @@ namespace Leaf.Repository
 
 			return usuarios;
 		}
-		public List<Usuario> GetListaEntregador()
-        {
-            List<Usuario> usuarios = new List<Usuario>();
 
-            using (SqlConnection conn = _dbConnectionManager.GetConnection())
-            {
-                // Fazer o join com a tabela Departamento
-                string sql = @"SELECT u.idusuario, u.nome, u.login, u.senha, u.status, u.id_dpto, d.descricao
+		public List<Usuario> GetListaVendedor()
+		{
+			List<Usuario> usuarios = new List<Usuario>();
+
+			using (SqlConnection conn = _dbConnectionManager.GetConnection())
+			{
+				// Fazer o join com a tabela Departamento
+				string sql = @"SELECT u.idusuario, u.nome, u.login, u.senha, u.status, u.id_dpto, d.descricao
+                               FROM Usuario u
+                               INNER JOIN Departamento d ON u.id_dpto = d.idDpto
+                               where u.id_dpto = 5";
+
+				SqlCommand cmd = new SqlCommand(sql, conn);
+				SqlDataReader reader = cmd.ExecuteReader();
+
+				while (reader.Read())
+				{
+					usuarios.Add(MapearUsuario(reader));
+				}
+			}
+
+			return usuarios;
+		}
+
+		public List<Usuario> GetListaEntregador()
+		{
+			List<Usuario> usuarios = new List<Usuario>();
+
+			using (SqlConnection conn = _dbConnectionManager.GetConnection())
+			{
+				// Fazer o join com a tabela Departamento
+				string sql = @"SELECT u.idusuario, u.nome, u.login, u.senha, u.status, u.id_dpto, d.descricao
                                FROM Usuario u
                                INNER JOIN Departamento d ON u.id_dpto = d.idDpto
                                where u.id_dpto = 6";
 
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                SqlDataReader reader = cmd.ExecuteReader();
+				SqlCommand cmd = new SqlCommand(sql, conn);
+				SqlDataReader reader = cmd.ExecuteReader();
 
-                while (reader.Read())
-                {
-                    usuarios.Add(MapearUsuario(reader));
-                }
-            }
+				while (reader.Read())
+				{
+					usuarios.Add(MapearUsuario(reader));
+				}
+			}
 
-            return usuarios;
-        }
+			return usuarios;
+		}
 
 
-        // MÉTODOS DE AÇÃO
-        public void NovoUsuario(Usuario usuario)
+
+		// MÉTODOS DE AÇÃO
+		public void NovoUsuario(Usuario usuario)
         {
             using (SqlConnection conn = _dbConnectionManager.GetConnection())
             {

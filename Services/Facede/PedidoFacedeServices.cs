@@ -160,13 +160,10 @@ namespace Leaf.Services.Facede
 
 		//Relatório de pedidos:
 
-		//Entregas:
+		//Entregas
 		public async Task<List<PedidoViewModel>> GetRelatorioEntregas(DateTime dataInicio, DateTime DataFim, int idEntregador, int idPedido)
 		{
-			//Tatando os dados:
-
-
-
+			
 			List<PedidoViewModel> pedidoViewModels = new List<PedidoViewModel>();
 			List<Pedido> pedidos = await _pedidoService.GetPedidosFiltroAsync(dataInicio, DataFim, idEntregador, idPedido);
 			if (pedidos != null && pedidos.Any())
@@ -177,6 +174,19 @@ namespace Leaf.Services.Facede
 			return pedidoViewModels ?? new List<PedidoViewModel>();
 		}
 
+		//Vendas
+		public async Task<List<PedidoViewModel>> GetRelatorioVendas(DateTime dataInicio, DateTime DataFim, int idVendedor, int idPedido, string status)
+		{
+
+			List<PedidoViewModel> pedidoViewModels = new List<PedidoViewModel>();
+			List<Pedido> pedidos = await _pedidoService.GetPedidosFiltroAsync(dataInicio, DataFim, idVendedor, idPedido, status);
+			if (pedidos != null && pedidos.Any())
+			{
+				pedidoViewModels = await MapearListaPedidoAsync(pedidos);
+			}
+
+			return pedidoViewModels ?? new List<PedidoViewModel>();
+		}
 
 
 
