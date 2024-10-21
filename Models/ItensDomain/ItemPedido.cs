@@ -10,7 +10,7 @@ namespace Leaf.Models.ItensDomain
         public decimal SubTotal { get; set; }
         public int IdPedido { get; set; }
 
-        public List<ItemPedido> ItensPedidos { get; set; }
         public Produto Produto { get; set; }
+        public List<Produto> Produtos { get; set; }
     }
 }

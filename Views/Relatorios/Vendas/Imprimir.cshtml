@@ -1,0 +1,150 @@
+﻿@model IEnumerable<Leaf.Models.ViewModels.PedidoViewModel>
+@{
+    Layout = "_LayoutImpressao";
+    ViewData["Title"] = "Impressão de Relatório de Pedidos";
+
+    // Define as variáveis para data de início e fim com base nos ViewBags
+    DateTime? dataInicio = !string.IsNullOrEmpty(ViewBag.DataInicio) ? DateTime.Parse(ViewBag.DataInicio) : (DateTime?)null;
+    DateTime? dataFim = !string.IsNullOrEmpty(ViewBag.DataFim) ? DateTime.Parse(ViewBag.DataFim) : DateTime.Now;
+
+    string filtroData = "";
+
+    if (dataInicio.HasValue && dataFim.HasValue)
+    {
+        filtroData = $"Data Início: {dataInicio.Value.ToString("dd/MM/yyyy")} até a data: {dataFim.Value.ToString("dd/MM/yyyy")}";
+    }
+    else if (dataInicio.HasValue && !dataFim.HasValue)
+    {
+        filtroData = $"Data Início: {dataInicio.Value.ToString("dd/MM/yyyy")} até data Atual";
+    }
+    else if (!dataInicio.HasValue && !dataFim.HasValue)
+    {
+        filtroData = "Pedidos em todo o período";
+    }
+}
+
+<div class="container mt-5 mr-5">
+    <div class="row">
+        <!-- Cabeçalho com logo, título, e informações do usuário -->
+        <div class="col-4">
+            <img src="~/imgs/icons/png/logo300px-preto.png" alt="Logo" style="max-height: 100px;" />
+        </div>
+        <div class="col-4 text-center">
+            <h2>Relatório de Pedidos</h2>
+            <p>Data de Impressão: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</p>
+        </div>
+        <div class="col-4 text-right">
+            <p>Usuário: @User?.Identity?.Name</p>
+            <div id="componenteImpressao" class="d-print-none">
+                <button class="btn btn-primary" onclick="imprimirRelatorio()">Imprimir</button>
+                <a href="@Url.Action("Index", "RelatorioPedidos")" class="btn btn-secondary">Retornar</a>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <!-- Informações dos filtros aplicados -->
+    <div class="row mb-3">
+        <h5>Filtros Aplicados:</h5>
+        <ul class="ml-3">
+            @{
+                bool algumFiltro = false;
+
+                if (!string.IsNullOrEmpty(ViewBag.NumeroPedido))
+                {
+                    <li><strong>Número do Pedido:</strong> @ViewBag.NumeroPedido</li>
+                    algumFiltro = true;
+                }
+                if (!string.IsNullOrEmpty(ViewBag.Status))
+                {
+                    <li><strong>Status:</strong> @ViewBag.Status</li>
+                    algumFiltro = true;
+                }
+                if (!string.IsNullOrEmpty(ViewBag.Cliente) && ViewBag.Cliente != "0")
+                {
+                    <li><strong>Cliente:</strong> @ViewBag.Cliente - @ViewBag.NomeCliente</li>
+                    algumFiltro = true;
+                }
+                if (!string.IsNullOrEmpty(ViewBag.Vendedor) && ViewBag.Vendedor != "0")
+                {
+                    <li><strong>Vendedor:</strong> @ViewBag.Vendedor - @ViewBag.NomeVendedor</li>
+                    algumFiltro = true;
+                }
+                if (!string.IsNullOrEmpty(filtroData) && filtroData != "Pedidos em todo o período")
+                {
+                    <li><strong>@filtroData</strong></li>
+                    algumFiltro = true;
+                }
+
+                // Mostrar "Nenhum filtro aplicado" apenas se nenhum filtro foi especificado
+                if (!algumFiltro)
+                {
+                    <li>Nenhum filtro aplicado</li>
+                }
+            }
+        </ul>
+    </div>
+
+    <!-- Tabela dos pedidos -->
+    <div class="table-responsive mt-3">
+        <table class="table table-hover table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Nº Pedido</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Vendedor</th>
+                    <th scope="col">Total de Itens</th>
+                    <th scope="col">Valor Total</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pedido in Model)
+                {
+                    <tr>
+                        <td>@pedido.IdPedido</td>
+                        <td>@(pedido.Cliente != null ? pedido.Cliente.Nome + " / " + (pedido.Cliente.Tipo == "PF" ? pedido.Cliente.Cpf : pedido.Cliente.Cnpj) : "Cliente não associado")</td>
+                        <td>@(pedido.Vendedor != null ? pedido.Vendedor.Nome : "Vendedor não associado")</td>
+                        <td>@(pedido.ItensPedido != null ? pedido.ItensPedido.Count : 0)</td>
+                        <td>R$ @(pedido.ItensPedido != null ? pedido.ItensPedido.Sum(item => item.SubTotal).ToString("#,##0.00") : "0,00")</td>
+                        <td>
+                            @{
+                                var status = pedido?.Pedido?.Stauts ?? "Indefinido";
+                                string statusClass = status switch
+                                {
+                                    "EM" => "text-primary",
+                                    "BX" => "text-success",
+                                    "CA" => "text-danger",
+                                    _ => ""
+                                };
+                            }
+                            <span class="@statusClass">@status</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Rodapé -->
+    <div class="text-right mt-4">
+        <p><strong>Total de Pedidos:</strong> @Model.Count()</p>
+        <p><strong>Valor Total de Todos os Pedidos:</strong> R$ @Model.Sum(x => x.ItensPedido?.Sum(i => i.SubTotal) ?? 0).ToString("#,##0.00")</p>
+    </div>
+</div>
+
+<script>
+    function imprimirRelatorio() {
+        // Esconde os elementos não desejados na impressão
+        document.getElementById('componenteImpressao').style.display = 'none';
+
+        // Chama a função de impressão
+        window.print();
+
+        // Mostra novamente após a impressão
+        setTimeout(function () {
+            document.getElementById('componenteImpressao').style.display = 'block';
+        }, 1000);
+    }
+</script>

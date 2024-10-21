@@ -6,12 +6,15 @@ using Leaf.Models.ViewModels;
 
 namespace Leaf.Controllers
 {
+	
 	public class RelatorioEntregasController : Controller
 	{
 		private readonly string _pathIndex = "~/Views/Relatorios/Entregas/Index.cshtml";
 		private readonly string _pathDetalhes = "~/Views/Relatorios/Entregas/Detalhes.cshtml";
+        private readonly string _pathImprimir = "~/Views/Relatorios/Entregas/Imprimir.cshtml";
 
-		private readonly UsuarioServices _usuarioServices;
+
+        private readonly UsuarioServices _usuarioServices;
 		private readonly PedidoFacedeServices _pedidoFacedeServices;
 
 		public RelatorioEntregasController(UsuarioServices usuarioServices, PedidoFacedeServices pedidoFacedeServices)
@@ -28,67 +31,93 @@ namespace Leaf.Controllers
 			return View(_pathIndex);
 		}
 
-		/*
-		[HttpGet]
-		public async Task<IActionResult> Buscar(string numeroPedido, string entregador, string dataInicio, string dataFim)
-		{
-			GetEntregadores();
 
-			// Tratamento de nuâncias:
-			int idEntregador = int.TryParse(entregador, out int entregadorInt) ? entregadorInt : 0;
+        [HttpGet]
+        public async Task<IActionResult> Buscar(string numeroPedido, string entregador, string dataInicio, string dataFim)
+        {
+			//Pupular entregadores
+            GetEntregadores();
 
-			DateTime? dtaInicio = DateTime.TryParse(dataInicio, out DateTime parsedDataInicio) ? parsedDataInicio : (DateTime?)null;
-			DateTime? dtaFim = DateTime.TryParse(dataFim, out DateTime parsedDataFim) ? parsedDataFim : (DateTime?)null;
+			//Converter os parametros para o tipo certo
+            var (idPedido, idEntregador, inicio, fim) = ConverterParametrosBusca(numeroPedido, entregador, dataInicio, dataFim);
 
-			DateTime inicio = dtaInicio ?? new DateTime(1800, 1, 1);
-			DateTime fim = dtaFim ?? DateTime.Now;
+            if (fim < inicio)
+            {
+                TempData["MensagemErro"] = "A data de fim não pode ser menor que a data de início.";
+                return RedirectToAction("Index");
+            }
 
-			// Tratamento de valores:
-			if (fim < inicio)
-			{
-				TempData["MensagemErro"] = "A data de fim não pode ser menor que a data de início.";
-				return RedirectToAction("Index");
-			}
+            try
+            {
+				//Listar pedidos ja com filtro
+                List<PedidoViewModel> pedidos = await _pedidoFacedeServices.GetRelatorioEntregas(inicio, fim, idEntregador, idPedido);
 
-			// Executa a busca:
-			try
-			{
-				List<Pedido> pedidos = await _pedidoFacedeServices.GetPedidosFiltrosAsync(inicio, fim, idEntregador, numeroPedido);
+                if (pedidos.Any())
+                {
+					// Armazena os filtros
+					ViewBag.NumeroPedido = numeroPedido;
+					ViewBag.Entregador = entregador;
+					ViewBag.DataInicio = dataInicio;
+					ViewBag.DataFim = dataFim;
 
-				if (pedidos.Any())
-				{
 					TempData["MensagemSucesso"] = "Dados encontrados.";
-					return View(_pathIndex, pedidos);
-				}
-				else
-				{
-					TempData["MensagemErro"] = "Não há pedidos lançados com os filtros aplicados.";
-					return View(_pathIndex, new List<Pedido>());
-				}
-			}
-			catch (Exception ex)
-			{
-				TempData["MensagemErro"] = "Não foi possível acessar o banco de dados, erro: " + ex.Message;
-				return RedirectToAction("Index");
-			}
-		}
+                    return View(_pathIndex, pedidos);
+                }
+                else
+                {
+                    TempData["MensagemErro"] = "Não há pedidos lançados com os filtros aplicados.";
+                    return View(_pathIndex, new List<PedidoViewModel>());
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = "Não foi possível acessar o banco de dados, erro: " + ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
 
-		[HttpGet]
+        [HttpGet]
+        [Route("relatorio-entregas/imprimir")]
+        public async Task<IActionResult> Imprimir(string numeroPedido, string entregador, string dataInicio, string dataFim)
+        {
+            var (idPedido, idEntregador, inicio, fim) = ConverterParametrosBusca(numeroPedido, entregador, dataInicio, dataFim);
+
+            List<PedidoViewModel> pedidoViewModel = await _pedidoFacedeServices.GetRelatorioEntregas(inicio, fim, idEntregador, idPedido);
+
+
+            //Retorna os filtros:
+            ViewBag.NumeroPedido = numeroPedido;
+            ViewBag.Entregador = entregador;
+            ViewBag.DataInicio = dataInicio;
+            ViewBag.DataFim = dataFim;
+
+
+            if (idEntregador != 0)
+            {
+                Usuario usuario = _usuarioServices.GetUsuarioId(idEntregador);
+                ViewBag.NomeEntregador = usuario?.Nome ?? "Entregador não encontrado";
+            }
+
+            return View(_pathImprimir, pedidoViewModel);
+        }
+
+
+        [HttpGet]
 		[Route("relatorio-entregas/detalhes/{id}")]
 		public async Task<IActionResult> Detalhes(int id)
 		{
 			try
 			{
 				// Buscar os detalhes do pedido pelo ID
-				Pedido pedido = await _pedidoFacedeServices.MapearPedidoAsync(id);
+				PedidoViewModel pedidoViewModel = await _pedidoFacedeServices.GetPedidoAsync(id);
 
-				if (pedido == null)
+				if (pedidoViewModel == null)
 				{
 					TempData["MensagemErro"] = "Pedido não encontrado.";
 					return RedirectToAction("Index");
 				}
 
-				return View(_pathDetalhes, pedido);
+				return View(_pathDetalhes, pedidoViewModel);
 			}
 			catch (Exception ex)
 			{
@@ -97,42 +126,27 @@ namespace Leaf.Controllers
 			}
 		}
 
-		[HttpGet]
-		[Route("relatorio-entregas/imprimir")]
-		public async Task<IActionResult> Imprimir(string numeroPedido, string entregador, string dataInicio, string dataFim)
-		{
-			// Obter os filtros e fazer a busca
-			int idEntregador = int.TryParse(entregador, out int entregadorInt) ? entregadorInt : 0;
 
-			DateTime? dtaInicio = DateTime.TryParse(dataInicio, out DateTime parsedDataInicio) ? parsedDataInicio : (DateTime?)null;
-			DateTime? dtaFim = DateTime.TryParse(dataFim, out DateTime parsedDataFim) ? parsedDataFim : (DateTime?)null;
 
-			DateTime inicio = dtaInicio ?? new DateTime(1800, 1, 1);
-			DateTime fim = dtaFim ?? DateTime.Now;
 
-			// Realizar a busca com base nos filtros
-			List<Pedido> pedidos = await _pedidoFacedeServices.GetPedidosFiltrosAsync(inicio, fim, idEntregador, numeroPedido);
+        //Converter parametros:
+        public (int idPedido, int idEntregador, DateTime inicio, DateTime fim) ConverterParametrosBusca(string numeroPedido, string entregador, string dataInicio, string dataFim)
+        {
+            int idEntregador = int.TryParse(entregador, out int entregadorInt) ? entregadorInt : 0;
+            int idPedido = int.TryParse(numeroPedido, out int pedidoInt) ? pedidoInt : 0;
 
-			// Armazenar os filtros no ViewBag para passar para a view de impressão
-			ViewBag.NumeroPedido = numeroPedido;
-			ViewBag.Entregador = entregador;
-			ViewBag.DataInicio = dataInicio;
-			ViewBag.DataFim = dataFim;
+            DateTime? dtaInicio = DateTime.TryParse(dataInicio, out DateTime parsedDataInicio) ? parsedDataInicio : (DateTime?)null;
+            DateTime? dtaFim = DateTime.TryParse(dataFim, out DateTime parsedDataFim) ? parsedDataFim : (DateTime?)null;
 
-			if (idEntregador != 0)
-			{
-				Usuario usuario = _usuarioServices.GetUsuarioId(idEntregador);
-				ViewBag.NomeEntregador = usuario?.Nome ?? "Entregador não encontrado";
-			}
+            DateTime inicio = dtaInicio ?? new DateTime(1800, 1, 1);
+            DateTime fim = dtaFim ?? DateTime.Now;
 
-			// Retornar a view de impressão com os dados e filtros
-			return View("~/Views/Relatorios/Entregas/Imprimir.cshtml", pedidos);
-		}
+            return (idPedido, idEntregador, inicio, fim);
+        }
 
-		*/
 
-		// POPULAR VIEW BAGS
-		public void GetEntregadores()
+        // POPULAR VIEW BAGS
+        public void GetEntregadores()
 		{
 			List<Usuario> entregadores = _usuarioServices.ListaEntregadores();
 			if (entregadores == null || !entregadores.Any())
@@ -142,5 +156,6 @@ namespace Leaf.Controllers
 
 			ViewBag.Entregadores = entregadores;
 		}
+
 	}
 }

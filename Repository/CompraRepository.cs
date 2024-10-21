@@ -101,8 +101,9 @@ namespace Leaf.Repository
             }
         }
 
-		// Relatorios de Compras
 
+
+		// Relatorios de Compras
 		public async Task<List<Compra>> GetListComprasPeriodoAsync(DateTime dataInicio, DateTime dataFim, int idFornecedor, string status, string numeroCompra, int idSolicitante)
 		{
 			string sql = @"SELECT * FROM ORDEM_COMPRA

@@ -19,23 +19,23 @@ namespace Leaf.Repository
         {
             return new Pedido
             {
-                IdPedido = Convert.ToInt32(reader["idpedido"]),
-               IdEntregador = reader["id_entregador"] != DBNull.Value ? Convert.ToInt32(reader["id_entregador"]) : (int)0,
-                IdVendedor = Convert.ToInt32(reader["id_vendedor"]),
-                IdPessoa = Convert.ToInt32(reader["id_pessoa"]),
+                IdPedido = reader["idpedido"] != DBNull.Value ? Convert.ToInt32(reader["idpedido"]) : 0,
+                IdEntregador = reader["id_entregador"] != DBNull.Value ? Convert.ToInt32(reader["id_entregador"]) : 0,
+                IdVendedor = reader["id_vendedor"] != DBNull.Value ? Convert.ToInt32(reader["id_vendedor"]) : 0,
+                IdPessoa = reader["id_pessoa"] != DBNull.Value ? Convert.ToInt32(reader["id_pessoa"]) : 0,
 
-                ValorToal = Convert.ToDecimal(reader["valor_total"]),
+                ValorToal = reader["valor_total"] != DBNull.Value ? Convert.ToDecimal(reader["valor_total"]) : 0m,
 
-                EndEntrega = reader["end_entrega"] != DBNull.Value ? (reader["end_entrega"].ToString()) : "Não Informado",
-                Cep = reader["cep"].ToString(),
-                Stauts = reader["status"].ToString(),
-
+                EndEntrega = reader["end_entrega"] != DBNull.Value ? reader["end_entrega"].ToString() : "Não Informado",
+                Cep = reader["cep"] != DBNull.Value ? reader["cep"].ToString() : "Não Informado",
+                Stauts = reader["status"] != DBNull.Value ? reader["status"].ToString() : "Indefinido",
 
                 DtaEmissao = reader["dta_emissao"] != DBNull.Value ? Convert.ToDateTime(reader["dta_emissao"]) : (DateTime?)null,
                 DtaSaida = reader["dta_saida"] != DBNull.Value ? Convert.ToDateTime(reader["dta_saida"]) : (DateTime?)null,
                 DtaEntrega = reader["dta_entrega"] != DBNull.Value ? Convert.ToDateTime(reader["dta_entrega"]) : (DateTime?)null,
                 DtaCancelamento = reader["dta_cancelamento"] != DBNull.Value ? Convert.ToDateTime(reader["dta_cancelamento"]) : (DateTime?)null
             };
+
         }
 
         //Ler Pedidos
@@ -73,37 +73,30 @@ namespace Leaf.Repository
             }
         }
 
-        public Pedido GetPedido(int idPedido)
+        public async Task<Pedido> GetPedidoAsync(int idPedido)
         {
             string sql = @"select * from pedido where idpedido = @idPedido";
 
-
             Pedido pedido = new Pedido();
-
 
             using (SqlConnection conn = _dbConnectionManager.GetConnection())
             {
                 SqlCommand command = new SqlCommand(sql, conn);
                 command.Parameters.AddWithValue("@idPedido", idPedido);
-                SqlDataReader reader = command.ExecuteReader();
 
                 try
                 {
-                    if (reader.Read())
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                    if (await reader.ReadAsync())
                     {
                         pedido = MapearPedido(reader);
                     }
-                    if (pedido != null)
-                    {
-                        return pedido;
-                    }
 
-                    return null;
-
+                    return pedido;
                 }
                 catch (SqlException ex)
                 {
-
                     throw new Exception("Erro ao listar pedido, erro: " + ex.Message);
                 }
             }
@@ -198,103 +191,145 @@ namespace Leaf.Repository
 
 
         // Relatorios de pedido
-        public List<Pedido> GetListPedidosPeriodo(DateTime dataInicio, DateTime dataFim, int idVendedor, string status)
+       
+        //Entregador - Por padrao buscar apenas pedidos entregues
+        public async Task<List<Pedido>> GetListPedidosPeriodoAsync(DateTime dataInicio, DateTime dataFim, int idEntregador, int idPedido)
         {
             string sql = @"SELECT * FROM pedido
-                           WHERE 1=1
-                           AND dta_emissao >= @dataInicio 
-                           AND dta_emissao <= @dataFim";
+                   WHERE status = 'BX'
+                   AND dta_emissao >= @dataInicio 
+                   AND dta_emissao <= @dataFim";
 
-			List<Pedido> pedidos = new List<Pedido>();
-
-            using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            // Montar a query dinamicamente 
+            if (idPedido != 0)
             {
+                sql += " AND idpedido = @idPedido";
+            }
 
+            if (idEntregador != 0)
+            {
+                sql += " AND id_entregador = @idEntregador";
+            }
+
+            List<Pedido> pedidos = new List<Pedido>();
+
+            // Use await using para garantir o descarte correto do recurso assíncrono
+            await using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
                 SqlCommand command = new SqlCommand(sql, conn);
 
-                //Obrigatóriamente havera duas duas datas
+                // Adiciona os parâmetros
                 command.Parameters.AddWithValue("@dataInicio", dataInicio);
                 command.Parameters.AddWithValue("@dataFim", dataFim);
 
-                //Pega o status
-                if (status != "" && !string.IsNullOrEmpty(status))
+                if (idPedido != 0)
                 {
-                    sql += " AND status = @status";
+                    command.Parameters.AddWithValue("@idPedido", idPedido);
+                }
+
+                if (idEntregador != 0)
+                {
+                    command.Parameters.AddWithValue("@idEntregador", idEntregador);
+                }
+
+                try
+                {
+                    // ExecuteReader de forma assíncrona
+                    await using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            pedidos.Add(MapearPedido(reader));
+                        }
+                    }
+
+                    return pedidos;
+                }
+                catch (SqlException ex)
+                {
+                    throw new Exception("Erro ao tentar buscar pedidos, erro: " + ex.Message);
+                }
+            }
+        }
+
+        //Vendedor:
+        public async Task<List<Pedido>> GetListPedidosPeriodoAsync(DateTime dataInicio, DateTime dataFim, int idEntregador, int idPedido, string status, int idVendedor)
+        {
+            string sql = @"SELECT * FROM pedido
+                   WHERE 1=1
+                   AND dta_emissao >= @dataInicio 
+                   AND dta_emissao <= @dataFim";
+
+            // Montar a query dinamicamente antes de criar o SqlCommand
+            if (!string.IsNullOrEmpty(status))
+            {
+                sql += " AND status = @status";
+            }
+
+            if (idPedido != 0)
+            {
+                sql += " AND idpedido = @idPedido";
+            }
+
+            if (idEntregador != 0)
+            {
+                sql += " AND id_entregador = @idEntregador";
+            }
+
+            if (idVendedor != 0)
+            {
+                sql += " AND id_vendedor = @idVendedor";
+            }
+
+            var pedidos = new List<Pedido>();
+
+            // Use await using para garantir o descarte correto do recurso assíncrono
+            await using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+                SqlCommand command = new SqlCommand(sql, conn);
+
+                // Adiciona os parâmetros
+                command.Parameters.AddWithValue("@dataInicio", dataInicio);
+                command.Parameters.AddWithValue("@dataFim", dataFim);
+
+                if (!string.IsNullOrEmpty(status))
+                {
                     command.Parameters.AddWithValue("@status", status);
                 }
 
-                //Se tiver vendedor filtre por vendedor
+                if (idPedido != 0)
+                {
+                    command.Parameters.AddWithValue("@idPedido", idPedido);
+                }
+
+                if (idEntregador != 0)
+                {
+                    command.Parameters.AddWithValue("@idEntregador", idEntregador);
+                }
+
                 if (idVendedor != 0)
                 {
-                    sql += " AND id_vendedor = @idVendedor";
-					command.Parameters.AddWithValue("@idVendedor", idVendedor);
-				}
+                    command.Parameters.AddWithValue("@idVendedor", idVendedor);
+                }
 
-				// Atualizar o texto da consulta, já que ele é modificado dinamicamente
-				command.CommandText = sql;
-
-				try
+                try
                 {
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    while (reader.Read())
+                    // ExecuteReader de forma assíncrona
+                    await using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        pedidos.Add(MapearPedido(reader));
+                        while (await reader.ReadAsync())
+                        {
+                            pedidos.Add(MapearPedido(reader));
+                        }
                     }
 
-                    //verifico se esta preenchido, se não, retorno a lista vazia
-                    return pedidos.Any() ? pedidos : new List<Pedido>();
-				}
+                    return pedidos;
+                }
                 catch (SqlException ex)
                 {
-                    // Tratar erro e lançar exceção, se necessário
                     throw new Exception("Erro ao tentar buscar pedidos, erro: " + ex.Message);
                 }
-            } 				
-        }
-        
-        public List<Pedido> GetListPedidosEntregador(DateTime? dataInicio, DateTime? dataFim, int idEntregador)
-        {
-            string sql = @"SELECT * FROM pedido
-                           WHERE 1=1
-                           AND id_entregador = @idEntregador ";
-
-			List<Pedido> pedidos = new List<Pedido>();
-
-			using (SqlConnection conn = _dbConnectionManager.GetConnection())
-            {
-                SqlCommand command = new SqlCommand(sql, conn);
-                command.Parameters.AddWithValue("@idEntregador", idEntregador);
-
-                if (dataInicio != null && dataFim != null)
-                {
-                    sql += "AND dta_emissao >= @dataInicio AND dta_emissao <= @dataFim";
-					command.Parameters.AddWithValue("@dataInicio", dataInicio);
-					command.Parameters.AddWithValue("@dataFim", dataFim);
-				}
-
-				try
-				{
-					SqlDataReader reader = command.ExecuteReader();
-
-					while (reader.Read())
-					{
-						pedidos.Add(MapearPedido(reader));
-					}
-
-					if (pedidos.Any() && pedidos != null)
-					{
-						return pedidos;
-					}
-
-					return new List<Pedido>();
-				}
-				catch (SqlException ex)
-				{
-					// Tratar erro e lançar exceção, se necessário
-					throw new Exception("Erro ao tentar buscar pedidos, erro: " + ex.Message);
-				}
-			}
+            }
         }
 
 

@@ -59,13 +59,13 @@ public class CompraFacedeServices
             return new CompraViewModel();
         }
 
-        var compra = await _compraServices.GetCompra(idCompra);
+        Compra compra = await _compraServices.GetCompra(idCompra);
         if (compra == null)
         {
             return new CompraViewModel();
         }
 
-        var compraViewModel = new CompraViewModel
+        CompraViewModel compraViewModel = new CompraViewModel
         {
             IdCompra = compra.IdOc,
             Compra = compra,
