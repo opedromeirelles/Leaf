@@ -2,10 +2,20 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Leaf.Data;
-using Leaf.Repository;
-using Leaf.Services;
 using System.Globalization;
 using Leaf.Services.Facede;
+using Leaf.Repository.Compras;
+using Leaf.Repository.Producao;
+using Leaf.Repository.Agentes;
+using Leaf.Repository.Pedidos;
+using Leaf.Repository.Materiais;
+using Leaf.Repository.Departamentos;
+using Leaf.Services.Agentes;
+using Leaf.Services.Materiais;
+using Leaf.Services.Departamentos;
+using Leaf.Services.Compras;
+using Leaf.Services.Producao;
+using Leaf.Services.Pedidos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +56,8 @@ builder.Services.AddTransient<ItemPedidoServices>();
 builder.Services.AddTransient<LoteProducaoServices>();
 builder.Services.AddTransient<ItemLoteProducaoServices>();
 builder.Services.AddTransient<CompraFacedeServices>();
+builder.Services.AddTransient<LoteProcucaoFacedeServices>();
+
 
 
 

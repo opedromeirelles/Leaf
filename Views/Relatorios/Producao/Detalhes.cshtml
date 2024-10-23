@@ -1,0 +1,112 @@
+﻿@model Leaf.Models.ViewModels.LoteProducaoViewModel
+@{
+    ViewData["Title"] = "Detalhes do Lote de Produção";
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+    <span id="eventoErro" class="alert alert-danger">@TempData["MensagemErro"]</span>
+}
+else if (TempData["MensagemSucesso"] != null)
+{
+    <span id="eventoSucesso" class="alert alert-success">@TempData["MensagemSucesso"]</span>
+}
+
+<div class="container mt-5 mp-5 pl-5 mb-5" style="padding-left: 70px">
+    <!-- Informações principais do lote -->
+    <input type="hidden" asp-for="LoteProducao.IdLote" />
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h3 class="card-title mb-0">Detalhes do Lote #@Model.LoteProducao.IdLote</h3>
+            <span class="badge badge-pill
+                @(Model.LoteProducao.Estagio == 1 ? "badge-info" : Model.LoteProducao.Estagio == 2 ? "badge-warning" : Model.LoteProducao.Estagio == 3 ? "badge-primary" : "badge-success")">
+                @Model.LoteProducao.DescricaoEstagio
+            </span>
+        </div>
+
+        <div class="card-body">
+            <!-- Sessão 1: Informações do Lote -->
+            <div class="row mb-4">
+                <div class="col-md-4 mb-3">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-info-circle"></i> Informações do Lote</h5>
+                            <br />
+                            <p><strong>Produto: </strong>@(@Model.LoteProducao.Produto?.Descricao ?? "Produto não atribuído")</p>
+                            <p><strong>Quantidade produção: </strong>@Model.LoteProducao.Qtde</p>
+                            <p><strong>Data de Semeadura: </strong>@(Model.LoteProducao.DtaSemeadura?.ToString("dd/MM/yyyy") ?? "Data não disponível")</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-seedling"></i> Estágios do Lote</h5>
+                            <br />
+                            <p><strong>Estágio Atual: </strong>@Model.LoteProducao.DescricaoEstagio</p>
+                            @if (Model.LoteProducao.DtaCrescimento != null)
+                            {
+                                <p><strong>Data de Crescimento: </strong>@Model.LoteProducao.DtaCrescimento?.ToString("dd/MM/yyyy")</p>
+                            }
+                            @if (Model.LoteProducao.DtaColheita != null)
+                            {
+                                <p><strong>Data de Colheita: </strong>@Model.LoteProducao.DtaColheita?.ToString("dd/MM/yyyy")</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-user"></i> Responsável</h5>
+                            <br />
+                            <p><strong>Usuário Responsável: </strong>@(@Model.LoteProducao.Usuario?.Nome ?? "Usuário não disponível")</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sessão 2: Insumos do Lote -->
+            <h5 class="mt-4"><i class="fas fa-boxes"></i> Insumos do Lote</h5>
+            <div class="table-responsive mt-3">
+                <table class="table table-hover table-bordered">
+                    <thead class="bg-dark text-white">
+                        <tr>
+                            <th>Descrição do Insumo</th>
+                            <th class="text-center">Quantidade Utilizada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model?.InsumosLote != null && Model.InsumosLote.Any())
+                        {
+                            foreach (var insumo in Model.InsumosLote)
+                            {
+                                <tr>
+                                    <td>@insumo.Descricao</td>
+                                    <td class="text-center">@(Model.ItemLote?.FirstOrDefault(i => i.IdInsumo == insumo.IdInsumo)?.Qtde ?? 0)</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center">Nenhum insumo encontrado.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Botões de Controle -->
+        <div class="text-right m-3">
+            <a href="@Url.Action("Index", "RelatorioProducao")" class="btn btn-outline-secondary"><i class="fas fa-times"></i> Voltar</a>
+        </div>
+        <br />
+    </div>
+</div>
+
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>

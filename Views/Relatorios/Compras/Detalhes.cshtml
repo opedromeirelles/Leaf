@@ -84,6 +84,7 @@ else if (TempData["MensagemSucesso"] != null)
 						<tr>
 							<th>Descrição</th>
 							<th>Quantidade</th>
+							<th>Valor Unitário</th>
 							<th>Subtotal</th>
 						</tr>
 					</thead>
@@ -95,6 +96,7 @@ else if (TempData["MensagemSucesso"] != null)
 								<tr>
 									<td>@(item.insumo.Descricao ?? "Insumo não encontrado")</td>
 									<td>@item.Quantidade</td>
+									<td>R$ @item.insumo.ValorUnitario.ToString("#,##0.00")</td>
 									<td>R$ @item.SubTotal.ToString("#,##0.00")</td>
 								</tr>
 							}

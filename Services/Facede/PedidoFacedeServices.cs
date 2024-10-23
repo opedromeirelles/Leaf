@@ -1,10 +1,13 @@
 ﻿using Leaf.Models.Domain;
 using Leaf.Models.ItensDomain;
 using Leaf.Models.ViewModels;
+using Leaf.Services.Agentes;
+using Leaf.Services.Materiais;
+using Leaf.Services.Pedidos;
 
 namespace Leaf.Services.Facede
 {
-	public class PedidoFacedeServices
+    public class PedidoFacedeServices
 	{
 		//Serviços
 		private readonly PedidoServices _pedidoService;

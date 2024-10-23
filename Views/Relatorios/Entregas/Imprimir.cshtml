@@ -36,8 +36,8 @@
         <div class="col-4 text-right">
             <p>Usuário: @User?.Identity?.Name</p>
             <div id="componenteImpressao" class="d-print-none">
+                <a href="@Url.Action("Index", "RelatorioEntregas")" class="btn btn-secondary">Retornar</a> 
                 <button class="btn btn-primary" onclick="imprimirRelatorio()">Imprimir</button>
-                <a href="@Url.Action("Index", "RelatorioEntregas")" class="btn btn-secondary">Retornar</a>
             </div>
         </div>
     </div>
@@ -56,15 +56,18 @@
                     <li><strong>Número do Pedido:</strong> @ViewBag.NumeroPedido</li>
                     algumFiltro = true;
                 }
-                if (!string.IsNullOrEmpty(ViewBag.Entregador))
+                if (string.IsNullOrEmpty(ViewBag.NumeroPedido))
                 {
-                    <li><strong>Entregador:</strong> @ViewBag.Entregador - @ViewBag.NomeEntregador</li>
-                    algumFiltro = true;
-                }
-                if (!string.IsNullOrEmpty(filtroData) && filtroData != "Pedidos em todo o período")
-                {
-                    <li><strong>@filtroData</strong></li>
-                    algumFiltro = true;
+                    if (!string.IsNullOrEmpty(ViewBag.Entregador))
+                    {
+                        <li><strong>Entregador:</strong> @ViewBag.Entregador - @ViewBag.NomeEntregador</li>
+                        algumFiltro = true;
+                    }
+                    if (!string.IsNullOrEmpty(filtroData) && filtroData != "Pedidos em todo o período")
+                    {
+                        <li><strong>@filtroData</strong></li>
+                        algumFiltro = true;
+                    }
                 }
 
                 if (!algumFiltro)
@@ -80,18 +83,18 @@
         <table class="table table-hover table-bordered">
             <thead class="thead-dark">
                 <tr>
-                    <th scope="col">Nº Pedido</th>
+                    <th scope="col" class="text-center">Nº Pedido</th>
                     <th scope="col">Cliente</th>
                     <th scope="col">Vendedor</th>
                     <th scope="col" class="text-center">Tempo de Entrega</th>
-                    <th scope="col">Status</th>
+                    <th scope="col" class="text-center">Status</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var pedido in Model)
                 {
                     <tr>
-                        <td>@pedido.IdPedido</td>
+                        <td class="text-center">@pedido.IdPedido</td>
                         <td>@(pedido.Cliente != null ? pedido.Cliente.Nome + " / " + (pedido.Cliente.Tipo == "PF" ? pedido.Cliente.Cpf : pedido.Cliente.Cnpj) : "Cliente não associado")</td>
                         <td>@(pedido.Vendedor != null ? pedido.Vendedor.Nome : "Vendedor não associado")</td>
 
@@ -99,7 +102,7 @@
                         <td class="text-center">@(pedido.TempoMedioEntrega != null ? pedido.TempoMedioEntrega.Value.ToString("F0") + " " + pedido.TempoDescricao : "Tempo nao estimado")</td>
 
 
-                        <td>
+                        <td class="text-center">
                             @{
                                 var status = pedido?.Pedido?.Stauts ?? "Indefinido";
                                 string statusClass = status switch

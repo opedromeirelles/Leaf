@@ -1,1 +1,152 @@
-﻿
+﻿@model IEnumerable<Leaf.Models.ViewModels.LoteProducaoViewModel>
+@{
+    ViewData["Title"] = "Relatório de Produção";
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+    <span id="eventoErro" class="alert alert-danger">@TempData["MensagemErro"]</span>
+}
+else if (TempData["MensagemSucesso"] != null)
+{
+    <span id="eventoSucesso" class="alert alert-success">@TempData["MensagemSucesso"]</span>
+}
+
+<div class="container" style="padding-left: 70px">
+    <h2 class="h2titulo">@ViewData["Title"]</h2>
+    @await Html.PartialAsync("_LoadingSpinner")
+
+    <form method="get" asp-action="Buscar" onsubmit="mostrarCarregando()">
+        <div class="row">
+            <!-- Nº Lote -->
+            <div class="col-12 col-lg-3">
+                <div class="form-group">
+                    <label>Lote:</label>
+                    <input type="text" class="form-control txtBuscar-custom" placeholder="ALF.." name="numeroLote" aria-label="Buscar por número do lote">
+                </div>
+                <div class="form-group">
+                    <select class="form-control cbBusca-custom bg-secondary text-light" name="estagio">
+                        <option value="0">Todos os Estágios</option>
+                        <option value="1">Semeadura</option>
+                        <option value="2">Crescimento</option>
+                        <option value="3">Desenvolvimento</option>
+                        <option value="4">Colheita</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Data Início e Data Fim -->
+            <div class="col-12 col-lg-6">
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <div class="form-group">
+                            <label for="dataInicio">Data Início:</label>
+                            <input type="date" class="form-control txtBuscar-custom" id="dataInicio" name="dataInicio" aria-label="Data de Início">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="form-group">
+                            <label for="dataFim">Data Fim:</label>
+                            <input type="date" class="form-control txtBuscar-custom" id="dataFim" name="dataFim" aria-label="Data de Fim">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <div class="form-group">
+                            <select class="form-control cbBusca-custom bg-secondary text-light" name="produto">
+                                <option value="0">Todos os Produtos</option>
+                                @foreach (var prod in ViewBag.Produtos)
+                                {
+                                    <option value="@prod.IdProduto">@prod.Descricao</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-3">
+                <br />
+                <div class="grupoBusca-custom d-flex mt-2">
+                    <div class="grupoBusca-custom botaoBusca ml-2">
+                        <button class="btn btn-outline-secondary btnBuscar-custom" type="submit">Buscar</button>
+                    </div>
+                    <div class="grupoBusca-custom botaoLimpar ml-2">
+                        <button type="reset" class="btn btn-outline-secondary btnLimpar-custom" onclick="location.href='@Url.Action("Index")'">Limpar Busca</button>
+                    </div>
+                </div>
+                @if (Model != null && Model.Any())
+                {
+                    <!-- Botão Imprimir Relatório -->
+                    <div class="text-center mt-3">
+                        <a href="@Url.Action("Imprimir", "RelatorioProducao", new {
+                        numeroLote = ViewContext.HttpContext.Request.Query["numeroLote"],
+                        estagio = ViewContext.HttpContext.Request.Query["estagio"],
+                        dataInicio = ViewContext.HttpContext.Request.Query["dataInicio"],
+                        dataFim = ViewContext.HttpContext.Request.Query["dataFim"],
+                        produto = ViewContext.HttpContext.Request.Query["produto"]
+                        })" class="btn btn-warning btn-block" target="_blank">
+                            Imprimir Relatório <i class="fas fa-print"></i>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </form>
+</div>
+<br />
+<br />
+
+<!-- Tabela Responsiva -->
+<div class="container" style="padding-left: 70px">
+    <div class="table-responsive">
+        <table class="table table-hover table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Lote</th>
+                    <th scope="col" class="text-center">Produto</th>
+                    <th scope="col" class="text-center">Quantidade</th>
+                    <th scope="col" class="text-center">Estágio</th>
+                    <th scope="col" class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var lote in Model)
+                    {
+                        <tr>
+                            <td>@lote.LoteProducao.IdLote</td>
+                            <td class="text-center">
+                                @if (lote.LoteProducao.Produto != null)
+                                {
+                                    <span>@lote.LoteProducao.Produto.Descricao</span>
+                                }
+                                else
+                                {
+                                    <span>Produto não disponível</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                @lote.LoteProducao.Qtde
+                            </td>
+                            <td class="text-center">
+                                @lote.LoteProducao.DescricaoEstagio
+                            </td>
+                            <td class="text-center">
+                                <a class="btn btn-sm btn-info ml-1" href="@Url.Action("Detalhes", "RelatorioProducao", new { id = lote.LoteProducao.IdLote })">Detalhes</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center">Nenhum lote encontrado.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

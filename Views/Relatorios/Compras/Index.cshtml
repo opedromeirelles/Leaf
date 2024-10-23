@@ -13,7 +13,7 @@ else if (TempData["MensagemSucesso"] != null)
 }
 
 <div class="container" style="padding-left: 70px">
-	<h2 class="h2titulo">@ViewData["Title"]</h2>
+	<h2 class="h2titulo">@ViewData["Title"] de Insumos</h2>
 	@await Html.PartialAsync("_LoadingSpinner")
 
 	<form method="get" asp-action="Buscar" onsubmit="mostrarCarregando()">

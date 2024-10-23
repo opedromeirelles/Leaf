@@ -3,7 +3,7 @@ using Leaf.Models.Domain;
 
 namespace Leaf.Models.ItensDomain
 {
-    public class ItemLote
+    public class ItemLoteProducao
     {
 
         public int IdItemLote { get; set; }

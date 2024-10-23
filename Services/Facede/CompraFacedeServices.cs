@@ -1,6 +1,8 @@
 ﻿using Leaf.Models.Domain;
 using Leaf.Models.ViewModels;
-using Leaf.Services;
+using Leaf.Services.Agentes;
+using Leaf.Services.Compras;
+using Leaf.Services.Materiais;
 
 public class CompraFacedeServices
 {

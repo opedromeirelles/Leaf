@@ -9,7 +9,16 @@ namespace Leaf.Models.Domain
 
         public int? Estagio { get; set; }
 
-        [Required(ErrorMessage = "O código do produto é obrigatório")]
+		// Propriedade calculada que retorna a descrição do estágio
+		public string DescricaoEstagio
+		{
+			get
+			{
+				return Enum.IsDefined(typeof(EstagioProducao), Estagio) ? ((EstagioProducao)Estagio).ToString() : "Estágio Desconhecido";
+			}
+		}
+
+		[Required(ErrorMessage = "O código do produto é obrigatório")]
         public int IdProduto { get; set; }
         public Produto? Produto { get; set; }
         public int? Qtde { get; set; }
@@ -22,6 +31,25 @@ namespace Leaf.Models.Domain
         public int IdUsuario { get; set; }
         public Usuario? Usuario { get; set; }
 
+
+        // Enun de estagio padrao
+		public enum EstagioProducao
+		{
+			Semeadura = 1,
+			Crescimento = 2,
+			Desenvolvimento = 3,
+			Colheita = 4
+		}
+
+		// Método que obtém a descrição do estágio
+		public string ObterDescricaoEstagio()
+		{
+			return Enum.IsDefined(typeof(EstagioProducao), Estagio) ? Estagio.ToString() : "Estágio Desconhecido";
+		}
+
+        public LoteProducao()
+        {
+        }
 
     }
 }

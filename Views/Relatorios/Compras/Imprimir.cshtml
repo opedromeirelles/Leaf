@@ -36,8 +36,8 @@
         <div class="col-4 text-right">
             <p>Usuário: @User?.Identity?.Name</p>
             <div id="componenteImpressao" class="d-print-none">
-                <button class="btn btn-primary" onclick="imprimirRelatorio()">Imprimir</button>
                 <a href="@Url.Action("Index", "RelatorioCompras")" class="btn btn-secondary">Retornar</a>
+                <button class="btn btn-primary" onclick="imprimirRelatorio()">Imprimir</button>
             </div>
         </div>
     </div>
@@ -56,28 +56,30 @@
                     <li><strong>Número da Compra:</strong> @ViewBag.NumeroCompra</li>
                     algumFiltro = true;
                 }
-                if (!string.IsNullOrEmpty(ViewBag.Status))
+                if (string.IsNullOrEmpty(ViewBag.NumeroCompra))
                 {
-                    <li><strong>Status:</strong> @ViewBag.Status</li>
-                    algumFiltro = true;
+                    if (!string.IsNullOrEmpty(ViewBag.Status))
+                    {
+                        <li><strong>Status:</strong> @ViewBag.Status</li>
+                        algumFiltro = true;
+                    }
+                    if (!string.IsNullOrEmpty(ViewBag.Fornecedor) && ViewBag.Fornecedor != "0")
+                    {
+                        <li><strong>Fornecedor:</strong> @ViewBag.Fornecedor - @ViewBag.NomeFornecedor</li>
+                        algumFiltro = true;
+                    }
+                    if (!string.IsNullOrEmpty(ViewBag.Solicitante) && ViewBag.Solicitante != "0")
+                    {
+                        <li><strong>Solicitante:</strong> @ViewBag.Solicitante - @ViewBag.NomeSolicitante</li>
+                        algumFiltro = true;
+                    }
+                    if (!string.IsNullOrEmpty(filtroData) && filtroData != "Pedidos em todo o período")
+                    {
+                        <li><strong>@filtroData</strong></li>
+                        algumFiltro = true;
+                    }
                 }
-                if (!string.IsNullOrEmpty(ViewBag.Fornecedor) && ViewBag.Fornecedor != "0")
-                {
-                    <li><strong>Fornecedor:</strong> @ViewBag.Fornecedor - @ViewBag.NomeFornecedor</li>
-                    algumFiltro = true;
-                }
-                if (!string.IsNullOrEmpty(ViewBag.Solicitante) && ViewBag.Solicitante != "0")
-                {
-                    <li><strong>Solicitante:</strong> @ViewBag.Solicitante - @ViewBag.NomeSolicitante</li>
-                    algumFiltro = true;
-                }
-                if (!string.IsNullOrEmpty(filtroData) && filtroData != "Pedidos em todo o período")
-                {
-                    <li><strong>@filtroData</strong></li>
-                    algumFiltro = true;
-                }
-
-                // Mostrar "Nenhum filtro aplicado" apenas se nenhum filtro foi especificado
+                
                 if (!algumFiltro)
                 {
                     <li>Nenhum filtro aplicado</li>
@@ -91,24 +93,24 @@
         <table class="table table-hover table-bordered">
             <thead class="thead-dark">
                 <tr>
-                    <th scope="col">Nº Compra</th>
+                    <th scope="col" class="text-center">Nº Compra</th>
                     <th scope="col">Fornecedor</th>
                     <th scope="col">Solicitante</th>
-                    <th scope="col">Total de Itens</th>
-                    <th scope="col">Valor Total</th>
-                    <th scope="col">Status</th>
+                    <th scope="col" class="text-center">Total de Itens</th>
+                    <th scope="col" class="text-center">Valor Total</th>
+                    <th scope="col" class="text-center">Status</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var compra in Model)
                 {
                     <tr>
-                        <td>@compra.IdCompra</td>
+                        <td class="text-center">@compra.IdCompra</td>
                         <td>@(compra.Fornecedor != null ? compra.Fornecedor.Nome + " / " + compra.Fornecedor.Cnpj : "Fornecedor não associado")</td>
                         <td>@(compra.Vendedor != null ? compra.Vendedor.Nome : "Solicitante não associado")</td>
-                        <td>@(compra.ItensCompra != null ? compra.ItensCompra.Count : 0)</td>
-                        <td>R$ @(compra.ItensCompra != null ? compra.ItensCompra.Sum(item => item.SubTotal).ToString("#,##0.00") : "0,00")</td>
-                        <td>
+                        <td class ="text-center">@(compra.ItensCompra != null ? compra.ItensCompra.Count : 0)</td>
+                        <td class="text-center">R$ @(compra.ItensCompra != null ? compra.ItensCompra.Sum(item => item.SubTotal).ToString("#,##0.00") : "0,00")</td>
+                        <td class="text-center">
                             @{
                                 var status = compra?.Compra?.Status ?? "Indefinido";
                                 string statusClass = status switch
