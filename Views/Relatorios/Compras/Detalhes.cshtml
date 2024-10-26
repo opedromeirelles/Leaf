@@ -34,7 +34,7 @@ else if (TempData["MensagemSucesso"] != null)
 						<div class="card-body">
 							<h5 class="card-title"><i class="fas fa-info-circle"></i> Informações da Compra</h5>
 							<br />
-							<p><strong>Solicitante: </strong>@(@Model.Gerente?.Nome ?? "Não atribuído")</p>
+							<p><strong>Solicitante: </strong>@(@Model.Administrativo?.Nome ?? "Não atribuído")</p>
 							<p><strong>Data de Emissão: </strong>@(Model.Compra?.DtaEmissao != null ? Model.Compra.DtaEmissao.ToString("dd/MM/yyyy") : "Data não disponível")</p>
 							@if (Model.Compra?.DtaBaixa != null)
 							{

@@ -22,7 +22,7 @@ else if (TempData["MensagemSucesso"] != null)
    
 
     <!-- Informações principais do pedido -->
-    <form asp-action="NovaCompra" id="frmCompra" method="post">
+    <form id="frmCompra" method="post">
 
         <div class="card shadow-sm">
             <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
@@ -40,7 +40,7 @@ else if (TempData["MensagemSucesso"] != null)
                             <div class="card-body">
                                 <h5 class="card-title"><i class="fas fa-info-circle"></i> Informações do Pedido:</h5>
                                 <br />
-                                <p><strong>Solicitante: </strong>@administrativo.ToString() - @nomeAdministrativo.ToString()</p>
+                                <p><strong>Solicitante: </strong><span id="administrativo">@administrativo.ToString()</span> - @nomeAdministrativo.ToString()</p>
                                 <p><strong>Data da Emissão: </strong>@dataAtual.ToString("dd/MM/yyyy")</p>
                                 <p><strong>Valor Total:</strong> <span id="valorTotal">R$ 0 <!-- Valor gerado dinamicamente--></span></p>
                             </div>
@@ -100,7 +100,7 @@ else if (TempData["MensagemSucesso"] != null)
                 <!-- Botões à direita -->
                 <div class="text-right">
                     <a href="@Url.Action("Index", "Compra")" class="btn btn-danger"><i class="fas fa-times"></i> Cancelar</a>
-                    <button id="btnConfirmar" type="submit" class="btn btn-success ml-2"><i class="fas fa-check"></i> Confirmar</button>
+                    <button id="btnConfirmar" class="btn btn-success ml-2"><i class="fas fa-check"></i> Confirmar</button>
                 </div>
             </div>
 
@@ -120,4 +120,8 @@ else if (TempData["MensagemSucesso"] != null)
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <!-- Rotinas de compra-->
-<script src="/js/compra.js"></script>
+<script src="/js/compra/compra-main.js"></script>
+<script src="/js/compra/compra-modal.js"></script>
+<script src="/js/compra/pessoa.js"></script>
+<script src="/js/compra/insumo.js"></script>
+<script src="/js/compra/uteis.js"></script>

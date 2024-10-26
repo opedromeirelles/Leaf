@@ -1,6 +1,10 @@
 ﻿using Leaf.Models.Domain;
+using Leaf.Models.ViewModels.Json;
+using Leaf.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Leaf.Controllers.Ordens
 {
@@ -26,11 +30,36 @@ namespace Leaf.Controllers.Ordens
             return View();
         }
 
-        public IActionResult NovaCompra()
+       
+        
+        [HttpPost]
+        public JsonResult NovaCompra([FromBody] CompraJsonView compra)
         {
+            try
+            {
+                if (compra == null || compra.ItensCompra == null || !compra.ItensCompra.Any())
+                {
+                    return Json(new { Response = "Falha ao emitir compra: objeto de compra está vazio ou incompleto." });
+                }
 
-            return View();
+                // Supondo que `idPessoa`, `idAdministrativo`, etc., sejam verificados e processados aqui
+                // Log para verificar os dados recebidos
+                Console.WriteLine($"idPessoa: {compra.IdPessoa}");
+                Console.WriteLine($"idAdministrativo: {compra.IdAdministrativo}");
+                Console.WriteLine($"valorTotal: {compra.ValorTotal}");
+                Console.WriteLine($"itensCompra Count: {compra.ItensCompra.Count}");
+
+                // Processa a compra e retorna uma resposta
+                return Json(new { Response = "Compra emitida com sucesso" });
+            }
+            catch (Exception ex)
+            {
+                // Log do erro para inspeção
+                Console.WriteLine("Erro ao processar compra:", ex.Message);
+                return Json(new { Response = "Erro no processamento da compra", Error = ex.Message });
+            }
         }
+
 
         [HttpGet]
         public async Task<JsonResult> BuscarPessoa(int id)

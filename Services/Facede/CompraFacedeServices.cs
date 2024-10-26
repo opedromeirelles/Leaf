@@ -150,7 +150,7 @@ public class CompraFacedeServices
             IdCompra = compra.IdOc,
             Compra = compra,
             Fornecedor = _pessoaServices.GetPessoa(compra.IdPessoa),
-            Gerente =  _usuarioServices.GetUsuarioId(compra.IdUsuario),
+            Administrativo =  _usuarioServices.GetUsuarioId(compra.IdUsuario),
             ItensCompra = _itemCompraServices.GetItemCompras(compra.IdOc)
         };
 
