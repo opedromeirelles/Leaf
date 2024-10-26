@@ -49,6 +49,22 @@ namespace Leaf.Services.Agentes
             return pessoaRepository.GetFornecedores();
         }
 
+        // Método para consultar fornecedores vinculados a insumos
+        public async Task<List<Pessoa>> GetFornecedoresInsumosAsync(int idFornecedor)
+        {
+            try
+            {
+                PessoaRepository _pessoaRepository = new PessoaRepository(_dbConnectionManager);
+                List<Pessoa> pessoas = await _pessoaRepository.GetFornecedoresAsync(idFornecedor);
+
+                return pessoas.Any() ? pessoas : new List<Pessoa>();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Erro ao consultar fornecedor, erro: " + ex.Message);
+            }
+        }
 
         // Método para consultar uma pessoa pelo ID
         public Pessoa GetPessoa(int idPessoa)

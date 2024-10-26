@@ -26,5 +26,26 @@ namespace Leaf.Services.Compras
 
             return new List<ItemCompra>();
         }
+
+        public bool NovaCompraItens(int idOc, ItemCompra itemCompra)
+        {
+            try
+            {
+                if (idOc == 0 && itemCompra == null)
+                {
+                    return false;
+                }
+
+                ItemCompraRepository _itemCompraRepository = new ItemCompraRepository(_dbConnectionManager);
+                return _itemCompraRepository.NovoItemCompra(itemCompra);
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"Erro ao inserir novos itens a compra: {idOc}, erro: {ex.Message}");
+            }
+            
+        }
     }
 }

@@ -123,6 +123,45 @@ namespace Leaf.Repository.Agentes
             }
         }
 
+        public async Task<List<Pessoa>> GetFornecedoresAsync(int idFornecedor)
+        {
+            List<Pessoa> fornecedores = new List<Pessoa>();
+
+            string sql = @" SELECT DISTINCT  p.idpessoa, p.nome, p.tipo, p.cpf, p.cnpj, p.telefone1, p.telefone2, p.email1, p.email2
+                            from PESSOA p inner join INSUMO i
+                            on i.id_pessoa = p.idpessoa
+                            where 1=1";            
+
+            using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+                SqlCommand command = new SqlCommand(sql, conn);
+
+                if (idFornecedor != 0)
+                {
+                    sql += @" and i.id_pessoa = @idFornecedor";
+                    command.Parameters.AddWithValue("@idFornecedor", idFornecedor);
+                }
+
+                command.CommandText = sql;
+
+                try
+                {
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+                    while (await reader.ReadAsync())
+                    {
+                        fornecedores.Add(MapearPessoa(reader));
+                    }
+
+                    return fornecedores.Any() ? fornecedores : new List<Pessoa>();
+                }
+                catch (SqlException ex)
+                {
+
+                    throw new Exception("Não foi possivel trazer a lista de fornecedores, erro: " + ex.Message);
+                }
+            }
+        }
+
         public Pessoa GetPessoaCnpjNome(string dadosPessoa)
         {
             string sql = @"SELECT * from pessoa where 1=1";

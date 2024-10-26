@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Leaf.Models.Domain.Compra>
+﻿@model IEnumerable<Leaf.Models.ViewModels.CompraViewModel>
 @{
     ViewData["Title"] = "Compra";
 }
@@ -49,7 +49,7 @@ else if (TempData["MensagemSucesso"] != null)
 
                 <!-- Botão Nova Ordem de Compra -->
                 <div class="grupoBusca-custom btn-novo-container">
-                    <button type="button" class="btn btn-success btnNovoCadastro-custom" onclick="location.href='@Url.Action("NovaCompra")'">Nova Compra</button>
+                    <button type="button" class="btn btn-success btnNovoCadastro-custom" onclick="location.href='@Url.Action("Emitir")'">Nova Compra</button>
                 </div>
             </div>
         </form>
@@ -75,22 +75,22 @@ else if (TempData["MensagemSucesso"] != null)
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model.Any() && Model != null)
+                    @if ( Model != null && Model.Any())
                     {
                         @foreach (var compra in Model)
                         {
                             <tr>
-                                <td>@compra.IdOc</td>
-                                <td>@compra.ValorTotal</td>
-                                <td>@compra.Pessoa?.Nome</td>
-                                <td class="hide-column">@compra.DtaEmissao</td>
-                                <td class="hide-column">@compra.DtaBaixa</td>
-                                <td class="hide-column">@compra.DtaCancelamento</td>
-                                <td class="hide-column">@compra.Usuario?.Nome</td>
+                                <td>@compra.IdCompra</td>
+                                <td>@compra.Compra.ValorTotal</td>
+                                <td>@compra.Fornecedor?.Nome</td>
+                                <td class="hide-column">@compra.Compra.DtaEmissao</td>
+                                <td class="hide-column">@compra.Compra..DtaBaixa</td>
+                                <td class="hide-column">@compra.Compra..DtaCancelamento</td>
+                                <td class="hide-column">@compra.Gerente.Nome</td>
 
                                 <td>
-                                    <a href="@Url.Action("Editar", "Pessoa", new { id = compra.IdOc })">Editar</a> |
-                                    <a href="@Url.Action("Detalhes", "Pessoa", new { id = compra.IdOc })">Detalhes</a>
+                                    <a href="@Url.Action("Editar", "Pessoa", new { id = compra.IdCompra })">Editar</a> |
+                                    <a href="@Url.Action("Detalhes", "Pessoa", new { id = compra.IdCompra })">Detalhes</a>
                                 </td>
                             </tr>
                         }

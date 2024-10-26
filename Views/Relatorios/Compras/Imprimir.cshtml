@@ -107,7 +107,7 @@
                     <tr>
                         <td class="text-center">@compra.IdCompra</td>
                         <td>@(compra.Fornecedor != null ? compra.Fornecedor.Nome + " / " + compra.Fornecedor.Cnpj : "Fornecedor não associado")</td>
-                        <td>@(compra.Vendedor != null ? compra.Vendedor.Nome : "Solicitante não associado")</td>
+                        <td>@(compra.Gerente != null ? compra.Gerente.Nome : "Solicitante não associado")</td>
                         <td class ="text-center">@(compra.ItensCompra != null ? compra.ItensCompra.Count : 0)</td>
                         <td class="text-center">R$ @(compra.ItensCompra != null ? compra.ItensCompra.Sum(item => item.SubTotal).ToString("#,##0.00") : "0,00")</td>
                         <td class="text-center">

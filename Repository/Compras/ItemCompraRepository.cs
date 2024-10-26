@@ -27,13 +27,8 @@ namespace Leaf.Repository.Compras
 
         }
 
-        public bool NovoItemCompra(int idOc, ItemCompra itemCompra)
+        public bool NovoItemCompra(ItemCompra itemCompra)
         {
-            if (itemCompra == null || idOc == 0)
-            {
-                return false;
-            }
-
             string sql = @"insert into ITEM_OC
                            values (@id_insumo, @quantidade, @subtotal, @id_oc)";
 
@@ -43,9 +38,9 @@ namespace Leaf.Repository.Compras
                 SqlCommand command = new SqlCommand(sql, conn);
                 List<SqlParameter> parametros = new List<SqlParameter>
                 {
-                    new SqlParameter("id_insumo", itemCompra.IdInsumo),
-                    new SqlParameter("quantidade", itemCompra.Quantidade),
-                    new SqlParameter("subtotal", itemCompra.SubTotal),
+                    new SqlParameter("@id_insumo", itemCompra.IdInsumo),
+                    new SqlParameter("@quantidade", itemCompra.Quantidade),
+                    new SqlParameter("@subtotal", itemCompra.SubTotal),
                     new SqlParameter("@id_oc", itemCompra.IdOc),
                 };
                 try

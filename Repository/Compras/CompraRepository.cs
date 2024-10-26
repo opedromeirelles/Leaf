@@ -43,9 +43,9 @@ namespace Leaf.Repository.Compras
                 SqlCommand command = new SqlCommand(sql, conn);
 
                 // Adicionar parâmetros
-                command.Parameters.Add(new SqlParameter("@status", compra.Status));
+                command.Parameters.Add(new SqlParameter("@status", "EM"));
                 command.Parameters.Add(new SqlParameter("@id_pessoa", compra.IdPessoa));
-                command.Parameters.Add(new SqlParameter("@dta_emissao", compra.DtaEmissao));
+                command.Parameters.Add(new SqlParameter("@dta_emissao", DateTime.Now));
                 command.Parameters.Add(new SqlParameter("@dta_baixa", compra.DtaBaixa.HasValue ? compra.DtaBaixa.Value : DBNull.Value));
                 command.Parameters.Add(new SqlParameter("@dta_cancelamento", compra.DtaCancelamento.HasValue ? compra.DtaCancelamento.Value : DBNull.Value));
                 command.Parameters.Add(new SqlParameter("@id_usuario", compra.IdUsuario));

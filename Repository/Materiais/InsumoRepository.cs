@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using Leaf.Data;
 using Leaf.Models.Domain;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Leaf.Repository.Materiais
 {
@@ -17,17 +18,28 @@ namespace Leaf.Repository.Materiais
         // MÉTODO PARA MAPEAR INSUMO
         public Insumo MapearInsumo(SqlDataReader reader)
         {
-            return new Insumo
+            try
             {
-                IdInsumo = Convert.ToInt32(reader["idinsumo"]),
-                CodBarras = reader["cod_barras"].ToString(),
-                Descricao = reader["descricao"].ToString(),
-                UnidadeMedida = reader["unidade_medida"].ToString(),
-                Status = Convert.ToInt32(reader["status"]),
-                ValorUnitario = Convert.ToDecimal(reader["valor_unitario"]),
-                QtdeEstoque = Convert.ToInt32(reader["qtde_estoque"]),
-                IdPessoa = Convert.ToInt32(reader["id_pessoa"])
-            };
+                return new Insumo
+                {
+                    IdInsumo = reader["idinsumo"] != DBNull.Value ? Convert.ToInt32(reader["idinsumo"]) : 0,
+                    CodBarras = reader["cod_barras"] != DBNull.Value ? reader["cod_barras"].ToString() : string.Empty,
+                    Descricao = reader["descricao"] != DBNull.Value ? reader["descricao"].ToString() : string.Empty,
+                    UnidadeMedida = reader["unidade_medida"] != DBNull.Value ? reader["unidade_medida"].ToString() : string.Empty,
+                    Status = reader["status"] != DBNull.Value ? Convert.ToInt32(reader["status"]) : 0,
+                    ValorUnitario = reader["valor_unitario"] != DBNull.Value ? Convert.ToDecimal(reader["valor_unitario"]) : 0.0m,
+                    QtdeEstoque = reader["qtde_estoque"] != DBNull.Value ? Convert.ToInt32(reader["qtde_estoque"]) : 0,
+                    IdPessoa = reader["id_pessoa"] != DBNull.Value ? Convert.ToInt32(reader["id_pessoa"]) : 0
+                };
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+           
+
         }
 
         // MÉTODOS DE BUSCA
@@ -53,6 +65,45 @@ namespace Leaf.Repository.Materiais
                 {
                     return null;
                 }
+            }
+        }
+
+        public async Task<List<Insumo>> GetInsumosFornecedor(int idFornecedor)
+        {
+            List<Insumo> insumos = new List<Insumo>();
+
+            string sql = @"select i.idinsumo, i.cod_barras, i.descricao, i.unidade_medida, i.valor_unitario, i.qtde_estoque, i.id_pessoa, i.status
+                           from insumo i inner join pessoa p on i.id_pessoa = p.idpessoa
+                           where 1=1";
+
+
+            using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+                SqlCommand command = new SqlCommand(sql, conn);
+
+                if (idFornecedor != 0)
+                {
+                    sql += " and p.idpessoa = @idFornecedor";
+                    command.Parameters.AddWithValue("@idFornecedor", idFornecedor);
+                }
+
+                command.CommandText = sql;
+
+                try
+                {
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+                    while (await reader.ReadAsync())
+                    {
+                        insumos.Add(MapearInsumo(reader));
+                    }
+
+                    return insumos.Any() ? insumos : new List<Insumo>();
+                }
+                catch (SqlException ex)
+                {
+
+                    throw new Exception("Erro ao listar insumos, erro: " + ex.Message);
+                }                
             }
         }
 

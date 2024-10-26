@@ -1,0 +1,123 @@
+﻿@model Leaf.Models.ViewModels.CompraViewModel
+@using System.Security.Claims
+
+@{
+    var administrativo = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Id Usuário desconhecido";
+    var nomeAdministrativo = User.FindFirst(ClaimTypes.Name)?.Value ?? "Nome Usuário desconhecido";
+    var dataAtual = DateTime.Now;
+
+    ViewData["Title"] = "Nova Ordem de Compra";
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+    <span id="eventoErro" class="alert alert-danger">@TempData["MensagemErro"]</span>
+}
+else if (TempData["MensagemSucesso"] != null)
+{
+    <span id="eventoSucesso" class="alert alert-success">@TempData["MensagemSucesso"]</span>
+}
+
+<div class="container mt-5 mp-5 pl-5 mb-5" style="padding-left: 80px">
+   
+
+    <!-- Informações principais do pedido -->
+    <form asp-action="NovaCompra" id="frmCompra" method="post">
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0">@ViewData["Title"]</h3>
+                <span class="badge badge-pill">
+                    Processo de compra
+                </span>
+            </div>
+
+            <div class="card-body">
+                <!-- Sessão 1: Informações do Pedido -->
+                <div class="row mb-4">
+                    <div class="col-md-4 mb-4">
+                        <div class="card border-0">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-info-circle"></i> Informações do Pedido:</h5>
+                                <br />
+                                <p><strong>Solicitante: </strong>@administrativo.ToString() - @nomeAdministrativo.ToString()</p>
+                                <p><strong>Data da Emissão: </strong>@dataAtual.ToString("dd/MM/yyyy")</p>
+                                <p><strong>Valor Total:</strong> <span id="valorTotal">R$ 0 <!-- Valor gerado dinamicamente--></span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Atribuir Pessoa -->
+                    <div class="col-md-4 mb-4">
+                        <div class="card border-0">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-user"></i> Fornecedor:</h5>
+                                @await Html.PartialAsync("PartialView/BuscarPessoa")
+                                <div id="sessaoUsuario">
+                                    <!-- Informações do fornecedor geradas dinamicamente -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Atribuir Insumos -->
+                    <div class="col-md-4 mb-4">
+                        <div class="card border-0">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-box"></i> Insumos:</h5>
+                                @await Html.PartialAsync("PartialView/BuscarInsumo")
+                                <div id="sessaoInsumos">
+                                    <!-- Informações de insumos geradas dinamicamente -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sessão 2: Lista de Produtos do Pedido -->
+                <h5 class="mt-4"><i class="fas fa-boxes"></i> Itens do Pedido</h5>
+                <div class="table-responsive mt-3">
+                    <table class="table table-hover table-bordered">
+                        <thead class="bg-dark text-white">
+                            <tr>
+                                <th>Descrição</th>
+                                <th class="text-center">Quantidade</th>
+                                <th class="text-center">Valor Unitário</th>
+                                <th class="text-center">Subtotal</th>
+                                <th class="text-center">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listaInsumos">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Botões de Controle -->
+            <div id="btnControles" class="justify-content-between m-3">
+                <!-- Botão à esquerda -->
+                <button id="btnReiniciarCompra" hidden type="button" class="btn btn-outline-secondary btnLimpar-custom"><i class="fas fa-redo"></i> Reiniciar Compra</button>
+
+                <!-- Botões à direita -->
+                <div class="text-right">
+                    <a href="@Url.Action("Index", "Compra")" class="btn btn-danger"><i class="fas fa-times"></i> Cancelar</a>
+                    <button id="btnConfirmar" type="submit" class="btn btn-success ml-2"><i class="fas fa-check"></i> Confirmar</button>
+                </div>
+            </div>
+
+
+        </div>       
+    </form>
+</div>
+
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+<!-- Referências ao Bootstrap e jQuery -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<!-- Rotinas em AJAX-->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Rotinas de compra-->
+<script src="/js/compra.js"></script>

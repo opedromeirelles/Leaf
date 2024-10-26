@@ -8,7 +8,7 @@ namespace Leaf.Models.ViewModels
 	{
         public int IdCompra { get; set; }
         public Compra Compra { get; set; }
-        public Usuario Vendedor { get; set; }
+        public Usuario Gerente { get; set; }
         public Pessoa Fornecedor { get; set; }
 
         public List<ItemCompra> ItensCompra { get; set; }

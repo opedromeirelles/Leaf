@@ -42,6 +42,23 @@ namespace Leaf.Services.Materiais
             }
         }
 
+        // Listar Insumos vinculado a uma pessoa (se tiver)
+        public async Task<List<Insumo>> ListarInsumosFornecedoresAsync(int idFornecedor)
+        {
+            try
+            {
+                InsumoRepository _insumoRepository = new InsumoRepository(_dbConnectionManager);
+                List<Insumo> insumos = await _insumoRepository.GetInsumosFornecedor(idFornecedor);
+
+                return insumos.Any() ? insumos : new List<Insumo>();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Não foi possivel listar os insumos, erro: " + ex.Message);
+            }
+        }
+
         // Listar insumos por pessoa
         public List<Insumo> ListarInsumosForPessoa(int idPessoa)
         {

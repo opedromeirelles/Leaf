@@ -7,7 +7,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="pessoaModal" tabindex="-1" aria-labelledby="pessoaModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="pessoaModalLabel">Vincular Pessoa</h5>
@@ -31,18 +31,20 @@
                             <tr>
                                 <th scope="col">Nome</th>
                                 <th scope="col">CNPJ</th>
-                                <th scope="col">Telefone</th>
+                                <th scope="col" class="text-center">Telefone</th>
+                                <th scope="col" class="text-center">Selecionar</th>
                             </tr>
                         </thead>
                         <tbody id="listaPessoa">
+                            <!--Lista dinamicamente-->
                         </tbody>
                     </table>
                     <span id="mensagemControlePessoa"></span>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="btnVincularPessoa">Adicionar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Retornar</button>
+                <button type="button" class="btn btn-primary" id="btnVincularPessoa" data-dismiss="modal">Vincular</button>
             </div>
         </div>
     </div>
