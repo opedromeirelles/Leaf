@@ -46,6 +46,7 @@ function buscarInsumos(idPessoa) {
 
 // Função para construir insumos no modal
 function popularHtmlInsumosInModel(insumos) {
+
     if (insumos && insumos.length > 0) {
         $('#listaInsumo').html('');
 
@@ -69,6 +70,8 @@ function popularHtmlInsumosInModel(insumos) {
                 `);
         });
     }
+
+    
 }
 
 
@@ -76,58 +79,44 @@ function popularHtmlInsumosInModel(insumos) {
 function listarInsumos(insumos) {
 
     if (idPessoa !== 0) {
-
         // Exibe no modal o fornecedor vinculado
         $('#pessoaVinculada').html(`de <b>${pessoaNomeAtual}</b> - <a href="#" onclick="desvincularPessoa()">desvincular</a>`);
-
     }
-    
-    
-    // Filtra insumos que já foram adicionados ao itemCompra
+
+    // Filtra insumos que já foram adicionados ao itemCompra para não duplicá-los no pedido
     var insumosDisponiveis = insumos.filter(insumo => !itemCompra.some(item => item.id === insumo.idInsumo));
 
-    // Verifica se há insumos disponíveis após o filtro
-    if (insumosDisponiveis.length === 0) {
-        html = '<tr><td colspan="6" class="text-center">Nenhum insumo disponível</td></tr>';
-        $('#listaInsumo').html(html);
+    // Filtra os insumos disponíveis para armazenar no vetor de visualização insumosModal
+    insumosModal = insumosDisponiveis.filter(insumo => idPessoa === 0 || insumo.idPessoa === idPessoa);
+
+    // Verifica se há insumos disponíveis no vetor de visualização
+    if (insumosModal.length === 0) {
+        $('#listaInsumo').html('<tr><td colspan="6" class="text-center">Nenhum insumo disponível</td></tr>');
         return;
     }
 
+    // Limpa a lista antes de exibir os insumos disponíveis
     $('#listaInsumo').html('');
 
-    // Verifica se um idPessoa foi selecionado, se não, lista todos os insumos
-    insumosDisponiveis.forEach(function (insumo) {
-        // Se idPessoa for 0 (nenhum insumo selecionado ainda) ou o insumo pertence à idPessoa
-        if (idPessoa === 0 || insumo.idPessoa === idPessoa) {
+    // Itera sobre os insumos disponíveis e exibe-os no modal
+    insumosModal.forEach(function (insumo) {
 
-            var negativo = insumo.qtdeEstoque === 0 ? 'text-danger' : '';
+        var negativo = insumo.qtdeEstoque === 0 ? 'text-danger' : '';
 
-            $('#listaInsumo').append(`
-                        <tr id="insumo-${insumo.idInsumo}">
-                            <td>${insumo.descricao}</td>
-                            <td class="text-center">${insumo.valorUnitario.toFixed(2)}</td>
-                            <td class="text-center"><input type="number" class="form-control text-center" id="quantidadeInsumo-${insumo.idInsumo}" value="1" min="1" max="999999"></td>
-                            <td class="text-center">${insumo.unidadeMedida}</td>
-                            <td class="text-center ${negativo}">${insumo.qtdeEstoque}</td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-primary" onclick="adicionarInsumo(${insumo.idInsumo}, '${insumo.descricao}', ${insumo.qtdeEstoque},${insumo.valorUnitario}, ${insumo.idPessoa})">
-                                    +
-                                </button>
-                            </td>
-                        </tr>
-                `);
-           
-
-            // Alimenta o vetor de controle de insumos
-            if (insumosModal && insumosModal.length > 0) {
-                var contemInsumo = insumosModal.find(i => i.idInsumo === insumo.idInsumo);
-                if (!contemInsumo) {
-                    insumosModal.push(insumo);
-                }
-            } else {
-                insumosModal.push(insumo);
-            }
-        }    
+        $('#listaInsumo').append(`
+            <tr id="insumo-${insumo.idInsumo}">
+                <td>${insumo.descricao}</td>
+                <td class="text-center">${parseFloat(insumo.valorUnitario).toFixed(2)}</td>
+                <td class="text-center"><input type="number" class="form-control text-center" id="quantidadeInsumo-${insumo.idInsumo}" value="1" min="1" max="999999"></td>
+                <td class="text-center">${insumo.unidadeMedida}</td>
+                <td class="text-center ${negativo}">${insumo.qtdeEstoque}</td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-primary" onclick="adicionarInsumo(${insumo.idInsumo}, '${insumo.descricao}', ${insumo.qtdeEstoque}, ${insumo.valorUnitario}, ${insumo.idPessoa})">
+                        +
+                    </button>
+                </td>
+            </tr>
+        `);
     });
 }
 
@@ -156,6 +145,12 @@ function adicionarInsumo(idInsumo, descricao, valorUnitario, qtdeEstoque, insumo
         // Permitir o reinício da compra
         $('#btnControles').addClass('d-flex');
         $('#btnReiniciarCompra').removeAttr('hidden').show();
+    } else {
+
+        // Atualizar insumos modais
+        insumosModal = [];
+        // Buscar insumos e pessoa associada
+        buscarInsumos(idPessoa);
     }
 
     // Adiciona o insumo ao vetor `itemCompra` e atualiza a view
@@ -178,32 +173,25 @@ function adicionarInsumo(idInsumo, descricao, valorUnitario, qtdeEstoque, insumo
 
 // Se insumo for válido, adiciona na lista e atualiza a view
 function addInsumoItem(insumo) {
-    if (insumo) {
+
+   if (insumo) {
+        insumo.valorUnitario = parseFloat(insumo.valorUnitario); // Garantindo que seja numérico
+        insumo.subTotal = insumo.quantidade * insumo.valorUnitario;
         itemCompra.push(insumo);
 
-        // Calcula o total do insumo e formata como moeda
-        var total = insumo.quantidade * insumo.valorUnitario;
-
-        // Função para formatar valores em moeda
-        const formatarMoeda = (valor) => {
-            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
-        };
-
-        // Atualiza a lista de insumos na view
         $('#listaInsumos').append(`
             <tr id="insumo-item-${insumo.id}">
                 <td>${insumo.descricao}</td>
                 <td class="text-center">${insumo.quantidade}</td>
                 <td class="text-center">${formatarMoeda(insumo.valorUnitario)}</td>
-                <td class="text-center">${formatarMoeda(total)}</td>
+                <td class="text-center">${formatarMoeda(insumo.subTotal)}</td>
                 <td class="text-center">
                     <button type="button" class="btn btn-danger" onclick="removerInsumoItem(${insumo.id})">X</button>
                 </td>
             </tr>
         `);
 
-        // Atualiza o valor total
-        calcularValorTotal();
+        calcularValorTotal(); // Atualiza o total após adicionar item
     }
 }
 

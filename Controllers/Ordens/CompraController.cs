@@ -30,8 +30,8 @@ namespace Leaf.Controllers.Ordens
             return View();
         }
 
-       
-        
+
+
         [HttpPost]
         public JsonResult NovaCompra([FromBody] CompraJsonView compra)
         {
@@ -39,24 +39,24 @@ namespace Leaf.Controllers.Ordens
             {
                 if (compra == null || compra.ItensCompra == null || !compra.ItensCompra.Any())
                 {
-                    return Json(new { Response = "Falha ao emitir compra: objeto de compra está vazio ou incompleto." });
+                    return Json(new { Response = false, Message = "Dados da compra estão incompletos." });
                 }
 
-                // Supondo que `idPessoa`, `idAdministrativo`, etc., sejam verificados e processados aqui
-                // Log para verificar os dados recebidos
-                Console.WriteLine($"idPessoa: {compra.IdPessoa}");
-                Console.WriteLine($"idAdministrativo: {compra.IdAdministrativo}");
-                Console.WriteLine($"valorTotal: {compra.ValorTotal}");
-                Console.WriteLine($"itensCompra Count: {compra.ItensCompra.Count}");
+                ProcessarCompraResult resultado = _compraFacedeServices.ProcessarCompra(compra);
 
-                // Processa a compra e retorna uma resposta
-                return Json(new { Response = "Compra emitida com sucesso" });
+                if (resultado.Sucesso)
+                {
+                    return Json(new { Response = true, Message = resultado.Mensagem ?? "Compra emitida com sucesso." });
+                }
+                else
+                {
+                    return Json(new { Response = false, Message = resultado.Mensagem ?? "Erro desconhecido ao emitir compra." });
+                }
             }
             catch (Exception ex)
             {
-                // Log do erro para inspeção
                 Console.WriteLine("Erro ao processar compra:", ex.Message);
-                return Json(new { Response = "Erro no processamento da compra", Error = ex.Message });
+                return Json(new { Response = false, Message = "Erro no processamento da compra.", Error = ex.Message });
             }
         }
 

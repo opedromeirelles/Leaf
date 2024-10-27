@@ -13,18 +13,19 @@ function blockEnter(idFormulario) {
     });
 }
 
-// Função para calcular o valor total e atualizar o elemento #valorTotal
+// Função de formatação de moeda em reais
+function formatarMoeda(valor) {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
+}
+
+
+
+// Função para calcular o valor total de todos os itens
 function calcularValorTotal() {
     let valorTotal = itemCompra.reduce((acc, item) => acc + (item.quantidade * item.valorUnitario), 0);
-
-    // Função para formatar valores em moeda
-    const formatarMoeda = (valor) => {
-        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
-    };
-
-    // Atualiza o valor total na view
     $('#valorTotal').text(formatarMoeda(valorTotal));
 
-    // Atualiza a variável global de valor total
     valorTotalInsumos = valorTotal;
+
+    return valorTotal;
 }

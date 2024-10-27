@@ -23,12 +23,15 @@ $(document).ready(function () {
 
         // verifico se o ID da pessoa ja esta zerado
         if (idPessoa === 0) {
+
             idPessoa = pessoaSelecionada.id;
             // log fornecedor atualizado -> console.log(`Fornecedor atualizado para: ${pessoaSelecionada.nome}`);
             poularHtmlPessoaModel(pessoaSelecionada.nome, pessoaSelecionada.cnpj); // Construir informações na view
 
-            pessoaNomeAtual = `${pessoaSelecionada.nome}`;
+            // Atualiza nome global
+            pessoaNomeAtual = pessoaSelecionada.nome; 
 
+            
 
         } else {
 
@@ -50,7 +53,7 @@ $(document).ready(function () {
                     $('#listaInsumos').html('');
 
                     // Atualiza nome global
-                    pessoaNomeAtual = `${pessoaSelecionada.nome}`;
+                    pessoaNomeAtual = pessoaSelecionada.nome; 
 
                     // Atualiza o valor total na view
                     $('#valorTotal').text('R$ 0');

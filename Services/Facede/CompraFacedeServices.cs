@@ -1,6 +1,7 @@
 ﻿using Leaf.Models.Domain;
 using Leaf.Models.ItensDomain;
 using Leaf.Models.ViewModels;
+using Leaf.Models.ViewModels.Json;
 using Leaf.Services.Agentes;
 using Leaf.Services.Compras;
 using Leaf.Services.Materiais;
@@ -39,7 +40,48 @@ public class CompraFacedeServices
         return insumos.Any() ? insumos : new List<Insumo>();
     }
     
-    public bool EmitirCompra(CompraViewModel compraViewModel)
+    public ProcessarCompraResult ProcessarCompra(CompraJsonView compraJson)
+    {
+        //validar se a compra existe
+        if (compraJson == null)
+        {
+            return new ProcessarCompraResult(false, "Compra inválida");
+        }
+
+        // Validar Solicitante
+        if (compraJson.IdAdministrativo == 0)
+        {
+            return new ProcessarCompraResult(false, "Não há solicitantes vinculado a compra.");
+        }
+
+
+        //validar se todos os insumos fazem parte do mesmo fornecedor       
+        Pessoa pessoa = _pessoaServices.GetPessoa(compraJson.IdPessoa);
+
+        foreach (var item in compraJson.ItensCompra)
+        {
+            Insumo insumo = _insumoServices.GetInsumo(item.IdInsumo);
+            if (pessoa.IdPessoa != insumo.IdPessoa)
+            {
+                return new ProcessarCompraResult(false, $"O insumo: '{insumo.Descricao}', não pertence há o fornecedor: '{pessoa.Nome}'.");
+            };                
+        }
+
+        //Validar valor total
+        decimal valorTotalBack = compraJson.ItensCompra.Sum(i => i.ValorUnitario * i.Quantidade);
+
+        if (valorTotalBack != compraJson.ValorTotal)
+        {
+            return new ProcessarCompraResult(false, $"O valor final da compra de '{compraJson.ValorTotal}', foi diferente do valor calclado internamente de '{valorTotalBack}'");
+        }
+
+        return new ProcessarCompraResult(true, "Compra emitida.");
+        
+    }
+
+
+    // Nova compra
+    private bool EmitirCompra(CompraViewModel compraViewModel)
     {
         //Alimento minha compra
         Compra compra = compraViewModel.Compra;

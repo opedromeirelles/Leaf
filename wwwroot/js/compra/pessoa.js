@@ -21,8 +21,10 @@ function setIdPessoaSelecionada(id, nome, cnpj) {
 }
 
 
+
 // Função para buscar e listar as pessoas no banco - CHAMADA AJAX
 function buscarPessoas(id) {
+    $('#listaPessoa').html('<tr><td colspan="4" class="text-center">Carregando...</td></tr>'); // Exibe o loading antes de iniciar a chamada AJAX
 
     $.ajax({
         url: '/Compra/BuscarPessoa',
@@ -34,12 +36,49 @@ function buscarPessoas(id) {
         },
         error: function (xhr, status, error) {
             console.error('Erro ao buscar pessoas:', xhr.responseText);
+            $('#listaPessoa').html('<tr><td colspan="4" class="text-center text-danger">Erro ao carregar pessoas</td></tr>');
         },
-
     });
 }
 
-// pegar pessoa expecifica - CHAMADA AJAX
+// Função para exibir uma pessoa na tabela do modal
+function popularHtmlPessoasInModel(pessoa) {
+    var isChecked = (pessoa.idPessoa === idPessoa) ? 'checked' : '';
+
+    $('#listaPessoa').append(`
+        <tr>
+            <td>${pessoa.nome}</td>
+            <td>${pessoa.cnpj || 'N/A'}</td>
+            <td class="text-center">${pessoa.telefone1 || 'N/A'}</td>
+            <td class="text-center">
+                <input type="radio" name="pessoaSelecionada" value="${pessoa.idPessoa}" onclick="setIdPessoaSelecionada(${pessoa.idPessoa}, '${pessoa.nome}', '${pessoa.cnpj}')" ${isChecked}>
+            </td>
+        </tr>
+    `);
+}
+
+// Função para listar pessoas na tabela do modal e alimentar a lista de controle pessoasModal
+function listarPessoas(listaPessoas) {
+    $('#listaPessoa').html(''); // Limpa o conteúdo atual
+
+    if (!Array.isArray(listaPessoas) || listaPessoas.length === 0) {
+        // Caso não haja pessoas na lista, exibe a mensagem "Nenhuma pessoa disponível"
+        $('#listaPessoa').html('<tr><td colspan="4" class="text-center">Nenhuma pessoa disponível</td></tr>');
+        return;
+    }
+
+    // Caso haja pessoas, popula a lista
+    listaPessoas.forEach(function (pessoa) {
+        popularHtmlPessoasInModel(pessoa);
+
+        // Adiciona a pessoa à lista de pessoasModal se ainda não estiver presente
+        if (!pessoasModal.some(p => p.idPessoa === pessoa.idPessoa)) {
+            pessoasModal.push(pessoa);
+        }
+    });
+}
+
+// Função para obter uma pessoa específica - CHAMADA AJAX
 function getPessoa(id) {
     return new Promise((resolve, reject) => {
         $.ajax({
@@ -48,16 +87,15 @@ function getPessoa(id) {
             dataType: 'json',
             data: { id: id },
             success: function (pessoas) {
-                resolve(pessoas); // Resolve a Promise com os dados recebidos
+                resolve(pessoas); 
             },
             error: function (xhr, status, error) {
                 console.error('Erro ao buscar pessoas:', xhr.responseText);
-                reject(error); // Rejeita a Promise em caso de erro
+                reject(error); 
             }
         });
     });
 }
-
 
 
 
@@ -72,46 +110,6 @@ function poularHtmlPessoaModel(nome, cnpj) {
     // Permitir o reinício da compra
     $('#btnControles').addClass('d-flex');
     $('#btnReiniciarCompra').removeAttr('hidden').show();
-}
-
-// listar pessoas na tabela do modal com ou sem filtro
-function popularHtmlPessoasInModel(pessoa) {
-
-    var isChecked = (pessoa.idPessoa === idPessoa) ? 'checked' : '';    
-
-    $('#listaPessoa').append(`
-        <tr>
-            <td>${pessoa.nome}</td>
-            <td>${pessoa.cnpj || 'N/A'}</td>
-            <td class="text-center">${pessoa.telefone1 || 'N/A'}</td>
-            <td class="text-center">
-                <input type="radio" name="pessoaSelecionada" value="${pessoa.idPessoa}" onclick="setIdPessoaSelecionada(${pessoa.idPessoa}, '${pessoa.nome}', '${pessoa.cnpj}')" ${isChecked}>
-            </td>
-        </tr>
-    `);
-
-}
-
-// Função para listar pessoas na tabela do modal e alimentar minha lista de pessoas para controle
-function listarPessoas(listaPessoas) {
-    $('#listaPessoa').html('');
-
-    listaPessoas.forEach(function (pessoa) {
-        popularHtmlPessoasInModel(pessoa);
-
-        // Adiciona a pessoa a lista de pessoasModal se não estiver presente
-        if (Array.isArray(pessoasModal) && pessoasModal.length > 0) {
-            var contem = pessoasModal.find(p => p.idPessoa === pessoa.idPessoa);
-
-            if (!contem) {
-                pessoasModal.push(pessoa);
-            }
-        } else {
-            // Garante que pessoasModal é um array e adiciona a pessoa
-            pessoasModal = pessoasModal || []; // Caso esteja null ou undefined
-            pessoasModal.push(pessoa);
-        }
-    });
 }
 
 
@@ -134,8 +132,10 @@ function vincularPessoaInsumo(idPessoa) {
                 // Exibe na view as informações do fornecedor
                 poularHtmlPessoaModel(fornecedor.nome, fornecedor.cnpj);
 
+                pessoaNomeAtual = fornecedor.nome;
+
                 // Exibe no modal o fornecedor vinculado
-                $('#pessoaVinculada').html(`de <b>${fornecedor.nome}</b> - <a href="#" onclick="desvincularPessoa()">desvincular</a>`);                
+                $('#pessoaVinculada').html(`de <b>${pessoaNomeAtual}</b> - <a href="#" onclick="desvincularPessoa()">desvincular</a>`);                
 
                 // Permitir o reinício da compra
                 $('#btnControles').addClass('d-flex');
