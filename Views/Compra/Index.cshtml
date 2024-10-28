@@ -23,17 +23,16 @@ else if (TempData["MensagemSucesso"] != null)
             <div class="linha-superior-custom">
                 <!-- Campo de busca por numero -->
                 <div class="grupoBusca-custom">
-                    <input type="text" class="form-control txtBuscar-custom" placeholder="Nº da Compra" name="idOc" aria-label="Recipient's username">
+                    <input type="text" class="form-control txtBuscar-custom" placeholder="Nº da Compra" name="numeroConta" aria-label="Recipient's username">
                 </div>
 
                 <!-- Filtro por status -->
                 <div class="grupoBusca-custom tipoBusca">
                     <select class="form-control cbBusca-custom bg-secondary text-light" name="status">
-                        <option value="">Tipo</option>
+                        <option value="">Status</option>
                         <option value="EM">Emitido</option>
                         <option value="BX">Baixado</option>
                         <option value="CA">Cancelado</option>
-
                     </select>
                 </div>
 
@@ -65,33 +64,42 @@ else if (TempData["MensagemSucesso"] != null)
                 <thead>
                     <tr>
                         <th scope="col">Nº Compra</th>
-                        <th scope="col">Valor Total</th>
-                        <th scope="col">Status</th>
+                        <th scope="col" class="text-center">Valor Total</th>
+                        <th scope="col" class="text-center">Status</th>
                         <th scope="col" class="hide-column">Pessoa</th>
-                        <th scope="col" class="hide-column">Data Emissão</th>
-                        <th scope="col" class="hide-column">Data Baixa</th>
-                        <th scope="col" class="hide-column">Data Cancelamento</th>
-                        <th scope="col" class="hide-column">Vendedor</th>
+                        <th scope="col" class="hide-column text-center">Data Emissão</th>
+                        <th scope="col" class="hide-column">Solicitante</th>
+                        <th scope="col" class="hide-column">Ferramentas</th>
+
                     </tr>
                 </thead>
                 <tbody>
-                    @if ( Model != null && Model.Any())
+                    @if (Model != null && Model.Any())
                     {
                         @foreach (var compra in Model)
                         {
                             <tr>
                                 <td>@compra.IdCompra</td>
-                                <td>@compra.Compra.ValorTotal</td>
-                                <td>@compra.Fornecedor?.Nome</td>
-                                <td class="hide-column">@compra.Compra.DtaEmissao</td>
-                                <td class="hide-column">@compra.Compra..DtaBaixa</td>
-                                <td class="hide-column">@compra.Compra..DtaCancelamento</td>
-                                <td class="hide-column">@compra.Administrativo.Nome</td>
+                                <td class="text-center">@(compra?.Compra?.ValorTotal != null ? compra.Compra.ValorTotal.ToString("C") : "Não disponível")</td>
+                                <td class="text-center">@(compra?.Compra?.Status ?? "Não disponível")</td>
+                                <td class="hide-column">@(compra?.Fornecedor?.Nome ?? "Não disponível")</td>
+                                <td class="hide-column text-center">@(compra?.Compra?.DtaEmissao.ToString("dd/MM/yyyy") ?? "Não disponível")</td>
+                                <td class="hide-column">@(compra?.Administrativo?.Nome ?? "Não disponível")</td>
 
-                                <td>
-                                    <a href="@Url.Action("Editar", "Pessoa", new { id = compra.IdCompra })">Editar</a> |
-                                    <a href="@Url.Action("Detalhes", "Pessoa", new { id = compra.IdCompra })">Detalhes</a>
-                                </td>
+                                @if (compra?.Compra.Status == "BX" || compra?.Compra.Status == "CA")
+                                {
+                                    <td class="text-center">
+                                        <a href="@Url.Action("Imprimir", "Compra", new { id = compra?.IdCompra })">Imprimir</a>
+                                    </td>
+
+                                }else
+                                {
+                                    <td>
+                                        <a href="@Url.Action("Atualizar", "Compra", new { id = compra?.IdCompra })">Atualizar</a> | <a href="@Url.Action("Imprimir", "Compra", new { id = compra?.IdCompra })">Imprimir</a>
+                                    </td>
+                                }
+
+                               
                             </tr>
                         }
 

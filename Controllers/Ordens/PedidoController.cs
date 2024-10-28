@@ -63,6 +63,10 @@ namespace Leaf.Controllers.Ordens
 
                 if (pedidos != null && pedidos.Any())
                 {
+                    //guardar filtro
+                    ViewBag.Status = status;
+                    ViewBag.NumeroPedido = numeroPedido;
+
                     TempData["MensagemSucesso"] = "Dados atualizados.";
                     return View("Index", pedidos);
                 }
@@ -77,7 +81,7 @@ namespace Leaf.Controllers.Ordens
             catch (Exception)
             {
                 TempData["MensagemErro"] = "Não há registro com as informações estabelecidas.";
-                return View("Index", new List<PedidoViewModel>());
+                return View("Index", pedidos);
             }
 
         }

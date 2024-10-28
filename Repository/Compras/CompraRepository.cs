@@ -23,6 +23,7 @@ namespace Leaf.Repository.Compras
             {
                 IdOc = reader["idoc"] != DBNull.Value ? Convert.ToInt32(reader["idoc"]) : 0,
                 Status = reader["status"] != DBNull.Value ? reader["status"].ToString() : string.Empty,
+                ValorTotal = reader["valor_total"] != DBNull.Value ? Convert.ToInt32(reader["valor_total"]) : 0,
                 IdPessoa = reader["id_pessoa"] != DBNull.Value ? Convert.ToInt32(reader["id_pessoa"]) : 0,
                 DtaEmissao = reader["dta_emissao"] != DBNull.Value ? Convert.ToDateTime(reader["dta_emissao"], new CultureInfo("pt-BR")) : DateTime.MinValue,
                 DtaBaixa = reader["dta_baixa"] != DBNull.Value ? Convert.ToDateTime(reader["dta_baixa"], new CultureInfo("pt-BR")) : null,
@@ -34,8 +35,9 @@ namespace Leaf.Repository.Compras
         public int NovaCompra(Compra compra)
         {
             string sql = @"INSERT INTO ORDEM_COMPRA
-                       (status, id_pessoa, dta_emissao, dta_baixa, dta_cancelamento, id_usuario)
-                       VALUES (@status, @id_pessoa, @dta_emissao, @dta_baixa, @dta_cancelamento, @id_usuario);
+                       (status, id_pessoa, valor_total, dta_emissao, dta_baixa, dta_cancelamento, id_usuario)
+                       VALUES 
+                       (@status, @id_pessoa, @valor_total, @dta_emissao, @dta_baixa, @dta_cancelamento, @id_usuario);
                        SELECT SCOPE_IDENTITY();";
 
             using (SqlConnection conn = _dbConnectionManager.GetConnection())
@@ -45,6 +47,7 @@ namespace Leaf.Repository.Compras
                 // Adicionar parâmetros
                 command.Parameters.Add(new SqlParameter("@status", "EM"));
                 command.Parameters.Add(new SqlParameter("@id_pessoa", compra.IdPessoa));
+                command.Parameters.Add(new SqlParameter("@valor_total", compra.ValorTotal));
                 command.Parameters.Add(new SqlParameter("@dta_emissao", DateTime.Now));
                 command.Parameters.Add(new SqlParameter("@dta_baixa", compra.DtaBaixa.HasValue ? compra.DtaBaixa.Value : DBNull.Value));
                 command.Parameters.Add(new SqlParameter("@dta_cancelamento", compra.DtaCancelamento.HasValue ? compra.DtaCancelamento.Value : DBNull.Value));
@@ -52,8 +55,8 @@ namespace Leaf.Repository.Compras
 
                 try
                 {
-                    command.ExecuteNonQuery();
-                    return compra.IdOc = Convert.ToInt32(command.ExecuteScalar());
+                    compra.IdOc = Convert.ToInt32(command.ExecuteScalar());
+                    return compra.IdOc;
 
                 }
                 catch (SqlException ex)
@@ -63,6 +66,54 @@ namespace Leaf.Repository.Compras
             }
         }
 
+
+        public List<Compra> GetCompras(string status, int idOc)
+        {
+            List<Compra> compras = new List<Compra>();
+
+            string sql = @"select * from ordem_compra where 1=1 ";
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                sql += @" and status = @status";
+            }
+            if (idOc != 0)
+            {
+                sql += @" and idoc = @idOc";
+            }
+
+            using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+                SqlCommand command = new SqlCommand(sql, conn);
+
+                if (!string.IsNullOrEmpty(status))
+                {
+                    command.Parameters.AddWithValue("@status", status);
+                }
+                if (idOc != 0)
+                {
+                    command.Parameters.AddWithValue("@idoc", idOc);
+                }
+
+                try
+                {
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Compra compra = MapearCompra(reader);
+                        compras.Add(compra);
+                    }
+
+                    return compras.Any() ? compras : new List<Compra>();
+
+                }
+                catch (Exception ex)
+                {
+
+                    throw new Exception("Não foi possivel listar as compras, erro: " + ex.Message);
+                }
+            }
+        }
 
 
         public async Task<Compra> GetCompra(int idCompra)

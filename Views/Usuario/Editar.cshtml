@@ -1,6 +1,8 @@
 ﻿@model Leaf.Models.Domain.Usuario
 @{
     ViewData["Title"] = $"Editar - {Model.Nome}";
+    var departamentosServ = ViewBag.Departamentos != null ? ViewBag.Departamentos : new List<Leaf.Models.Domain.Departamento>();
+
 }
 
 @if (TempData["MensagemErro"] != null)
@@ -15,69 +17,82 @@ else if (TempData["MensagemSucesso"] != null)
 <div class="paginaPadrao">
     <br />
     <h2 class="h2tituloCadastro">Editar cadastro</h2>
-
     <br />
 
     <form asp-action="Atualizar" method="post">
-        <div class="form-group">
-            <br />
-            <label for="Nome">Nome</label>
-            <input name="Nome" value="@Model.Nome" type="text" class="form-control" id="nomeUsuario" required />
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label for="Nome">Nome</label>
+                    <input name="Nome" value="@Model.Nome" type="text" class="form-control" id="nomeUsuario" placeholder="ex: João" required />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label for="Login">Username</label>
+                    <input name="Login" value="@Model.Login" type="text" class="form-control" id="usernameUsuario" placeholder="novo.usuario" required />
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <br />
-            <label for="Login">Login</label>
-            <input name="Login" value="@Model.Login" type="text" class="form-control" id="loginUsuario" required />
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label for="Senha">Nova senha</label>
+                    <input name="Senha" value="@Model.Senha" type="password" class="form-control" id="senhaUsuario" placeholder="*****" required />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label for="confSenha">Confirmar senha</label>
+                    <input name="confSenha" type="password" class="form-control" id="confirmaSenha" placeholder="*****" required>
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <br />
-            <label for="Senha">Senha</label>
-            <input name="Senha" value="@Model.Senha" type="password" class="form-control" id="senhaUsuario" placeholder="******" required />
-        </div>
-
-        <div class="form-group">
-            <br />
-            <label for="confSenha">Confirmar senha</label>
-            <input name="confSenha" type="password" class="form-control" id="confirmaSenha" placeholder="*****" required>
-        </div>
-    
-        <div class="form-group form-check ">
+        <div class="form-group form-check">
             <br />
             <input type="checkbox" class="form-check-input" id="mostrarSenha">
             <label class="form-check-label" for="mostrarSenha">Mostrar senha</label>
         </div>
 
-
-        <div class="form-group">
-            <br />
-            <label for="DepartamentoId">Departamento</label>
-                <select name="IdDpto" class="form-control" id="departamentoUsuario" required>
-                    @foreach (var departamento in ViewBag.Departamentos)
-                    {
-                        <option value="@departamento.IdDpto" selected="@(Model.IdDpto == departamento.IdDpto)">
-                            @departamento.Descricao
-                        </option>
-                    }
-                </select>
-        </div>
-
-        <div class="form-group">
-            <br />
-            <label for="Status">Status</label>
-            <select name="Status" class="form-control" id="statusUsuario">
-                @if (Model.Status == 1)
-                {
-                    <option value="1" selected>Ativo</option>
-                    <option value="0">Desativado</option>
-                }
-                else if (Model.Status == 0)
-                {
-                    <option value="1">Ativo</option>
-                    <option value="0" selected>Desativado</option>
-                }
-            </select>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label for="DepartamentoId">Departamento</label>
+                    <select name="IdDpto" class="form-control" id="departamentoUsuario" required>
+                        @foreach (var departamento in departamentosServ)
+                        {
+                            <option value="@departamento.IdDpto" selected="@(Model.IdDpto == departamento.IdDpto)">
+                                @departamento.Descricao
+                            </option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <br />
+                    <label for="Status">Status</label>
+                    <select name="Status" class="form-control" id="statusUsuario">
+                        @if (Model.Status == 1)
+                        {
+                            <option value="1" selected>Ativo</option>
+                            <option value="0">Desativado</option>
+                        }
+                        else if (Model.Status == 0)
+                        {
+                            <option value="1">Ativo</option>
+                            <option value="0" selected>Desativado</option>
+                        }
+                    </select>
+                </div>
+            </div>
         </div>
 
         <input type="hidden" name="Id" value="@Model.Id" />
@@ -85,14 +100,12 @@ else if (TempData["MensagemSucesso"] != null)
         <br />
 
         <div class="btnsControles">
-            <button type="submit" class="btn btn-success">CONFIRMAR</button>
             <a href="@Url.Action("Index", "Usuario")" class="btn btn-danger">CANCELAR</a>
+            <button type="submit" class="btn btn-success">CONFIRMAR</button>
         </div>
 
         <br />
         <br />
         <br />
-
     </form>
-
 </div>

@@ -1,6 +1,9 @@
 ﻿@model Leaf.Models.Domain.Usuario
 @{
     ViewData["Title"] = "Novo usuario";
+
+    var departamentosServ = ViewBag.Departamentos != null ? ViewBag.Departamentos : new List<Leaf.Models.Domain.Departamento>();
+
 }
 
 @if (TempData["MensagemErro"] != null)
@@ -65,7 +68,7 @@ else if (TempData["MensagemSucesso"] != null)
                     <label for="departamentoUsuario">Departamento</label>
                     <select class="form-control" id="departamentoUsuario" name="IdDpto" required>
                         <option value="">Selecione</option>
-                        @foreach (var departamento in ViewBag.Departamentos)
+                        @foreach (var departamento in departamentosServ)
                         {
                             <option value="@departamento.IdDpto">@departamento.Descricao</option>
                         }
@@ -75,8 +78,8 @@ else if (TempData["MensagemSucesso"] != null)
         </div>
         <br />
         <div class="btnsControles">
-            <button type="submit" class="btn btn-success">CONFIRMAR</button>
             <a href="@Url.Action("Index", "Usuario")" class="btn btn-danger">DESCARTAR</a>
+            <button type="submit" class="btn btn-success">CONFIRMAR</button>
         </div>
         <br />
         <br />

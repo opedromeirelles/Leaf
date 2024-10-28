@@ -13,6 +13,25 @@ namespace Leaf.Services.Compras
             _dbConnectionManager = dbConnectionManager;
         }
 
+        public List<Compra> GetCompras(string status, int idOc)
+        {
+            List<Compra> compras = new List<Compra>();
+
+            try
+            {
+                CompraRepository _compraRepository = new CompraRepository(_dbConnectionManager);
+
+                compras = _compraRepository.GetCompras(status, idOc);
+                return compras.Any() ? compras : new List<Compra>();
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Erro ao listar compras, erro: " + ex.Message);
+            }
+        }
+
         public int NovaCompra(Compra compra)
         {
             try

@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Leaf.Services.Facede;
+using Leaf.Services.Agentes;
 
 namespace Leaf.Controllers.Ordens
 {
@@ -18,11 +20,102 @@ namespace Leaf.Controllers.Ordens
             _compraFacedeServices = compraFacedeServices;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(List<CompraViewModel> compraViewModels)
         {
+
+             compraViewModels = await _compraFacedeServices.GetCompras();
+
+            if (compraViewModels != null)
+            {
+                TempData["MensagemSucesso"] = "Compras encontradas.";
+            }
+            else
+            {
+                TempData["MensagemErro"] = "Não há compras lançadas";
+            }
            
-            return View();
+            return View("Index", compraViewModels.Any() ? compraViewModels : new List<CompraViewModel>());
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Buscar(string numeroConta, string status)
+        {
+            int idOc = Convert.ToInt32(numeroConta);
+
+            List<CompraViewModel> compraViewModels = new List<CompraViewModel>();
+            try
+            {
+                compraViewModels = await _compraFacedeServices.GetCompras(status, idOc);
+                if (compraViewModels.Any() && compraViewModels != null)
+                {
+                    TempData["MensagemSucesso"] = "Dados filtrados encontrados.";
+                    return View("Index", compraViewModels);
+                }
+                else
+                {
+                    TempData["MensagemErro"] = "Não há compras lançadas com os filtros atuais.";
+                    return RedirectToAction("Index", compraViewModels);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Erro ao buscar compras, erro: " + ex.Message);
+            }
+
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Atualizar(int id)
+        {
+
+            try
+            {
+                CompraViewModel compra = await _compraFacedeServices.MapearCompraAsync(id);
+
+                if (compra != null)
+                {
+                    return View(compra);
+                }
+
+                TempData["MensagemErro"] = "Não foi possivel trazer os dados da compra";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = $"Não foi possivel acessar a compra, erro: {ex.Message}";
+                return RedirectToAction("Index");
+            }
+        }
+
+        public async Task<IActionResult> Imprimir(int id)
+        {
+
+            try
+            {
+                CompraViewModel compra = await _compraFacedeServices.MapearCompraAsync(id);
+
+                if (compra != null && compra.IdCompra != 0)
+                {
+                    TempData["MensagemSucesso"] = "Dados encontrados";
+                    return View(compra);
+                }
+                else
+                {
+                    TempData["MensagemErro"] = "Não foi possivel encontrar os dados da compra";
+                    return RedirectToAction("Index");
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Erro ao solicitar impressao, erro: " + ex.Message);
+            }
+        }
+
 
         [HttpGet]
         public IActionResult Emitir()

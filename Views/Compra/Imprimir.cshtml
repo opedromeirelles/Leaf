@@ -1,0 +1,104 @@
+﻿@model Leaf.Models.ViewModels.CompraViewModel
+@{
+    Layout = "_LayoutImpressao";
+    ViewData["Title"] = "Impressão de Ordem de Compra";
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+    <span id="eventoErro" class="alert alert-danger">@TempData["MensagemErro"]</span>
+}
+else if (TempData["MensagemSucesso"] != null)
+{
+    <span id="eventoSucesso" class="alert alert-success">@TempData["MensagemSucesso"]</span>
+}
+
+<div class="container mt-3">
+    <div class="row">
+        <!-- Cabeçalho com logo, título, e informações do usuário -->
+        <div class="col-4">
+            <img src="~/imgs/icons/png/logo300px-preto.png" alt="Logo" style="max-height: 80px;" />
+        </div>
+        <div class="col-4 text-center">
+            <h2 class="font-weight-bold">Relatório de Compras</h2>
+            <p>Data de Impressão: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</p>
+        </div>
+        <div class="col-4 text-right">
+            <p>Usuário: @User?.Identity?.Name</p>
+            <div id="componenteImpressao" class="d-print-none">
+                <a href="@Url.Action("Index", "Compra")" class="btn btn-secondary mt-2">Retornar</a>
+                <button class="btn btn-primary mt2" onclick="imprimirRelatorio()">Imprimir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<!-- Informações principais da ordem de compra -->
+<div class="row">
+    <!-- Linha 1, Coluna 1: Informações do Pedido -->
+    <div class="col-lg-6 col-12 mb-4">
+        <h5 class="font-weight-bold"><i class="fas fa-info-circle"></i> Informações da Ordem de Compra</h5>
+        <p><strong>Emissor: </strong>@(@Model.Administrativo?.Nome ?? "Não atribuído")</p>
+        <p><strong>Data de Emissão: </strong>@(@Model.Compra.DtaEmissao.ToString("dd/MM/yyyy"))</p>
+        @if (Model.Compra.DtaBaixa.HasValue)
+        {
+            <p><strong>Data da Baixa: </strong>@(@Model.Compra.DtaBaixa?.ToString("dd/MM/yyyy"))</p>
+        }
+        @if (Model.Compra.DtaCancelamento.HasValue)
+        {
+            <p><strong>Data do Cancelamento: </strong>@(@Model.Compra.DtaCancelamento?.ToString("dd/MM/yyyy"))</p>
+        }
+        <p><strong>Valor Total:</strong> R$ @Model.Compra.ValorTotal.ToString("F2")</p>
+    </div>
+
+    <!-- Linha 1, Coluna 2: Informações do Fornecedor -->
+    <div class="col-lg-6 col-12 mb-4">
+        <h5 class="font-weight-bold"><i class="fas fa-user"></i> Fornecedor</h5>
+        <p><strong>Nome: </strong>@(@Model.Fornecedor?.Nome ?? "Nome não disponível")</p>
+        <p><strong>CNPJ: </strong>@(@Model.Fornecedor?.Cnpj ?? "CNPJ não disponível")</p>
+        <p><strong>Telefone: </strong>@(@Model.Fornecedor?.Telefone1 ?? "Telefone não disponível")</p>
+    </div>
+</div>
+
+<!-- Tabela de Itens da Ordem de Compra -->
+<h5 class="mt-4 font-weight-bold"><i class="fas fa-boxes"></i> Itens da Ordem de Compra</h5>
+<div class="table-responsive mt-3">
+    <table class="table table-hover table-bordered">
+        <thead style="background-color: #f2f2f2; color: #333;">
+            <tr>
+                <th>Descrição</th>
+                <th>Quantidade</th>
+                <th>Valor Unitário</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ItensCompra)
+            {
+                <tr>
+                    <td>@(item?.insumo?.Descricao ?? "Produto não encontrado")</td>
+                    <td>@item?.Quantidade</td>
+                    <td>R$ @(item?.insumo?.ValorUnitario.ToString("F2") ?? "0.00")</td>
+                    <td>R$ @item?.SubTotal.ToString("F2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function imprimirRelatorio() {
+        // Esconde os elementos não desejados na impressão
+        document.getElementById('componenteImpressao').style.display = 'none';
+
+        // Chama a função de impressão
+        window.print();
+
+        // Mostra novamente após a impressão
+        setTimeout(function () {
+            document.getElementById('componenteImpressao').style.display = 'block';
+        }, 1000);
+    }
+</script>

@@ -1,0 +1,133 @@
+﻿@model Leaf.Models.ViewModels.CompraViewModel
+@{
+	ViewData["Title"] = "Detalhes da Ordem de Compra - Atualizar";
+}
+
+@if (TempData["MensagemErro"] != null)
+{
+	<span id="eventoErro" class="alert alert-danger">@TempData["MensagemErro"]</span>
+}
+else if (TempData["MensagemSucesso"] != null)
+{
+	<span id="eventoSucesso" class="alert alert-success">@TempData["MensagemSucesso"]</span>
+}
+
+<div class="container mt-5 mp-5 pl-5 mb-5" style="padding-left: 70px">
+	<!-- Informações principais da ordem de compra -->
+	<form asp-action="AtualizarStatus" method="post">
+		<input type="hidden" asp-for="IdCompra" />
+
+		<div class="card shadow-sm">
+			<div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+				<h3 class="card-title mb-0">Detalhes da Ordem de Compra #@Model.Compra.IdOc</h3>
+				<span class="badge badge-pill
+                    @(Model.Compra.Status == "EM" ? "badge-info" : Model.Compra.Status == "BX" ? "badge-success" : Model.Compra.Status == "CA" ? "badge-danger" : "badge-secondary")">
+					@Model.Compra.Status
+				</span>
+			</div>
+
+			<div class="card-body">
+				<!-- Sessão 1: Informações da Ordem de Compra -->
+				<div class="row mb-4">
+					<div class="col-md-4 mb-3">
+						<div class="card border-0">
+							<div class="card-body">
+								<h5 class="card-title"><i class="fas fa-info-circle"></i> Informações:</h5>
+								<br />
+								<p><strong>Emissor: </strong>@(@Model.Administrativo?.Nome ?? "Não atribuído")</p>
+								<p><strong>Data de Emissão: </strong>@(@Model.Compra.DtaEmissao.ToString("dd/MM/yyyy"))</p>
+								@if (Model.Compra.DtaBaixa.HasValue)
+								{
+									<p><strong>Data da Baixa: </strong>@(@Model.Compra.DtaBaixa?.ToString("dd/MM/yyyy"))</p>
+								}
+								@if (Model.Compra.DtaCancelamento.HasValue)
+								{
+									<p><strong>Data da Cancelamento: </strong>@(@Model.Compra.DtaCancelamento?.ToString("dd/MM/yyyy"))</p>
+								}
+
+								<p><strong>Valor Total:</strong> R$ @Model.Compra.ValorTotal.ToString("F2")</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4 mb-3">
+						<div class="card border-0">
+							<div class="card-body">
+								<h5 class="card-title"><i class="fas fa-user"></i> Fornecedor</h5>
+								<br />
+								<p><strong>Nome: </strong>@(@Model.Fornecedor?.Nome ?? "Nome não disponível")</p>
+								<p><strong>CNPJ: </strong>@(@Model.Fornecedor?.Cnpj ?? "CNPJ não disponível")</p>
+								<p><strong>Telefone: </strong>@(@Model.Fornecedor?.Telefone1 ?? "Telefone não disponível")</p>
+							</div>
+						</div>
+					</div>
+					<!-- Atualizar Status -->
+					<div class="col-md-4 mb-4">
+						<div class="card border-0 shadow">
+							<div class="card-header bg-warning text-dark text-center">
+								<i class="fas fa-edit"></i> Atualizar Status
+							</div>
+							<div class="card-body">
+								<select class="form-control cbBusca-custom bg-secondary text-light" id="statusCompra" name="Status">
+
+									@* Se estatos for cancelado ou baixado outras opções nao podem aparecer*@
+									@if (Model.Compra.Status == "CA")
+									{
+										<option value="CA" selected>Cancelado</option>
+									}
+									else if (Model.Compra.Status == "BX")
+									{
+										<option value="BX" selected>Baixado</option>
+									}
+									else if (Model.Compra.Status == "EM")
+									{
+										<option value="EM" selected>Emitido</option>
+										<option value="BX">Baixar</option>
+										<option value="CA">Cancelar</option>
+
+									}
+
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Sessão 2: Lista de Produtos da Ordem de Compra -->
+				<h5 class="mt-4"><i class="fas fa-boxes"></i> Itens da Ordem de Compra</h5>
+				<div class="table-responsive mt-3">
+					<table class="table table-hover table-bordered">
+						<thead class="bg-dark text-white">
+							<tr>
+								<th>Descrição</th>
+								<th>Quantidade</th>
+								<th>Valor Unitário</th>
+								<th>Subtotal</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var item in Model.ItensCompra)
+							{
+								<tr>
+									<td>@(item?.insumo?.Descricao ?? "Produto não encontrado")</td>
+									<td>@item?.Quantidade</td>
+									<td>R$ @(item?.insumo?.ValorUnitario.ToString("F2") ?? "0.00")</td>
+									<td>R$ @item?.SubTotal.ToString("F2")</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- Botões de Controle -->
+			<div class="text-right m-3">
+				<a href="@Url.Action("Index", "Compra")" class="btn btn-danger"><i class="fas fa-times"></i> Cancelar</a>
+				<button type="submit" class="btn btn-success mr-2"><i class="fas fa-check"></i> Confirmar</button>
+			</div>
+			<br />
+		</div>
+	</form>
+</div>
+
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>

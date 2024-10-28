@@ -1,7 +1,9 @@
 ﻿using Leaf.Data;
 using Leaf.Models.Domain;
+using Leaf.Models.Domain.ErrorModel;
 using Leaf.Repository.Agentes;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
 
 namespace Leaf.Services.Agentes
 {
@@ -15,6 +17,35 @@ namespace Leaf.Services.Agentes
             _dbConnectionManager = dbConnectionManager;
         }
 
+        //Validação
+        public DomainErrorModel ValidarUsuario(Usuario usuario)
+        {
+            UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);
+
+            try
+            {
+                List<Usuario> usuarios = _usuarioRepository.GetUsuarios();
+                foreach (var userBase in usuarios)
+                {
+
+                    if (userBase.Login.Equals(usuario.Login, StringComparison.OrdinalIgnoreCase) ||
+                            userBase.Nome.Equals(usuario.Nome, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return new DomainErrorModel(false, "Usuário já cadastrado.");
+                    }
+                }
+
+                return (new DomainErrorModel(true, "Usuário cadastrado com sucesso."));
+
+            }
+            catch (Exception ex)
+            {
+                return new DomainErrorModel(false, "Erro ao validar usuário.", "Validação", ex.Message);
+            }
+        }
+
+
+        //Listas
         public List<Usuario> ListaUsuarios()
         {
             UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);
@@ -87,6 +118,8 @@ namespace Leaf.Services.Agentes
             }
         }
 
+
+        // Ações:
         public bool NovoUsuario(Usuario usuario)
         {
             UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);
@@ -118,21 +151,6 @@ namespace Leaf.Services.Agentes
 
         }
 
-        public Usuario GetUsuarioId(int id)
-        {
-            try
-            {
-                UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);
-                return _usuarioRepository.GetUsuarioById(id);
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao localizar o usuário: {ex.Message}");
-
-            }
-
-        }
 
         public bool AtualizaStatusUsuario(int id)
         {
@@ -162,5 +180,22 @@ namespace Leaf.Services.Agentes
             return new Usuario();
         }
 
+
+        // GET
+        public Usuario GetUsuarioId(int id)
+        {
+            try
+            {
+                UsuarioRepository _usuarioRepository = new UsuarioRepository(_dbConnectionManager);
+                return _usuarioRepository.GetUsuarioById(id);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao localizar o usuário: {ex.Message}");
+
+            }
+
+        }
     }
 }

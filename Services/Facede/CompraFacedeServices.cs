@@ -24,7 +24,43 @@ public class CompraFacedeServices
         _insumoServices = insumo;
     }
 
-    //Processo de compra:
+
+    
+    public async Task<CompraViewModel> MapearCompraAsync(int idCompra)
+    {
+        if (idCompra <= 0)
+        {
+            return new CompraViewModel();
+        }
+
+        Compra compra = await _compraServices.GetCompra(idCompra);
+        if (compra == null)
+        {
+            return new CompraViewModel();
+        }
+
+        CompraViewModel compraViewModel = new CompraViewModel
+        {
+            IdCompra = compra.IdOc,
+            Compra = compra,
+            Fornecedor = _pessoaServices.GetPessoa(compra.IdPessoa),
+            Administrativo = _usuarioServices.GetUsuarioId(compra.IdUsuario),
+            ItensCompra = _itemCompraServices.GetItemCompras(compra.IdOc)
+        };
+
+        foreach (var itemCompra in compraViewModel.ItensCompra)
+        {
+            itemCompra.insumo = _insumoServices.GetInsumo(itemCompra.IdInsumo);
+            if (itemCompra.insumos == null)
+            {
+                itemCompra.insumos = new List<Insumo>();
+            }
+            itemCompra.insumos.Add(itemCompra.insumo);
+        }
+
+        return compraViewModel;
+    }
+
 
     //Get lista fornecedor
     public async Task<List<Pessoa>> FornecedoresInsumos(int idFornecedor)
@@ -39,7 +75,57 @@ public class CompraFacedeServices
         List<Insumo> insumos = await _insumoServices.ListarInsumosFornecedoresAsync(idFornecedor);
         return insumos.Any() ? insumos : new List<Insumo>();
     }
-    
+
+
+    //Get Compras filtro
+    public async Task<List<CompraViewModel>> GetCompras(string status, int idOc)
+    {
+        List<CompraViewModel> compraViewModels = new List<CompraViewModel>();
+        
+
+        List<Compra> compras = _compraServices.GetCompras(status, idOc);
+
+        if (compras == null)
+        {
+            return new List<CompraViewModel>();
+        }
+
+        foreach(var compra in compras){
+
+            CompraViewModel compraView = await MapearCompraAsync(compra.IdOc);
+            compraViewModels.Add(compraView);
+        };
+
+        return compraViewModels.Any() ? compraViewModels : new List<CompraViewModel>();
+
+    }
+    public async Task<List<CompraViewModel>> GetCompras()
+    {
+        List<CompraViewModel> compraViewModels = new List<CompraViewModel>();
+
+        int numeroCompra = 0;
+        string allStatus = "";
+
+        List<Compra> compras = _compraServices.GetCompras(allStatus, numeroCompra);
+
+        if (compras == null)
+        {
+            return new List<CompraViewModel>();
+        }
+
+        foreach (var compra in compras)
+        {
+
+            CompraViewModel compraView = await MapearCompraAsync(compra.IdOc);
+            compraViewModels.Add(compraView);
+        };
+
+        return compraViewModels.Any() ? compraViewModels : new List<CompraViewModel>();
+
+    }
+
+
+    //Processar compra
     public ProcessarCompraResult ProcessarCompra(CompraJsonView compraJson)
     {
         //validar se a compra existe
@@ -75,27 +161,51 @@ public class CompraFacedeServices
             return new ProcessarCompraResult(false, $"O valor final da compra de '{compraJson.ValorTotal}', foi diferente do valor calclado internamente de '{valorTotalBack}'");
         }
 
-        return new ProcessarCompraResult(true, "Compra emitida.");
+        try
+        {
+            if (EmitirCompra(compraJson))
+            {
+                return new ProcessarCompraResult(true, "Compra emitida.");
+            }
+            else
+            {
+                return new ProcessarCompraResult(false, "Erro ao lançar compra no banco");
+            }
+        }
+        catch (Exception ex)
+        {
+
+            return new ProcessarCompraResult(false, ex.Message);
+        }
+        
         
     }
 
-
     // Nova compra
-    private bool EmitirCompra(CompraViewModel compraViewModel)
+    private bool EmitirCompra(CompraJsonView compraView)
     {
         //Alimento minha compra
-        Compra compra = compraViewModel.Compra;
+        Compra compra = new Compra
+        {
+            IdPessoa = compraView.IdPessoa,
+            IdUsuario = compraView.IdAdministrativo,
+            DtaEmissao = DateTime.Now,
+            Status = "EM",
+            ValorTotal = compraView.ValorTotal
+        };
+
 
         try
         {
             //Emito a compra e retorno o id correspondente a ela
             if (_compraServices.NovaCompra(compra) != 0)
             {
+
                 List<ItemCompra> itensNaoInseridos = new List<ItemCompra>();
 
                 try
                 {
-                    foreach (var item in compraViewModel.ItensCompra)
+                    foreach (var item in compraView.ItensCompra)
                     {
                         //Popula meus itens com a lista enviada da view
                         ItemCompra itemCompra = new ItemCompra
@@ -174,38 +284,4 @@ public class CompraFacedeServices
         return compraViewModels;
     }
 
-    public async Task<CompraViewModel> MapearCompraAsync(int idCompra)
-    {
-        if (idCompra <= 0)
-        {
-            return new CompraViewModel();
-        }
-
-        Compra compra = await _compraServices.GetCompra(idCompra);
-        if (compra == null)
-        {
-            return new CompraViewModel();
-        }
-
-        CompraViewModel compraViewModel = new CompraViewModel
-        {
-            IdCompra = compra.IdOc,
-            Compra = compra,
-            Fornecedor = _pessoaServices.GetPessoa(compra.IdPessoa),
-            Administrativo =  _usuarioServices.GetUsuarioId(compra.IdUsuario),
-            ItensCompra = _itemCompraServices.GetItemCompras(compra.IdOc)
-        };
-
-        foreach (var itemCompra in compraViewModel.ItensCompra)
-        {
-            itemCompra.insumo = _insumoServices.GetInsumo(itemCompra.IdInsumo);
-            if (itemCompra.insumos == null)
-            {
-                itemCompra.insumos = new List<Insumo>();
-            }
-            itemCompra.insumos.Add(itemCompra.insumo);
-        }
-
-        return compraViewModel;
-    }
 }
