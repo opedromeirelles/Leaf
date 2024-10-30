@@ -1,6 +1,6 @@
 ﻿@model Leaf.Models.Domain.Produto
 @{
-    ViewData["Title"] = "Cadastro de Produtos";
+    ViewData["Title"] = $"Editar Produto {Model.Descricao}";
 }
 
 @if (TempData["MensagemErro"] != null)
@@ -14,7 +14,7 @@ else if (TempData["MensagemSucesso"] != null)
 
 <div class="paginaPadrao">
     <br />
-    <h2 class="h2tituloCadastro">Editar Produto</h2>
+    <h2 class="h2tituloCadastro">Editar Produto @Model.Descricao</h2>
     <br />
     <form asp-action="Atualizar" method="post">
         <div class="row">
@@ -23,7 +23,6 @@ else if (TempData["MensagemSucesso"] != null)
                     <br />
                     <label asp-for="Descricao"></label>
                     <input asp-for="Descricao" value="@Model.Descricao" class="form-control" placeholder="ex: Alface" required />
-                    <span asp-validation-for="Descricao" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-6">
@@ -31,20 +30,11 @@ else if (TempData["MensagemSucesso"] != null)
                     <br />
                     <label asp-for="ValorUnitario">Valor Unitário</label>
                     <input asp-for="ValorUnitario" value="@Model.ValorUnitario" class="form-control" step="0.01" type="text" required />
-                    <span asp-validation-for="ValorUnitario" class="text-danger"></span>
                 </div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <br />
-                    <label asp-for="QtdeEstoque">Quantiade em estoque</label>
-                    <input asp-for="QtdeEstoque" value="@Model.QtdeEstoque" class="form-control" type="number" min="0" required />
-                    <span asp-validation-for="QtdeEstoque" class="text-danger"></span>
-                </div>
-            </div>
+        <div class="row">           
             <div class="col-md-6">
                 <div class="form-group">
                     <br />
@@ -69,8 +59,8 @@ else if (TempData["MensagemSucesso"] != null)
         <input type="hidden" asp-for="IdProduto" value="@Model.IdProduto" />
         <br />
         <div class="btnsControles">
-            <button type="submit" class="btn btn-success">CONFIRMAR</button>
             <a href="@Url.Action("Index", "Produto")" class="btn btn-danger">DESCARTAR</a>
+            <button type="submit" class="btn btn-success">CONFIRMAR</button>
         </div>
         <br />
         <br />

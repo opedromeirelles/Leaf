@@ -63,13 +63,13 @@ else if (TempData["MensagemSucesso"] != null)
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col">Nº Compra</th>
+                        <th scope="col" class="text-center">Nº Compra</th>
                         <th scope="col" class="text-center">Valor Total</th>
                         <th scope="col" class="text-center">Status</th>
                         <th scope="col" class="hide-column">Pessoa</th>
                         <th scope="col" class="hide-column text-center">Data Emissão</th>
                         <th scope="col" class="hide-column">Solicitante</th>
-                        <th scope="col" class="hide-column">Ferramentas</th>
+                        <th scope="col" class="text-center">Ferramentas</th>
 
                     </tr>
                 </thead>
@@ -79,7 +79,7 @@ else if (TempData["MensagemSucesso"] != null)
                         @foreach (var compra in Model)
                         {
                             <tr>
-                                <td>@compra.IdCompra</td>
+                                <td class="text-center">@compra.IdCompra</td>
                                 <td class="text-center">@(compra?.Compra?.ValorTotal != null ? compra.Compra.ValorTotal.ToString("C") : "Não disponível")</td>
                                 <td class="text-center">@(compra?.Compra?.Status ?? "Não disponível")</td>
                                 <td class="hide-column">@(compra?.Fornecedor?.Nome ?? "Não disponível")</td>
@@ -89,13 +89,13 @@ else if (TempData["MensagemSucesso"] != null)
                                 @if (compra?.Compra.Status == "BX" || compra?.Compra.Status == "CA")
                                 {
                                     <td class="text-center">
-                                        <a href="@Url.Action("Imprimir", "Compra", new { id = compra?.IdCompra })">Imprimir</a>
+                                        <a href="@Url.Action("Imprimir", "Compra", new { id = compra?.IdCompra })" target="_blank">Imprimir</a>
                                     </td>
 
                                 }else
                                 {
-                                    <td>
-                                        <a href="@Url.Action("Atualizar", "Compra", new { id = compra?.IdCompra })">Atualizar</a> | <a href="@Url.Action("Imprimir", "Compra", new { id = compra?.IdCompra })">Imprimir</a>
+                                    <td class="text-center">
+                                        <a href="@Url.Action("Atualizar", "Compra", new { id = compra?.IdCompra })">Atualizar</a> | <a href="@Url.Action("Imprimir", "Compra", new { id = compra?.IdCompra })" target="_blank">Imprimir</a>
                                     </td>
                                 }
 

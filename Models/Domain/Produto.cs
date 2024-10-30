@@ -9,6 +9,7 @@ namespace Leaf.Models.Domain
         [Required(ErrorMessage = "A descrição é obrigatório")]
         public string Descricao { get; set; }
 
+        
         [Required(ErrorMessage = "A valor unitário é obrigatório")]
         public decimal ValorUnitario { get; set; }
 

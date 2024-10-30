@@ -21,72 +21,46 @@ else if (TempData["MensagemSucesso"] != null)
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <br />
-                    <label>Pessoa Associada</label>
-                    <input type="text" class="form-control" value="@Model.Pessoa?.Nome" disabled />
+                  <label><strong>Código de Barras: </strong>@ViewBag.CodBarras</label>
                 </div>
             </div>
         </div>
+
+        <!-- Campo oculto para garantir a persistência do valor do nome da pessoa -->
+        <input type="hidden" name="PessoaNome" value="@ViewBag.PessoaNome" />
+        <input type="hidden" name="CodBarras" value="@ViewBag.CodBarras" />
 
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <br />
-
-                    <label asp-for="CodBarras">Código de Barras</label>
-                    <input asp-for="CodBarras" class="form-control" placeholder="ex: 1234567890123" maxlength="15" required />
-                    <span asp-validation-for="CodBarras" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="form-group">
-                    <br />
-
                     <label asp-for="Descricao">Descrição do Insumo</label>
                     <input asp-for="Descricao" class="form-control" placeholder="ex: Fertilizante X" maxlength="100" required />
                     <span asp-validation-for="Descricao" class="text-danger"></span>
                 </div>
             </div>
-        </div>
-
-        <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <br />
-
                     <label asp-for="UnidadeMedida">Unidade de Medida</label>
                     <input asp-for="UnidadeMedida" class="form-control" placeholder="ex: KG" maxlength="3" required />
                     <span asp-validation-for="UnidadeMedida" class="text-danger"></span>
                 </div>
             </div>
-
-            <div class="col-md-6">
-                <div class="form-group">
-                    <br />
-
-                    <label asp-for="ValorUnitario">Valor Unitário</label>
-                    <input asp-for="ValorUnitario" class="form-control" step="0.01" type="text" min="0" required />
-                    <span asp-validation-for="ValorUnitario" class="text-danger"></span>
-                </div>
-            </div>
         </div>
 
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <br />
-
-                    <label asp-for="QtdeEstoque">Quantidade em Estoque</label>
-                    <input asp-for="QtdeEstoque" class="form-control" type="number" min="0" required />
-                    <span asp-validation-for="QtdeEstoque" class="text-danger"></span>
+                    <label asp-for="ValorUnitario">Valor Unitário</label>
+                    <input asp-for="ValorUnitario" class="form-control" step="0.01" type="text" min="0" required />
+                    <span asp-validation-for="ValorUnitario" class="text-danger"></span>
                 </div>
             </div>
-
             <div class="col-md-6">
                 <div class="form-group">
                     <br />
-
                     <label asp-for="Status">Status</label>
                     <select asp-for="Status" class="form-control">
                         @if (Model.Status == 1)
@@ -109,11 +83,9 @@ else if (TempData["MensagemSucesso"] != null)
         <input type="hidden" id="idPessoa" name="IdPessoa" value="@Model.IdPessoa" />
         <input type="hidden" id="idInsumo" name="IdInsumo" value="@Model.IdInsumo" />
 
-
         <div class="btnsControles mt-4">
-            <button type="submit" name="action" value="atualizar" class="btn btn-success" id="btnSubmit">ATUALIZAR</button>
             <a href="@Url.Action("Index", "Insumo")" class="btn btn-danger">DESCARTAR</a>
+            <button type="submit" name="action" value="atualizar" class="btn btn-success" id="btnSubmit">ATUALIZAR</button>
         </div>
     </form>
 </div>
-

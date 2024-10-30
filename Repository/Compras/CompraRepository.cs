@@ -115,7 +115,6 @@ namespace Leaf.Repository.Compras
             }
         }
 
-
         public async Task<Compra> GetCompra(int idCompra)
         {
             // Base da query SQL
@@ -152,10 +151,33 @@ namespace Leaf.Repository.Compras
             }
         }
 
+        // Baixar compra
+        public void BaixarCompra(int idCompra, string status)
+        {
+            string sql = @"update ordem_compra set status = @status where idoc = @idCompra";
+
+            using (SqlConnection conn = _dbConnectionManager.GetConnection())
+            {
+                SqlCommand command = new SqlCommand(sql, conn);
+                command.Parameters.AddWithValue("@status", status);
+				command.Parameters.AddWithValue("@idCompra", idCompra);
+
+				try
+				{
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+
+                    throw new Exception("Não foi possivel atualizar ordem compra, " + ex.Message);
+                }
+            }
+
+        }
 
 
-        // Relatorios de Compras
-        public async Task<List<Compra>> GetListComprasPeriodoAsync(DateTime dataInicio, DateTime dataFim, int idFornecedor, string status, string numeroCompra, int idSolicitante)
+		// Relatorios de Compras
+		public async Task<List<Compra>> GetListComprasPeriodoAsync(DateTime dataInicio, DateTime dataFim, int idFornecedor, string status, string numeroCompra, int idSolicitante)
         {
             string sql = @"SELECT * FROM ORDEM_COMPRA
                    WHERE 1=1

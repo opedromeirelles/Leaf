@@ -1,6 +1,6 @@
 ﻿@model Leaf.Models.Domain.Pessoa
 @{
-    ViewData["Title"] = "Alterar Pessoa";
+    ViewData["Title"] = $"Alterar {Model.Nome}";
 }
 
 @if (TempData["MensagemErro"] != null)
@@ -14,7 +14,7 @@ else if (TempData["MensagemSucesso"] != null)
 
 <div class="paginaPadrao">
     <br />
-    <h2 class="h2tituloCadastro">Alterar Pessoa</h2>
+    <h2 class="h2tituloCadastro">Alterar @Model.Nome</h2>
     <br />
     <form asp-action="Atualizar" method="post">
         <input type="hidden" asp-for="IdPessoa" />
@@ -116,8 +116,8 @@ else if (TempData["MensagemSucesso"] != null)
         <br />
         <!-- Botões de Controle -->
         <div class="btnsControles">
-            <button type="submit" class="btn btn-success">CONFIRMAR</button>
             <a href="@Url.Action("Index", "Pessoa")" class="btn btn-danger">CANCELAR</a>
+            <button type="submit" class="btn btn-success">CONFIRMAR</button>
         </div>
     </form>
 </div>

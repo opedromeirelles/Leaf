@@ -26,8 +26,8 @@ else if (TempData["MensagemSucesso"] != null)
         <div class="col-4 text-right">
             <p>Usuário: @User?.Identity?.Name</p>
             <div id="componenteImpressao" class="d-print-none">
-                <a href="@Url.Action("Index", "Compra")" class="btn btn-secondary mt-2">Retornar</a>
-                <button class="btn btn-primary mt2" onclick="imprimirRelatorio()">Imprimir</button>
+                <a href="@Url.Action("Index", "Compra")" class="btn btn-secondary m-1">Retornar</a>
+                <button class="btn btn-primary m-1" onclick="imprimirRelatorio()">Imprimir</button>
             </div>
         </div>
     </div>
@@ -50,7 +50,7 @@ else if (TempData["MensagemSucesso"] != null)
         {
             <p><strong>Data do Cancelamento: </strong>@(@Model.Compra.DtaCancelamento?.ToString("dd/MM/yyyy"))</p>
         }
-        <p><strong>Valor Total:</strong> R$ @Model.Compra.ValorTotal.ToString("F2")</p>
+        <p><strong>Valor Total:</strong> R$ @Model.Compra.ValorTotal.ToString("N2")</p>
     </div>
 
     <!-- Linha 1, Coluna 2: Informações do Fornecedor -->
@@ -69,9 +69,9 @@ else if (TempData["MensagemSucesso"] != null)
         <thead style="background-color: #f2f2f2; color: #333;">
             <tr>
                 <th>Descrição</th>
-                <th>Quantidade</th>
-                <th>Valor Unitário</th>
-                <th>Subtotal</th>
+                <th class="text-center">Quantidade</th>
+                <th class="text-center">Valor Unitário</th>
+                <th class="text-center">Subtotal</th>
             </tr>
         </thead>
         <tbody>
@@ -79,9 +79,9 @@ else if (TempData["MensagemSucesso"] != null)
             {
                 <tr>
                     <td>@(item?.insumo?.Descricao ?? "Produto não encontrado")</td>
-                    <td>@item?.Quantidade</td>
-                    <td>R$ @(item?.insumo?.ValorUnitario.ToString("F2") ?? "0.00")</td>
-                    <td>R$ @item?.SubTotal.ToString("F2")</td>
+                    <td class="text-center">@item?.Quantidade</td>
+                    <td class="text-center">R$ @(item?.insumo?.ValorUnitario.ToString("N2") ?? "0.00")</td>
+                    <td class="text-center">R$ @item?.SubTotal.ToString("N2")</td>
                 </tr>
             }
         </tbody>

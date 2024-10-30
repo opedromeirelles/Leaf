@@ -1,0 +1,8 @@
+﻿@model Leaf.Models.ViewModels.PedidoViewModel
+
+
+<h3 class="card-title mb-0">Detalhes do Pedido #@Model.IdPedido</h3>
+<span class="badge badge-pill
+                        @(Model.Pedido.Stauts == "EM" ? "badge-info" : Model.Pedido.Stauts == "BX" ? "badge-success" : Model.Pedido.Stauts == "CA" ? "badge-danger" : "badge-secondary")">
+    @Model.Pedido.Stauts
+</span>

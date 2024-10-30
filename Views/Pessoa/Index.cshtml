@@ -64,10 +64,10 @@ else if (TempData["MensagemSucesso"] != null)
                     <tr>
                         <th scope="col">CPF/CNPJ</th>
                         <th scope="col">Nome</th>
-                        <th scope="col" class="hide-column">Tipo</th>
+                        <th scope="col" class="hide-column text-center">Tipo</th>
                         <th scope="col" class="hide-column">Telefone</th>
                         <th scope="col" class="hide-column">Email</th>
-                        <th scope="col">Ferramentas</th>
+                        <th scope="col" class="text-center">Ferramentas</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -78,10 +78,10 @@ else if (TempData["MensagemSucesso"] != null)
                             <tr>
                                 <td>@(string.IsNullOrEmpty(pessoa.Cpf) ? pessoa.Cnpj : pessoa.Cpf)</td>
                                 <td>@pessoa.Nome</td>
-                                <td class="hide-column">@pessoa.Tipo</td>
+                                <td class="hide-column text-center">@pessoa.Tipo</td>
                                 <td class="hide-column">@pessoa.Telefone1</td>
                                 <td class="hide-column">@pessoa.Email1</td>
-                                <td>
+                                        <td class="text-center">
                                     <a href="@Url.Action("Editar", "Pessoa", new { id = pessoa.IdPessoa })">Editar</a> |
                                     <a href="@Url.Action("Detalhes", "Pessoa", new { id = pessoa.IdPessoa })">Detalhes</a>
                                 </td>

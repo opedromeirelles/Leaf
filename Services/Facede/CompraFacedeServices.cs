@@ -1,10 +1,13 @@
 ﻿using Leaf.Models.Domain;
+using Leaf.Models.Domain.ErrorModel;
 using Leaf.Models.ItensDomain;
 using Leaf.Models.ViewModels;
 using Leaf.Models.ViewModels.Json;
 using Leaf.Services.Agentes;
 using Leaf.Services.Compras;
 using Leaf.Services.Materiais;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
 
 public class CompraFacedeServices
 {
@@ -78,14 +81,15 @@ public class CompraFacedeServices
 
 
     //Get Compras filtro
-    public async Task<List<CompraViewModel>> GetCompras(string status, int idOc)
+    public async Task<List<CompraViewModel>> GetCompras(int idUser, string status, int idOc)
     {
         List<CompraViewModel> compraViewModels = new List<CompraViewModel>();
         
 
         List<Compra> compras = _compraServices.GetCompras(status, idOc);
+		compras = ListaByUsuario(compras, idUser);
 
-        if (compras == null)
+		if (compras == null)
         {
             return new List<CompraViewModel>();
         }
@@ -99,7 +103,7 @@ public class CompraFacedeServices
         return compraViewModels.Any() ? compraViewModels : new List<CompraViewModel>();
 
     }
-    public async Task<List<CompraViewModel>> GetCompras()
+    public async Task<List<CompraViewModel>> GetCompras(int idUser)
     {
         List<CompraViewModel> compraViewModels = new List<CompraViewModel>();
 
@@ -107,6 +111,7 @@ public class CompraFacedeServices
         string allStatus = "";
 
         List<Compra> compras = _compraServices.GetCompras(allStatus, numeroCompra);
+        compras = ListaByUsuario(compras, idUser);
 
         if (compras == null)
         {
@@ -123,6 +128,41 @@ public class CompraFacedeServices
         return compraViewModels.Any() ? compraViewModels : new List<CompraViewModel>();
 
     }
+
+
+    //Validar lista por usuario
+    public List<Compra> ListaByUsuario(List<Compra> compras, int id)
+    {
+        try
+        {
+			List<Compra> comprasByUsuario = new List<Compra>();
+
+			//Filtra usuario para conferir se ele pertence ao departamento de administrativo
+			Usuario usuario = _usuarioServices.GetUsuarioId(id);
+
+            if (usuario.Departamento?.Descricao == "ADMINISTRATIVO")
+            {
+
+				foreach (var compra in compras)
+				{
+					if (compra.IdUsuario == id)
+					{
+						comprasByUsuario.Add(compra);
+					}
+				}
+
+			}
+
+            return comprasByUsuario.Any() ? comprasByUsuario : new List<Compra>();
+            
+        }
+        catch (Exception ex)
+        {
+
+            throw new Exception("Não foi possivel acessar compras com associação. " + ex.Message);
+        }
+    }
+
 
 
     //Processar compra
@@ -179,6 +219,44 @@ public class CompraFacedeServices
         }
         
         
+    }
+
+    //Validar compra
+    public async Task<DomainErrorModel> ValidarCompra(int idCompra)
+    {
+        if (idCompra != 0)
+        {
+            try
+            {
+				CompraViewModel compra = await MapearCompraAsync(idCompra);
+
+				//validar se todos os insumos fazem parte do mesmo fornecedor       
+				Pessoa pessoa = _pessoaServices.GetPessoa(compra.Compra.IdPessoa);
+
+				foreach (var item in compra.ItensCompra)
+				{
+					Insumo insumo = _insumoServices.GetInsumo(item.IdInsumo);
+					if (pessoa.IdPessoa != insumo.IdPessoa)
+					{
+						return new DomainErrorModel(false, $"O insumo: '{insumo.Descricao}', não pertence há o fornecedor: '{pessoa.Nome}'.");
+					};
+				}
+
+				return new DomainErrorModel(true, "Compra Validada");
+			}
+            catch (Exception ex)
+            {
+
+                new DomainErrorModel(false, "Erro Validação ao validar compra", "Validação", ex.Message);
+            }
+
+		}
+        else
+        {
+            return new DomainErrorModel(false, "Compra invalida.");
+        }
+
+        return new DomainErrorModel(false, "Erro ao validar compra");
     }
 
     // Nova compra
@@ -248,6 +326,20 @@ public class CompraFacedeServices
         
 
         return false;
+    }
+
+    public DomainErrorModel BaixarCompra(int idCompra, string status)
+    {
+        try
+        {
+            _compraServices.BaixarCompra(idCompra, status);
+            return new DomainErrorModel(true, "Compra baixada");
+        }
+        catch (Exception ex)
+        {
+
+            return new DomainErrorModel(false, "Erro ao baixar compra", "Validação", ex.Message);
+        }
     }
 
 

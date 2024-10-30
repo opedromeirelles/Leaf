@@ -7,6 +7,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Leaf.Services.Facede;
 using Leaf.Services.Agentes;
+using Leaf.Models.Domain.ErrorModel;
+using System.Security.Claims;
 
 namespace Leaf.Controllers.Ordens
 {
@@ -19,34 +21,48 @@ namespace Leaf.Controllers.Ordens
         {
             _compraFacedeServices = compraFacedeServices;
         }
+        
+        
 
         public async Task<IActionResult> Index(List<CompraViewModel> compraViewModels)
         {
-
-             compraViewModels = await _compraFacedeServices.GetCompras();
-
-            if (compraViewModels != null)
+            try
             {
-                TempData["MensagemSucesso"] = "Compras encontradas.";
+                int idUser = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+				compraViewModels = await _compraFacedeServices.GetCompras(idUser);
+
+                if (compraViewModels != null && compraViewModels.Any())
+                {
+                    TempData["MensagemSucesso"] = "Compras encontradas.";
+                }
+                else
+                {
+                    TempData["MensagemErro"] = "Não há compras lançadas.";
+                }
+
+                return View("Index", compraViewModels);
             }
-            else
+            catch (Exception ex)
             {
-                TempData["MensagemErro"] = "Não há compras lançadas";
+                TempData["MensagemErro"] = "Erro ao carregar as compras: " + ex.Message;
+                return View("Index", new List<CompraViewModel>());
             }
-           
-            return View("Index", compraViewModels.Any() ? compraViewModels : new List<CompraViewModel>());
         }
 
         [HttpGet]
         public async Task<IActionResult> Buscar(string numeroConta, string status)
         {
-            int idOc = Convert.ToInt32(numeroConta);
-
             List<CompraViewModel> compraViewModels = new List<CompraViewModel>();
+
             try
             {
-                compraViewModels = await _compraFacedeServices.GetCompras(status, idOc);
-                if (compraViewModels.Any() && compraViewModels != null)
+                int idOc = int.TryParse(numeroConta, out int parsedId) ? parsedId : 0;
+				int idUser = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+
+				compraViewModels = await _compraFacedeServices.GetCompras(idUser, status, idOc);
+                if (compraViewModels != null && compraViewModels.Any())
                 {
                     TempData["MensagemSucesso"] = "Dados filtrados encontrados.";
                     return View("Index", compraViewModels);
@@ -54,23 +70,19 @@ namespace Leaf.Controllers.Ordens
                 else
                 {
                     TempData["MensagemErro"] = "Não há compras lançadas com os filtros atuais.";
-                    return RedirectToAction("Index", compraViewModels);
+                    return RedirectToAction("Index");
                 }
-
             }
             catch (Exception ex)
             {
-
-                throw new Exception("Erro ao buscar compras, erro: " + ex.Message);
+                TempData["MensagemErro"] = "Erro ao buscar compras: " + ex.Message;
+                return RedirectToAction("Index");
             }
-
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Atualizar(int id)
         {
-
             try
             {
                 CompraViewModel compra = await _compraFacedeServices.MapearCompraAsync(id);
@@ -80,39 +92,93 @@ namespace Leaf.Controllers.Ordens
                     return View(compra);
                 }
 
-                TempData["MensagemErro"] = "Não foi possivel trazer os dados da compra";
+                TempData["MensagemErro"] = "Não foi possível trazer os dados da compra.";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                TempData["MensagemErro"] = $"Não foi possivel acessar a compra, erro: {ex.Message}";
+                TempData["MensagemErro"] = "Erro ao acessar a compra: " + ex.Message;
                 return RedirectToAction("Index");
             }
         }
 
         public async Task<IActionResult> Imprimir(int id)
         {
-
             try
             {
                 CompraViewModel compra = await _compraFacedeServices.MapearCompraAsync(id);
 
                 if (compra != null && compra.IdCompra != 0)
                 {
-                    TempData["MensagemSucesso"] = "Dados encontrados";
+                    TempData["MensagemSucesso"] = "Dados encontrados.";
                     return View(compra);
                 }
                 else
                 {
-                    TempData["MensagemErro"] = "Não foi possivel encontrar os dados da compra";
+                    TempData["MensagemErro"] = "Não foi possível encontrar os dados da compra.";
                     return RedirectToAction("Index");
                 }
-
             }
             catch (Exception ex)
             {
+                TempData["MensagemErro"] = "Erro ao solicitar impressão: " + ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
 
-                throw new Exception("Erro ao solicitar impressao, erro: " + ex.Message);
+        [HttpPost]
+        public async Task<IActionResult> Baixar(int idCompra, string status)
+        {
+            if (status == "EM")
+            {
+                TempData["MensagemErro"] = "Mude o status para continuar.";
+                return RedirectToAction("Atualizar", new { id = idCompra });
+            }
+
+            if (idCompra != 0 && !string.IsNullOrEmpty(status))
+            {
+                try
+                {
+                    // Mapeia a compra para a atualização
+                    CompraViewModel compra = await _compraFacedeServices.MapearCompraAsync(idCompra);
+                    if (compra == null)
+                    {
+                        TempData["MensagemErro"] = "Compra não encontrada.";
+                        return RedirectToAction("Index");
+                    }
+
+                    // Valida a compra antes de prosseguir
+                    DomainErrorModel domainError = await _compraFacedeServices.ValidarCompra(compra.IdCompra);
+                    if (domainError.Sucesso)
+                    {
+                        domainError = _compraFacedeServices.BaixarCompra(compra.IdCompra, status);
+                        if (domainError.Sucesso)
+                        {
+                            TempData["MensagemSucesso"] = "Compra baixada com sucesso. Os insumos já estão disponíveis no estoque.";
+                            return RedirectToAction("Index");
+                        }
+                        else
+                        {
+                            TempData["MensagemErro"] = $"{domainError.Mensagem} - {domainError.Detalhes}";
+                            return View("Atualizar", compra);
+                        }
+                    }
+                    else
+                    {
+                        TempData["MensagemErro"] = $"{domainError.Mensagem} - {domainError.Detalhes}";
+                        return View("Atualizar", compra);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    TempData["MensagemErro"] = $"Erro crítico ao baixar a compra: {ex.Message}";
+                    return RedirectToAction("Index");
+                }
+            }
+            else
+            {
+                TempData["MensagemErro"] = "Número da compra ou status inválido.";
+                return RedirectToAction("Atualizar", new { id = idCompra });
             }
         }
 
@@ -122,8 +188,6 @@ namespace Leaf.Controllers.Ordens
         {
             return View();
         }
-
-
 
         [HttpPost]
         public JsonResult NovaCompra([FromBody] CompraJsonView compra)
@@ -148,27 +212,39 @@ namespace Leaf.Controllers.Ordens
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro ao processar compra:", ex.Message);
                 return Json(new { Response = false, Message = "Erro no processamento da compra.", Error = ex.Message });
             }
         }
 
-
         [HttpGet]
         public async Task<JsonResult> BuscarPessoa(int id)
         {
-            List<Pessoa> pessoas = await _compraFacedeServices.FornecedoresInsumos(id);
-            return Json(pessoas);
+            try
+            {
+                List<Pessoa> pessoas = await _compraFacedeServices.FornecedoresInsumos(id);
+                return Json(pessoas);
+            }
+            catch (Exception ex)
+            {
+				TempData["MensagemErro"] = "Erro ao buscar fornecedores: " + ex.Message;
+				return Json(new { Response = false, Message = "Erro ao buscar pessoa.", Error = ex.Message });
+            }
         }
 
         [HttpGet]
         public async Task<JsonResult> BuscarInsumo(int id)
         {
-            List<Insumo> insumos = await _compraFacedeServices.InsumosFornecedores(id);
-            return Json(insumos);
+            try
+            {
+                List<Insumo> insumos = await _compraFacedeServices.InsumosFornecedores(id);
+                return Json(insumos);
+            }
+            catch (Exception ex)
+            {
+				TempData["MensagemErro"] = "Erro ao buscar insumos: " + ex.Message;
+
+				return Json(new { Response = false, Message = "Erro ao buscar insumo.", Error = ex.Message });
+            }
         }
-
-
-
     }
 }

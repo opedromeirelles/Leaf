@@ -136,7 +136,7 @@ else if (TempData["MensagemSucesso"] != null)
 							</td>
 							<td class="text-center">@(pedido.Pedido.Stauts ?? "INDEFINIDO")</td>
 							<td class="text-center">
-								<a class="btn btn-sm btn-info ml-1" href="@Url.Action("Detalhes", "RelatorioVendas", new { id = pedido.IdPedido })">Detalhes</a>
+								<a class="btn btn-sm btn-info ml-1" href="@Url.Action("Detalhes", "RelatorioVendas", new { id = pedido.IdPedido })" target="_blank">Detalhes</a>
 							</td>
 						</tr>
 					}

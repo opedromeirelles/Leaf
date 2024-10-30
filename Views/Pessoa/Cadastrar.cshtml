@@ -41,13 +41,11 @@ else if (TempData["MensagemSucesso"] != null)
             <div class="col-md-6 mb-3" id="cpf-field">
                 <label asp-for="Cpf">CPF</label>
                 <input asp-for="Cpf" id="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" disabled />
-                <span asp-validation-for="Cpf" class="text-danger"></span>
             </div>
 
             <div class="col-md-6 mb-3" id="cnpj-field">
                 <label asp-for="Cnpj">CNPJ</label>
                 <input asp-for="Cnpj" id="cnpj" class="form-control" placeholder="00.000.000/0000-00" maxlength="18" />
-                <span asp-validation-for="Cnpj" class="text-danger"></span>
             </div>
         </div>
 
@@ -61,7 +59,6 @@ else if (TempData["MensagemSucesso"] != null)
             <div class="col-md-6 mb-3">
                 <label asp-for="Telefone2">Telefone 2</label>
                 <input asp-for="Telefone2" id="telefone2" class="form-control" placeholder="(99) 99999-9999" maxlength="15" />
-                <span asp-validation-for="Telefone2" class="text-danger"></span>
             </div>
         </div>
 
@@ -75,13 +72,12 @@ else if (TempData["MensagemSucesso"] != null)
             <div class="col-md-6 mb-3">
                 <label asp-for="Email2">Email 2</label>
                 <input asp-for="Email2" class="form-control" placeholder="exemplo@dominio.com" />
-                <span asp-validation-for="Email2" class="text-danger"></span>
             </div>
         </div>
 
         <div class="btnsControles mt-4">
-            <button type="submit" class="btn btn-success">CONFIRMAR</button>
             <a href="@Url.Action("Index", "Pessoa")" class="btn btn-danger">DESCARTAR</a>
+            <button type="submit" class="btn btn-success">CONFIRMAR</button>
         </div>
     </form>
 </div>

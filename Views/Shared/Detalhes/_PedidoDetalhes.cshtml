@@ -1,0 +1,70 @@
+﻿@model Leaf.Models.ViewModels.PedidoViewModel
+
+
+<!-- Sessão 1: Informações do Pedido -->
+<div class="row mb-4">
+    <div class="col-md-4 mb-3">
+        <div class="card border-0">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-info-circle"></i> Informações do Pedido</h5>
+                <br />
+                <p><strong>Vendedor: </strong>@(@Model.Vendedor?.Nome ?? "Não atribuído")</p>
+                <p><strong>Data de Emissão: </strong>@(Model.Pedido?.DtaEmissao != null ? Model.Pedido.DtaEmissao?.ToString("dd/MM/yyyy") : "Data não disponível")</p>
+
+                @if (Model.Pedido?.DtaSaida != null)
+                {
+                    <p><strong>Data de Saída: </strong>@(Model.Pedido?.DtaSaida != null ? Model.Pedido.DtaSaida?.ToString("dd/MM/yyyy") : "Data não disponível")</p>
+                }
+
+                @if (Model.Pedido?.DtaEntrega != null)
+                {
+                    <p><strong>Data da Entrega: </strong>@(Model.Pedido?.DtaEntrega != null ? Model.Pedido.DtaEntrega?.ToString("dd/MM/yyyy") : "Data não disponível")</p>
+                }
+
+                @if (Model.Pedido?.DtaCancelamento != null)
+                {
+                    <p><strong>Data de Cancelamento: </strong>@(Model.Pedido?.DtaCancelamento != null ? Model.Pedido.DtaCancelamento?.ToString("dd/MM/yyyy") : "Data não disponível")</p>
+                }
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card border-0">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-user"></i> Cliente</h5>
+                <br />
+                <p><strong>Nome: </strong>@(@Model.Cliente?.Nome ?? "Nome não disponível")</p>
+                @if (Model.Cliente?.Tipo == "PF")
+                {
+                    <p><strong>CPF: </strong>@(@Model.Cliente?.Cpf ?? "CPF não disponível")</p>
+                }
+                else
+                {
+                    <p><strong>CNPJ: </strong>@(@Model.Cliente?.Cnpj ?? "CNPJ não disponível")</p>
+                }
+                <p><strong>Telefone: </strong>@(@Model.Cliente?.Telefone1 ?? "Telefone não disponível")</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card border-0">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-truck"></i> Totais do Pedido</h5>
+                <br />
+                <p><strong>Valor Total:</strong> R$ @(Model.Pedido?.ValorToal != (decimal)0 ? Model.Pedido?.ValorToal.ToString("#,##0.00") : Model.ItensPedido.Sum(item => item.SubTotal).ToString("#,##0.00"))</p>
+                <p><strong>Total de itens:</strong> @(Model.ItensPedido != null ? Model.ItensPedido.Count : 0)</p>
+                <p><strong>Quantidade total:</strong> @(Model.ItensPedido != null ? Model.ItensPedido.Sum(item => item.Quantidade) : 0)</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sessão 2: Lista de Produtos do Pedido -->
+<h5 class="mt-4"><i class="fas fa-boxes"></i> Itens do Pedido</h5>
+<div class="table-responsive mt-3">
+    @*Tabela de item compartilhada*@
+    @await Html.PartialAsync("Tabelas/_ItensPedidoTabela", Model)
+</div>

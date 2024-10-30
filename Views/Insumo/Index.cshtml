@@ -25,9 +25,15 @@ else if (TempData["MensagemSucesso"] != null)
                     <input type="text" class="form-control txtBuscar-custom" placeholder="Insumo..." name="descricao" aria-label="Recipient's username">
                 </div>
 
-                <!-- Campo de busca por Pessoa (CNPJ) -->
-                <div class="grupoBusca-custom">
-                    <input type="text" class="form-control txtBuscar-custom" placeholder="CNPJ da Pessoa..." name="pessoaNomeCnpj" aria-label="Recipient's username">
+                <!-- Campo de busca por Pessoa -->
+                <div class="grupoBusca-custom tipoBusca">
+                    <select class="form-control cbBusca-custom bg-secondary text-light" name="fornecedor">
+                        <option value="">Fornecedor</option>
+                        @foreach (var item in ViewBag.Fornecedores as List<Leaf.Models.Domain.Pessoa>)
+                        {
+                            <option value="@item.IdPessoa">@item.Nome</option>
+                        }
+                    </select>
                 </div>
 
                 <!-- Filtro por Status -->
@@ -65,13 +71,13 @@ else if (TempData["MensagemSucesso"] != null)
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col">Código</th>
+                        <th scope="col" class="text-center">Código</th>
                         <th scope="col">Descrição</th>
-                        <th scope="col" class="hide-column">Valor Unitário</th>
-                        <th scope="col">Quantidade</th>
+                        <th scope="col" class="hide-column text-center">Valor Unitário</th>
+                        <th scope="col" calss="text-center">Quantidade</th>
                         <th scope="col" class="hide-column">Pessoa (CNPJ)</th>
-                        <th scope="col" class="hide-column">Status</th>
-                        <th scope="col">Ferramentas</th>
+                        <th scope="col" class="hide-column text-center">Status</th>
+                        <th scope="col" class="text-center">Ferramentas</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -80,10 +86,10 @@ else if (TempData["MensagemSucesso"] != null)
                         @foreach (var insumo in Model)
                         {
                             <tr>
-                                <td>@insumo.IdInsumo</td>
+                                <td class="text-center">@insumo.IdInsumo</td>
                                 <td>@insumo.Descricao</td>
-                                <td class="hide-column">@insumo.ValorUnitario.ToString("C")</td>
-                                <td>@insumo.QtdeEstoque</td>
+                                <td class="hide-column text-center">@insumo.ValorUnitario.ToString("C")</td>
+                                <td class="text-center">@insumo.QtdeEstoque</td>
                                 <td class="hide-column">
                                     @if (insumo.Pessoa != null)
                                     {
@@ -94,7 +100,7 @@ else if (TempData["MensagemSucesso"] != null)
                                         <span>Pessoa não associada</span>
                                     }
                                 </td>
-                                <td class="hide-column">
+                                <td class="hide-column text-center">
                                     @if (insumo.Status == 1)
                                     {
                                         <span>Ativo</span>
@@ -108,7 +114,7 @@ else if (TempData["MensagemSucesso"] != null)
                                         <span>Indefinido</span>
                                     }
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <a href="@Url.Action("Editar", "Insumo", new { id = insumo.IdInsumo })">Editar</a> |
                                     <a href="@Url.Action("Detalhes", "Insumo", new { id = insumo.IdInsumo })">Detalhes</a>
                                 </td>

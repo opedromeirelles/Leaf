@@ -1,5 +1,6 @@
 ﻿using Leaf.Data;
 using Leaf.Models.Domain;
+using Leaf.Models.Domain.ErrorModel;
 using Leaf.Repository.Agentes;
 
 namespace Leaf.Services.Agentes
@@ -140,18 +141,46 @@ namespace Leaf.Services.Agentes
         }
 
         // Método para cadastrar uma nova pessoa
-        public bool CadastrarPessoa(Pessoa pessoa)
+        public void CadastrarPessoa(Pessoa pessoa)
         {
             PessoaRepository _pessoaRepository = new PessoaRepository(_dbConnectionManager);
             try
             {
                 _pessoaRepository.CadastrarPessoa(pessoa);
-                return true;
+               
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return false;
+                throw new Exception("Erro ao cadastrar pessoa, " + ex.Message);
             }
         }
+
+        // Validar Pessoa
+        public DomainErrorModel ValidarPessoa(Pessoa pessoa)
+        {
+            try
+            {
+                PessoaRepository _pessoaRepository = new PessoaRepository(_dbConnectionManager);
+                List<Pessoa> pessoasBase = _pessoaRepository.GetPessoas();
+                foreach (var pessoaBase in pessoasBase)
+                {
+                    if (pessoaBase.Cnpj.Equals(pessoa.Cnpj, StringComparison.OrdinalIgnoreCase) ||
+                        pessoaBase.Cpf.Equals(pessoa.Cpf, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return new DomainErrorModel(false, "Pessoa já cadastrada.");
+                    }
+                }
+
+                return new DomainErrorModel(true, "Pessoa Cadastrada.");
+            }
+            catch (Exception ex)
+            {
+
+                return new DomainErrorModel(false, "Erro ao validar pessoa", "Validação", ex.Message);
+            }
+            
+        }
+
+
     }
 }

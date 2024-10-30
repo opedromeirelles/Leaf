@@ -1,6 +1,9 @@
 ﻿using Leaf.Data;
 using Leaf.Models.Domain;
+using Leaf.Models.Domain.ErrorModel;
 using Leaf.Repository.Materiais;
+using Leaf.Services.Agentes;
+using System.Globalization;
 
 namespace Leaf.Services.Materiais
 {
@@ -14,27 +17,34 @@ namespace Leaf.Services.Materiais
             _dbConnectionManager = dbConnectionManager;
         }
 
+        private Insumo MapearInsumo(Insumo insumo)
+        {
+            PessoaServices _pessoaService = new PessoaServices(_dbConnectionManager);
+            insumo.Pessoa = _pessoaService.GetPessoa(insumo.IdPessoa);
+
+            return insumo;
+        } 
+
+        private List<Insumo> MapearListaInsumo(List<Insumo> insumos)
+        {
+            foreach (var insumo in insumos)
+            {
+                MapearInsumo(insumo);
+            }
+
+            return insumos;
+        }
+
+
         // Listar todos os insumos
         public List<Insumo> ListarInsumos()
         {
             InsumoRepository _insumoRepository = new InsumoRepository(_dbConnectionManager);
             try
             {
-                return _insumoRepository.GetInsumos();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao listar os insumos, erro: {ex.Message}");
-            }
-        }
-
-        // Listar todos os insumos
-        public List<Insumo> ListarInsumos(string descricao)
-        {
-            InsumoRepository _insumoRepository = new InsumoRepository(_dbConnectionManager);
-            try
-            {
-                return _insumoRepository.GetInsumosFiltroDescricao(descricao);
+                List<Insumo> insumos = _insumoRepository.GetInsumos();
+                insumos = MapearListaInsumo(insumos);
+                return insumos.Any() ? insumos : new List<Insumo>();         
             }
             catch (Exception ex)
             {
@@ -49,6 +59,7 @@ namespace Leaf.Services.Materiais
             {
                 InsumoRepository _insumoRepository = new InsumoRepository(_dbConnectionManager);
                 List<Insumo> insumos = await _insumoRepository.GetInsumosFornecedor(idFornecedor);
+                insumos = MapearListaInsumo(insumos);
 
                 return insumos.Any() ? insumos : new List<Insumo>();
             }
@@ -59,45 +70,25 @@ namespace Leaf.Services.Materiais
             }
         }
 
-        // Listar insumos por pessoa
-        public List<Insumo> ListarInsumosForPessoa(int idPessoa)
+       
+        public List<Insumo> BuscarInsumosFiltro(string descricao, int idFornecedor, int status)
         {
-            InsumoRepository _insumoRepository = new InsumoRepository(_dbConnectionManager);
             try
             {
-                return _insumoRepository.GetInsumosForPessoa(idPessoa);
+                InsumoRepository _insumoRepository = new InsumoRepository(_dbConnectionManager);
+                List<Insumo> insumos = _insumoRepository.GetInsumosFiltro(descricao, idFornecedor, status);
+                insumos = MapearListaInsumo(insumos);
+
+                return insumos.Any() ? insumos : new List<Insumo>();
+
             }
             catch (Exception ex)
             {
-                throw new Exception($"Erro ao listar os insumos, erro: {ex.Message}");
-            }
-        }
-        public List<Insumo> ListarInsumosForPessoa(int idPessoa, string descicao)
-        {
-            InsumoRepository _insumoRepository = new InsumoRepository(_dbConnectionManager);
-            try
-            {
-                return _insumoRepository.GetInsumosForPessoa(idPessoa, descicao);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao listar os insumos, erro: {ex.Message}");
+
+                throw new Exception("Erro ao listar insumos, " + ex.Message);
             }
         }
 
-        // Listar insumos filtrados por descrição, pessoa e status
-        public List<Insumo> ListarInsumosFiltrados(string descricao, string pessoaNome, int status)
-        {
-            InsumoRepository _insumoRepository = new InsumoRepository(_dbConnectionManager);
-            try
-            {
-                return _insumoRepository.GetInsumosFiltro(descricao, pessoaNome, status);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Erro ao listar os insumos com filtro, erro: {ex.Message}");
-            }
-        }
 
         // Consultar insumo por ID
         public Insumo GetInsumo(int idInsumo)
@@ -105,26 +96,13 @@ namespace Leaf.Services.Materiais
             InsumoRepository _insumoRepository = new InsumoRepository(_dbConnectionManager);
             try
             {
-                return _insumoRepository.GetInsumoById(idInsumo);
+                Insumo insumo = _insumoRepository.GetInsumoById(idInsumo);
+                insumo = MapearInsumo(insumo);
+                return insumo ?? null;
             }
             catch (Exception ex)
             {
                 throw new Exception($"Erro ao consultar insumo, erro: {ex.Message}");
-            }
-        }
-
-        // Atualizar status do insumo
-        public bool AtualizarStatusInsumo(int idInsumo, int novoStatus)
-        {
-            InsumoRepository _insumoRepository = new InsumoRepository(_dbConnectionManager);
-            try
-            {
-                _insumoRepository.AtualizarStatusInsumo(idInsumo, novoStatus);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
             }
         }
 
@@ -134,6 +112,9 @@ namespace Leaf.Services.Materiais
             InsumoRepository _insumoRepository = new InsumoRepository(_dbConnectionManager);
             try
             {
+                Insumo insumoBase = _insumoRepository.GetInsumoById(insumo.IdInsumo);
+                insumo.CodBarras = insumoBase.CodBarras;
+
                 _insumoRepository.AtualizarInsumo(insumo);
                 return true;
             }
@@ -149,6 +130,8 @@ namespace Leaf.Services.Materiais
             InsumoRepository _insumoRepository = new InsumoRepository(_dbConnectionManager);
             try
             {
+                //Ajustar valores
+                insumo.Status = 1;
                 _insumoRepository.CadastrarInsumo(insumo);
                 return true;
             }
@@ -157,5 +140,7 @@ namespace Leaf.Services.Materiais
                 return false;
             }
         }
+
+       
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Leaf.Models.Domain;
 using Leaf.Services.Agentes;
+using Leaf.Models.Domain.ErrorModel;
 
 namespace Leaf.Controllers.Agentes
 {
@@ -20,15 +21,21 @@ namespace Leaf.Controllers.Agentes
         [HttpGet]
         public IActionResult Index()
         {
-            List<Pessoa> pessoas = _pessoaServices.ListarPessoas();
-
-            if (pessoas == null)
+            try
             {
-                TempData["MensagemErro"] = "Ops, não encontramos os dados solicitados.";
-                pessoas = new List<Pessoa>();
+                List<Pessoa> pessoas = _pessoaServices.ListarPessoas();
+                if (pessoas == null)
+                {
+                    TempData["MensagemErro"] = "Ops, não encontramos os dados solicitados.";
+                    pessoas = new List<Pessoa>();
+                }
+                return View(pessoas);
             }
-
-            return View(pessoas);
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = $"Erro ao carregar a lista de pessoas: {ex.Message}";
+                return View(new List<Pessoa>());
+            }
         }
 
         // Buscar pessoas com filtros
@@ -39,7 +46,7 @@ namespace Leaf.Controllers.Agentes
             {
                 List<Pessoa> pessoas = _pessoaServices.ListarPessoasFiltradas(nome, tipo);
 
-                if (pessoas.Any()) // Verifica se há dados
+                if (pessoas.Any())
                 {
                     TempData["MensagemSucesso"] = "Dados encontrados.";
                 }
@@ -52,7 +59,8 @@ namespace Leaf.Controllers.Agentes
             }
             catch (Exception ex)
             {
-                throw new Exception($"Não foi possível retornar as pessoas solicitadas: erro {ex.Message}");
+                TempData["MensagemErro"] = $"Erro ao buscar pessoas: {ex.Message}";
+                return RedirectToAction("Index");
             }
         }
 
@@ -70,7 +78,6 @@ namespace Leaf.Controllers.Agentes
                     return RedirectToAction("Index");
                 }
 
-                // Retornar para a view de detalhes com a pessoa encontrada
                 return View(pessoa);
             }
             catch (Exception ex)
@@ -80,25 +87,42 @@ namespace Leaf.Controllers.Agentes
             }
         }
 
-
         // Exibir a tela de cadastro de nova pessoa
         public IActionResult Cadastrar()
         {
-            return View();
+            try
+            {
+                return View();
+            }
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = $"Erro ao carregar a página de cadastro: {ex.Message}";
+                return RedirectToAction("Index");
+            }
         }
 
         // Criar nova pessoa
         [HttpPost]
         public IActionResult Criar(Pessoa pessoa)
         {
-            if (_pessoaServices.CadastrarPessoa(pessoa))
+            try
             {
-                TempData["MensagemSucesso"] = "Pessoa cadastrada com sucesso!";
-                return RedirectToAction("Index");
+                DomainErrorModel errorModel = _pessoaServices.ValidarPessoa(pessoa);
+                if (errorModel.Sucesso)
+                {
+                    _pessoaServices.CadastrarPessoa(pessoa);
+                    TempData["MensagemSucesso"] = errorModel.Mensagem;
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    TempData["MensagemErro"] = errorModel.Mensagem;
+                    return View("Cadastrar", pessoa);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                TempData["MensagemErro"] = "Ops, não foi possível efetuar o cadastro da pessoa";
+                TempData["MensagemErro"] = $"Erro ao tentar cadastrar a pessoa: {ex.Message}";
                 return View("Cadastrar", pessoa);
             }
         }
@@ -106,14 +130,22 @@ namespace Leaf.Controllers.Agentes
         // Exibir a tela de edição de pessoa
         public IActionResult Editar(int id)
         {
-            Pessoa pessoa = _pessoaServices.GetPessoa(id);
-            if (pessoa != null)
+            try
             {
-                return View(pessoa);
+                Pessoa pessoa = _pessoaServices.GetPessoa(id);
+                if (pessoa != null)
+                {
+                    return View(pessoa);
+                }
+                else
+                {
+                    TempData["MensagemErro"] = "Erro ao tentar editar a pessoa.";
+                    return RedirectToAction("Index");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                TempData["MensagemErro"] = "Erro ao tentar editar a pessoa";
+                TempData["MensagemErro"] = $"Erro ao carregar a página de edição: {ex.Message}";
                 return RedirectToAction("Index");
             }
         }
@@ -122,36 +154,50 @@ namespace Leaf.Controllers.Agentes
         [HttpPost]
         public IActionResult Atualizar(Pessoa pessoa)
         {
-            if (_pessoaServices.AtualizarPessoa(pessoa))
+            try
             {
-                TempData["MensagemSucesso"] = "Pessoa atualizada com sucesso!";
-                return RedirectToAction("Index");
+                if (_pessoaServices.AtualizarPessoa(pessoa))
+                {
+                    TempData["MensagemSucesso"] = "Pessoa atualizada com sucesso!";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    TempData["MensagemErro"] = "Ops, não foi possível atualizar a pessoa.";
+                    return View("Editar", pessoa);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                TempData["MensagemErro"] = "Ops, não foi possível atualizar a pessoa";
+                TempData["MensagemErro"] = $"Erro ao tentar atualizar a pessoa: {ex.Message}";
                 return View("Editar", pessoa);
             }
         }
 
-
         [HttpGet]
         public JsonResult ValidarPessoa(string cnpj)
         {
-            if (!string.IsNullOrEmpty(cnpj) && cnpj.Length == 18)
+            try
             {
-                Pessoa pessoa = _pessoaServices.PessoaComCnpj(cnpj);
-                if (pessoa != null)
+                if (!string.IsNullOrEmpty(cnpj) && cnpj.Length == 18)
                 {
-                    return Json(new
+                    Pessoa pessoa = _pessoaServices.PessoaComCnpj(cnpj);
+                    if (pessoa != null)
                     {
-                        idpessoa = pessoa.IdPessoa,
-                        nome = pessoa.Nome,
-                        cnpj = pessoa.Cnpj
-                    });
+                        return Json(new
+                        {
+                            idpessoa = pessoa.IdPessoa,
+                            nome = pessoa.Nome,
+                            cnpj = pessoa.Cnpj
+                        });
+                    }
                 }
+                return Json(null);
             }
-            return Json(null);
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Erro ao validar pessoa: {ex.Message}" });
+            }
         }
     }
 }

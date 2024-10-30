@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Leaf.Models.ViewModels.PedidoViewModel>
 @{
     Layout = "_LayoutImpressao";
-    ViewData["Title"] = "Impressão de Relatório de Pedidos";
+    ViewData["Title"] = "Impressão de Relatório de Vendas";
 
     // Define as variáveis para data de início e fim com base nos ViewBags
     DateTime? dataInicio = !string.IsNullOrEmpty(ViewBag.DataInicio) ? DateTime.Parse(ViewBag.DataInicio) : (DateTime?)null;
@@ -36,8 +36,8 @@
         <div class="col-4 text-right">
             <p>Usuário: @User?.Identity?.Name</p>
             <div id="componenteImpressao" class="d-print-none">
-                <a href="@Url.Action("Index", "RelatorioVendas")" class="btn btn-secondary">Retornar</a>
-                <button class="btn btn-primary" onclick="imprimirRelatorio()">Imprimir</button>
+                <a href="@Url.Action("Index", "RelatorioVendas")" class="btn btn-secondary m-1">Retornar</a>
+                <button class="btn btn-primary m-1" onclick="imprimirRelatorio()">Imprimir</button>
             </div>
         </div>
     </div>

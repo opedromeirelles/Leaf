@@ -42,7 +42,7 @@ namespace Leaf.Repository.Materiais
 
         }
 
-        // MÉTODOS DE BUSCA
+        // MÉTODOS DE LISTAS
         public List<Insumo> GetInsumos()
         {
             using (SqlConnection conn = _dbConnectionManager.GetConnection())
@@ -107,7 +107,7 @@ namespace Leaf.Repository.Materiais
             }
         }
 
-        public List<Insumo> GetInsumosFiltro(string descricao, string cnpj, int status)
+        public List<Insumo> GetInsumosFiltro(string descricao, int idFornecedor, int status)
         {
             List<Insumo> insumos = new List<Insumo>();
 
@@ -127,11 +127,11 @@ namespace Leaf.Repository.Materiais
                 parametros.Add(new SqlParameter("@descricao", "%" + descricao + "%"));
             }
 
-            // Condição para o CNPJ
-            if (!string.IsNullOrEmpty(cnpj))
+            // Condição para o Fornecedor
+            if (idFornecedor != 0)
             {
-                sql += " AND p.cnpj LIKE @cnpj";
-                parametros.Add(new SqlParameter("@cnpj", cnpj));
+                sql += " AND p.idpessoa = @idFornecedor";
+                parametros.Add(new SqlParameter("@idFornecedor", idFornecedor));
             }
 
             // Condição para o status se fornecido
@@ -140,10 +140,7 @@ namespace Leaf.Repository.Materiais
                 sql += " AND i.status = @status";
                 parametros.Add(new SqlParameter("@status", status));
             }
-            else if (status == 3)
-            {
-                // Não filtra pelo status, retorna todos os insumos independentemente do status
-            }
+            // Caso `status` seja `3`, ele não adiciona filtro adicional para status
 
             // Executar a query
             using (SqlConnection conn = _dbConnectionManager.GetConnection())
@@ -161,101 +158,12 @@ namespace Leaf.Repository.Materiais
 
             return insumos;
         }
-        public List<Insumo> GetInsumosFiltroDescricao(string descricao)
-        {
-            List<Insumo> insumos = new List<Insumo>();
-            string sql = @"select * from insumo where descricao like @descricao";
-
-            using (SqlConnection conn = _dbConnectionManager.GetConnection())
-            {
-                SqlCommand command = new SqlCommand(sql, conn);
-                command.Parameters.AddWithValue("@descricao", "%" + descricao + "%");
-                SqlDataReader reader = command.ExecuteReader();
-
-                try
-                {
-                    while (reader.Read())
-                    {
-                        insumos.Add(MapearInsumo(reader));
-                    }
-
-                    return insumos;
-                }
-                catch (SqlException ex)
-                {
-                    throw new Exception("Não foi possivel listar os insumos por descrição, erro: " + ex.Message);
-                }
-
-            }
-
-        }
-
-
-        public List<Insumo> GetInsumosForPessoa(int idPessoa)
-        {
-            string sql = @"select * from insumo where id_pessoa = @idPessoa";
-            List<Insumo> insumos = new List<Insumo>();
-
-            using (SqlConnection conn = _dbConnectionManager.GetConnection())
-            {
-                SqlCommand command = new SqlCommand(sql, conn);
-                command.Parameters.AddWithValue("@idPessoa", idPessoa);
-                SqlDataReader raeder = command.ExecuteReader();
-
-                try
-                {
-                    while (raeder.Read())
-                    {
-                        insumos.Add(MapearInsumo(raeder));
-                    }
-
-                    return insumos;
-                }
-                catch (SqlException ex)
-                {
-
-                    throw new Exception("Erro ao listar insumos filtrado por pessoas, erro: " + ex.Message);
-                }
 
 
 
-            }
-        }
-        public List<Insumo> GetInsumosForPessoa(int idPessoa, string descicao)
-        {
-            string sql = @"select * from insumo where id_pessoa = @idPessoa and descricao like @descicao";
-
-            List<Insumo> insumos = new List<Insumo>();
-
-            using (SqlConnection conn = _dbConnectionManager.GetConnection())
-            {
-                SqlCommand command = new SqlCommand(sql, conn);
-                command.Parameters.AddWithValue("@idPessoa", idPessoa);
-                command.Parameters.AddWithValue("@descicao", "%" + descicao + "%");
-
-                SqlDataReader raeder = command.ExecuteReader();
-
-                try
-                {
-                    while (raeder.Read())
-                    {
-                        insumos.Add(MapearInsumo(raeder));
-                    }
-
-                    return insumos;
-                }
-                catch (SqlException ex)
-                {
-
-                    throw new Exception("Erro ao listar insumos filtrado por pessoas, erro: " + ex.Message);
-                }
 
 
-
-            }
-        }
-
-
+        // GET
         public Insumo GetInsumoById(int idInsumo)
         {
             using (SqlConnection conn = _dbConnectionManager.GetConnection())
@@ -274,6 +182,8 @@ namespace Leaf.Repository.Materiais
             }
             return null;
         }
+
+
 
         // MÉTODOS DE AÇÃO
         public void CadastrarInsumo(Insumo insumo)

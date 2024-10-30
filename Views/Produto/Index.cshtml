@@ -60,12 +60,12 @@ else if (TempData["MensagemSucesso"] != null)
 			<table class="table">
 				<thead>
 					<tr>
-						<th scope="col">Código</th>
+						<th scope="col" class="text-center">Código</th>
 						<th scope="col">Descrição</th>
-						<th scope="col" class="hide-column">Valor Unitário</th>
-						<th scope="col">Estoque</th>
-						<th scope="col" class="hide-column">Status</th>
-						<th scope="col">Ferramentas</th>
+						<th scope="col" class="hide-column text-center">Valor Unitário</th>
+						<th scope="col" class="text-center">Estoque</th>
+						<th scope="col" class="hide-column text-center">Status</th>
+						<th scope="col" class="text-center">Ferramentas</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -74,11 +74,11 @@ else if (TempData["MensagemSucesso"] != null)
 						@foreach (var produto in Model)
 						{
 							<tr>
-								<td>@produto.IdProduto</td>
+								<td class="text-center">@produto.IdProduto</td>
 								<td>@produto.Descricao</td>
-								<td class="hide-column">@produto.ValorUnitario.ToString("C")</td>
-								<td>@produto.QtdeEstoque</td>
-								<td class="hide-column">
+								<td class="hide-column text-center">@produto.ValorUnitario.ToString("C")</td>
+								<td class="text-center">@produto.QtdeEstoque</td>
+								<td class="hide-column text-center">
 									@if (produto.Status == 1)
 									{
 										<span>Ativo</span>
@@ -92,7 +92,7 @@ else if (TempData["MensagemSucesso"] != null)
 										<span>Indefinido</span>
 									}
 								</td>
-								<td>
+								<td class="text-center">
 									<a href="@Url.Action("Editar", "Produto", new { id = produto.IdProduto })">Editar</a> |
 									<a href="@Url.Action("Detalhes", "Produto", new { id = produto.IdProduto })">Detalhes</a>
 								</td>

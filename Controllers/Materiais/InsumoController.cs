@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 using Microsoft.AspNetCore.Authorization;
 using Leaf.Models.Domain;
 using Leaf.Services.Agentes;
@@ -22,132 +21,203 @@ namespace Leaf.Controllers.Materiais
         [HttpGet]
         public IActionResult Index()
         {
-            List<Insumo> insumos = GetInsumosPessoa(_insumoServices.ListarInsumos());
-            if (insumos.Any())
-            {
-                return View(insumos);
-
-            }
-            else
-            {
-                List<Insumo> insumosNull = new List<Insumo>();
-                return View(insumosNull);
-            }
-
-        }
-
-        [HttpGet]
-        public IActionResult Buscar(string descricao, string cnpj, int status)
-        {
-            List<Insumo> insumos = GetInsumosPessoa(_insumoServices.ListarInsumosFiltrados(descricao, cnpj, status));
-
             try
             {
-                if (insumos.Any()) // Verifica se há dados
-                {
-                    TempData["MensagemSucesso"] = "Dados encontrados.";
-                }
-                else
-                {
-                    TempData["MensagemErro"] = "Ops, não encontramos os dados solicitados.";
-                }
-
-                return View("Index", insumos);
+                GetFornecedoresViewBag();
+                List<Insumo> insumos = _insumoServices.ListarInsumos();
+                return View(insumos.Any() ? insumos : new List<Insumo>());
             }
             catch (Exception ex)
             {
-                throw new Exception($"Não foi possível retornar as pessoas solicitadas: erro {ex.Message}");
+                TempData["MensagemErro"] = "Erro ao carregar a lista de insumos: " + ex.Message;
+                return View(new List<Insumo>());
             }
         }
 
+        [HttpGet]
+        public IActionResult Buscar(string descricao, int fornecedor, int status)
+        {
+            try
+            {
+                GetFornecedoresViewBag();
+                List<Insumo> insumos = _insumoServices.BuscarInsumosFiltro(descricao, fornecedor, status);
+
+                if (insumos != null && insumos.Any())
+                {
+                    TempData["MensagemSucesso"] = "Dados encontrados.";
+                    return View("Index", insumos);
+                }
+                else
+                {
+                    TempData["MensagemErro"] = "Não há insumos com os filtros atuais.";
+                    return View("Index", insumos);
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = "Não foi possível listar os insumos, erro: " + ex.Message;
+                return View("Index", new List<Insumo>());
+            }
+        }
 
         [HttpGet]
         public IActionResult Detalhes(int id)
         {
-            Insumo insumo = _insumoServices.GetInsumo(id);
-            insumo.Pessoa = _pessoaServices.GetPessoa(insumo.IdPessoa);
-
-            if (insumo == null)
+            try
             {
-                TempData["MensagemErro"] = "Insumo não encontrado.";
+                Insumo insumo = _insumoServices.GetInsumo(id);
+                if (insumo == null)
+                {
+                    TempData["MensagemErro"] = "Insumo não encontrado.";
+                    return RedirectToAction("Index");
+                }
+
+                return View(insumo);
+            }
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = "Erro ao carregar detalhes do insumo, erro: " + ex.Message;
                 return RedirectToAction("Index");
             }
-            return View(insumo);
         }
 
         public IActionResult Cadastrar()
         {
-            return View(new Insumo());
+            try
+            {
+                return View(new Insumo());
+            }
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = "Erro ao abrir a página de cadastro: " + ex.Message;
+                return RedirectToAction("Index");
+            }
         }
-
 
         [HttpPost]
         public IActionResult Criar(Insumo insumo)
         {
-            if (ModelState.IsValid && insumo.IdPessoa != 0)
+            if (insumo.ValorUnitario <= 0)
             {
+                TempData["MensagemErro"] = "O valor unitário inválido.";
+                return View("Cadastrar", insumo);
+            }
+            try
+            {
+                
                 if (_insumoServices.CadastrarInsumo(insumo))
                 {
                     TempData["MensagemSucesso"] = "Insumo cadastrado com sucesso!";
                     return RedirectToAction("Index");
                 }
-            }
 
-            TempData["MensagemErro"] = "Erro ao tentar cadastrar o insumo.";
-            return View("Cadastrar", insumo);
+                TempData["MensagemErro"] = "Erro ao tentar cadastrar o insumo.";
+                return View("Cadastrar", insumo);
+            }
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = "Erro ao tentar cadastrar o insumo, erro: " + ex.Message;
+                return View("Cadastrar", insumo);
+            }
         }
 
         public IActionResult Editar(int id)
         {
-            Insumo insumo = _insumoServices.GetInsumo(id);
-            insumo.Pessoa = _pessoaServices.GetPessoa(insumo.IdPessoa);
-            return insumo == null ? RedirectToAction("Index") : View(insumo);
+            try
+            {
+                Insumo insumo = _insumoServices.GetInsumo(id);
+                if (insumo == null)
+                {
+                    TempData["MensagemErro"] = "Insumo não encontrado.";
+                    return RedirectToAction("Index");
+                }
+
+                // Carrega o nome da pessoa associado ao insumo para exibição
+                ViewBag.CodBarras = insumo.CodBarras;
+
+                return View(insumo);
+            }
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = "Erro ao carregar a página de edição do insumo, erro: " + ex.Message;
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
         public IActionResult Atualizar(Insumo insumo)
         {
+            if (insumo.ValorUnitario <= 0)
+            {
+                TempData["MensagemErro"] = "O valor unitário inválido.";
+
+                // Mantém o nome da pessoa e o código de barras em caso de erro de validação
+                ViewBag.CodBarras = insumo.CodBarras;
+
+                return View("Editar", insumo);
+            }
+
             try
             {
-                // Verificar se os dados enviados estão válidos
-                if (ModelState.IsValid)
+                if (_insumoServices.AtualizarInsumo(insumo))
                 {
-
-                    if (_insumoServices.AtualizarInsumo(insumo))
-                    {
-                        TempData["MensagemSucesso"] = "Insumo atualizado com sucesso!";
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        TempData["MensagemErro"] = "Erro ao tentar atualizar o insumo no banco de dados.";
-                    }
+                    TempData["MensagemSucesso"] = "Insumo atualizado com sucesso!";
+                    return RedirectToAction("Index");
                 }
                 else
                 {
-                    TempData["MensagemErro"] = "Erro na validação dos dados do insumo. Verifique os campos e tente novamente.";
+                    TempData["MensagemErro"] = "Erro ao tentar atualizar o insumo no banco de dados.";
                 }
+
+                // Mantém os valores da ViewBag para que não sumam na exibição
+                ViewBag.CodBarras = insumo.CodBarras;
 
                 return View("Editar", insumo);
             }
             catch (Exception ex)
             {
+                TempData["MensagemErro"] = "Erro ao atualizar o insumo, erro: " + ex.Message;
 
-                TempData["MensagemErro"] = "Erro na validação dos dados do insumo. erro: " + ex.Message;
+                // Mantém os valores da ViewBag em caso de exceção
+                ViewBag.CodBarras = insumo.CodBarras;
+
                 return View("Editar", insumo);
             }
-
         }
 
-        public List<Insumo> GetInsumosPessoa(List<Insumo> insumo)
+
+        [HttpGet]
+        public JsonResult ValidarPessoa(string cnpj)
         {
-            foreach (var item in insumo)
+            if (!string.IsNullOrEmpty(cnpj) && cnpj.Length == 18)
             {
-                item.Pessoa = _pessoaServices.GetPessoa(item.IdPessoa);
+                Pessoa pessoa = _pessoaServices.PessoaComCnpj(cnpj);
+                if (pessoa != null)
+                {
+                    return Json(new
+                    {
+                        idpessoa = pessoa.IdPessoa,
+                        nome = pessoa.Nome,
+                        cnpj = pessoa.Cnpj
+                    });
+                }
             }
-
-            return insumo;
+            return Json(null);
         }
 
+        // Popula a ViewBag com fornecedores
+        public void GetFornecedoresViewBag()
+        {
+            try
+            {
+                List<Pessoa> fornecedores = _pessoaServices.GetFornecedores();
+                ViewBag.Fornecedores = fornecedores.Any() ? fornecedores : new List<Pessoa> { new Pessoa { IdPessoa = 0, Nome = "FORNECEDOR INDISPONÍVEL" } };
+            }
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = "Erro ao carregar fornecedores: " + ex.Message;
+                ViewBag.Fornecedores = new List<Pessoa> { new Pessoa { IdPessoa = 0, Nome = "FORNECEDOR INDISPONÍVEL" } };
+            }
+        }
     }
 }

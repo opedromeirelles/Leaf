@@ -79,36 +79,7 @@ else if (TempData["MensagemSucesso"] != null)
 			<!-- Sessão 2: Lista de Produtos da Compra -->
 			<h5 class="mt-4"><i class="fas fa-boxes"></i> Itens da Compra</h5>
 			<div class="table-responsive mt-3">
-				<table class="table table-hover table-bordered">
-					<thead class="bg-dark text-white">
-						<tr>
-							<th>Descrição</th>
-							<th>Quantidade</th>
-							<th>Valor Unitário</th>
-							<th>Subtotal</th>
-						</tr>
-					</thead>
-					<tbody>
-						@if (Model?.ItensCompra != null && Model.ItensCompra.Any())
-						{
-							foreach (var item in Model.ItensCompra)
-							{
-								<tr>
-									<td>@(item.insumo.Descricao ?? "Insumo não encontrado")</td>
-									<td>@item.Quantidade</td>
-									<td>R$ @item.insumo.ValorUnitario.ToString("#,##0.00")</td>
-									<td>R$ @item.SubTotal.ToString("#,##0.00")</td>
-								</tr>
-							}
-						}
-						else
-						{
-							<tr>
-								<td colspan="3" class="text-center">Nenhum item encontrado.</td>
-							</tr>
-						}
-					</tbody>
-				</table>
+				@await Html.PartialAsync("Tabelas/_ItensCompraTabela", Model)
 			</div>
 		</div>
 

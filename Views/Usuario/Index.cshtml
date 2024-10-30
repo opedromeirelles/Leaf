@@ -62,13 +62,13 @@ else if (TempData["MensagemSucesso"] != null)
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col">Usuário</th>
+                        <th scope="col" class="text-center">Usuário</th>
                         <th scope="col" class="hide-column">Nome</th>
                         <th scope="col">Login</th>
                         <th scope="col" class="hide-column">Senha</th>
                         <th scope="col" class="hide-column">Departamento</th>
-                        <th scope="col" class="hide-column">Status</th>
-                        <th scope="col">Ferramentas</th>
+                        <th scope="col" class="hide-column text-center">Status</th>
+                        <th scope="col" class="text-center">Ferramentas</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -77,7 +77,7 @@ else if (TempData["MensagemSucesso"] != null)
                         @foreach (var usuario in Model)
                         {
                             <tr>
-                                <td>@usuario.Id</td>
+                                <td class="text-center">@usuario.Id</td>
                                 <td class="hide-column">@usuario.Nome</td>
                                 <td>@usuario.Login</td>
                                 <td class="hide-column">@usuario.Senha</td>
@@ -91,7 +91,7 @@ else if (TempData["MensagemSucesso"] != null)
                                         <span>Departamento não encontrado</span>
                                     }
                                 </td>
-                                <td class="hide-column">
+                                <td class="hide-column text-center">
                                     @if (usuario.Status == 1)
                                     {
                                         <span>Ativo</span>
@@ -105,7 +105,7 @@ else if (TempData["MensagemSucesso"] != null)
                                         <span>Indefinido</span>
                                     }
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <a href="@Url.Action("Editar", "Usuario", new { id = usuario.Id })">Editar</a> |
                                     <a href="@Url.Action("Detalhes", "Usuario", new { id = usuario.Id })">Detalhes</a>
                                 </td>

@@ -1,6 +1,8 @@
 ﻿using Leaf.Data;
 using Leaf.Models.Domain;
+using Leaf.Models.Domain.ErrorModel;
 using Leaf.Repository.Materiais;
+using System.Globalization;
 
 namespace Leaf.Services.Materiais
 {
@@ -13,6 +15,54 @@ namespace Leaf.Services.Materiais
             _dbConnectionManager = dbConnectionManager;
         }
 
+        // Validção:
+        public DomainErrorModel ValidarPrdouto(Produto produto)
+        {
+            // converto os valores:
+            if (!decimal.TryParse(produto.ValorUnitario.ToString().Replace(".", ","), NumberStyles.Number, new CultureInfo("pt-BR"), out _))
+            {
+                return new DomainErrorModel(false, "Valor unitário invalido.");
+            }
+
+            if (produto.ValorUnitario <= 0)
+            {
+                return new DomainErrorModel(false, "O valor unitário tem que ser numérico e não pode ser menor ou igual a zero");
+            }
+
+            try
+            {
+
+                if (produto.IdProduto != 0)
+                {
+                    return new DomainErrorModel(true, "Produto atualizado com sucesso");
+                }
+
+                else
+                {
+                    ProdutoRepository _produtoRepository = new ProdutoRepository(_dbConnectionManager);
+                    List<Produto> produtosBase = _produtoRepository.GetProdutos();
+
+                    //Valido se ja existe
+                    foreach (var prodBase in produtosBase)
+                    {
+                        if (prodBase.Descricao.Equals(produto.Descricao, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return new DomainErrorModel(false, $"Produto: {produto.Descricao.ToUpper()} já cadastrado.");
+                        }
+                    }
+
+                    return new DomainErrorModel(true, "Produto cadastrado com sucesso!");
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                return new DomainErrorModel(false, "Erro ao validar produto", "Validação", ex.Message);
+            }
+        }
+
+
+        // Listas
         public List<Produto> ListarProdutos()
         {
             ProdutoRepository _produtosRepository = new ProdutoRepository(_dbConnectionManager);
@@ -41,6 +91,8 @@ namespace Leaf.Services.Materiais
             }
         }
 
+
+        // GET
         public int GetQuantidadeEstoque(int idProduto)
         {
             ProdutoRepository _produtosRepository = new ProdutoRepository(_dbConnectionManager);
@@ -61,46 +113,21 @@ namespace Leaf.Services.Materiais
             }
         }
 
-        public bool AtualizarStatusProduto(int idProduto)
+
+        //AÇÔES
+
+        public void AtualizarProduto(Produto produto)
         {
             ProdutoRepository _produtoRepository = new ProdutoRepository(_dbConnectionManager);
-            try
-            {
-                _produtoRepository.AtualizarSatusProduto(idProduto);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            _produtoRepository.AtualizarProduto(produto);
+
         }
 
-        public bool AtualizarProduto(Produto produto)
+        public void CadastrarProduto(Produto produto)
         {
             ProdutoRepository _produtoRepository = new ProdutoRepository(_dbConnectionManager);
-            try
-            {
-                _produtoRepository.AtualizarProduto(produto);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
+            _produtoRepository.CadastrarProduto(produto);
 
-        public bool CadastrarProduto(Produto produto)
-        {
-            ProdutoRepository _produtoRepository = new ProdutoRepository(_dbConnectionManager);
-            try
-            {
-                _produtoRepository.CadastrarProduto(produto);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
         }
 
     }

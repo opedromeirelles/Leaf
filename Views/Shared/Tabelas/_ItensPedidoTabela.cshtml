@@ -1,0 +1,33 @@
+﻿@model Leaf.Models.ViewModels.PedidoViewModel
+
+
+<table class="table table-hover table-bordered">
+    <thead class="bg-dark text-white">
+        <tr>
+            <th>Descrição</th>
+            <th class="text-center">Quantidade</th>
+            <th class="text-center">Valor Unitário</th>
+            <th class="text-center">Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model?.ItensPedido != null && Model.ItensPedido.Any())
+        {
+            foreach (var item in Model.ItensPedido)
+            {
+                <tr>
+                    <td>@(item.Produto?.Descricao ?? "Produto não encontrado")</td>
+                    <td class="text-center">@item.Quantidade</td>
+                    <td class="text-center">R$ @item.Produto?.ValorUnitario.ToString("#,##0.00")</td>
+                    <td class="text-center">R$ @item.SubTotal.ToString("#,##0.00")</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-center">Nenhum item encontrado.</td>
+            </tr>
+        }
+    </tbody>
+</table>

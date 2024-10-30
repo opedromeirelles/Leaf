@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Globalization;
 using Microsoft.AspNetCore.Authorization;
 using Leaf.Models.Domain;
 using Leaf.Services.Materiais;
+using Leaf.Models.Domain.ErrorModel;
 
 namespace Leaf.Controllers.Materiais
 {
@@ -20,27 +20,33 @@ namespace Leaf.Controllers.Materiais
         [HttpGet]
         public IActionResult Index()
         {
-            List<Produto> produtos = _produtoServices.ListarProdutos();
-
-
-            if (produtos == null)
+            try
             {
-                TempData["MensagemErro"] = "Ops, não encontramos os dados solicitados.";
-                produtos = new List<Produto>();
-            }
+                List<Produto> produtos = _produtoServices.ListarProdutos();
 
-            return View(produtos);
+                if (produtos == null || !produtos.Any())
+                {
+                    TempData["MensagemErro"] = "Ops, não encontramos os dados solicitados.";
+                    produtos = new List<Produto>();
+                }
+
+                return View(produtos);
+            }
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = $"Erro ao carregar produtos: {ex.Message}";
+                return View(new List<Produto>());
+            }
         }
 
         [HttpGet]
         public IActionResult Buscar(string descricao, int status)
         {
-
             try
             {
                 List<Produto> produtos = _produtoServices.ListarProdutosFiltrados(descricao, status);
 
-                if (produtos.Any()) // Verifica se há dados
+                if (produtos.Any())
                 {
                     TempData["MensagemSucesso"] = "Dados encontrados.";
                 }
@@ -53,7 +59,8 @@ namespace Leaf.Controllers.Materiais
             }
             catch (Exception ex)
             {
-                throw new Exception($"Não foi possível retornar os produtos solicitados: erro {ex.Message}");
+                TempData["MensagemErro"] = $"Erro ao buscar produtos: {ex.Message}";
+                return RedirectToAction("Index");
             }
         }
 
@@ -62,21 +69,19 @@ namespace Leaf.Controllers.Materiais
         {
             try
             {
-                // Buscar a pessoa pelo ID
                 Produto produto = _produtoServices.GetProduto(id);
 
                 if (produto == null)
                 {
-                    TempData["MensagemErro"] = "Produto não encontrada.";
+                    TempData["MensagemErro"] = "Produto não encontrado.";
                     return RedirectToAction("Index");
                 }
 
-                // Retornar para a view de detalhes com a pessoa encontrada
                 return View(produto);
             }
             catch (Exception ex)
             {
-                TempData["MensagemErro"] = $"Erro ao buscar os detalhes do produto: {ex.Message}";
+                TempData["MensagemErro"] = $"Erro ao buscar detalhes do produto: {ex.Message}";
                 return RedirectToAction("Index");
             }
         }
@@ -89,88 +94,91 @@ namespace Leaf.Controllers.Materiais
         [HttpPost]
         public IActionResult Criar(Produto produto)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                TempData["MensagemErro"] = "Ops, algo deu errado. Erros: " + string.Join(", ", errors);
-                return View("Cadastrar", produto);
-            }
-            else
-            {
-
-                // Conversão manual do valor decimal
-                produto.ValorUnitario = decimal.Parse(produto.ValorUnitario.ToString().Replace(".", ","), new CultureInfo("pt-BR"));
-                if (produto.ValorUnitario <= 0)
+                // Tenta converter o valor para decimal
+                if (!decimal.TryParse(produto.ValorUnitario.ToString().Replace(".", ","),
+                                      NumberStyles.Number, new CultureInfo("pt-BR"),
+                                      out decimal valorConvertido))
                 {
-                    TempData["MensagemErro"] = "O valor informado é inválido";
-                    return View("Cadastrar", produto);
+                    // Tratamento caso a conversão falhe
+                    TempData["MensagemErro"] = "O valor informado para o produto é inválido.";
+                    return View("Cadastrar", produto); 
                 }
 
-                // Ativando o produto
-                produto.Status = 1;
+                // Atribui o valor convertido.
+                produto.ValorUnitario = valorConvertido;
 
-                if (_produtoServices.CadastrarProduto(produto))
+                DomainErrorModel errorModel = _produtoServices.ValidarPrdouto(produto);
+
+                if (errorModel.Sucesso)
                 {
-                    TempData["MensagemSucesso"] = "Produto cadastrado com sucesso!";
+                    _produtoServices.CadastrarProduto(produto);
+                    TempData["MensagemSucesso"] = errorModel.Mensagem;
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    TempData["MensagemErro"] = "Ops, não foi possivel efetuar o cadastro do produto";
+                    TempData["MensagemErro"] = errorModel.Mensagem;
                     return View("Cadastrar", produto);
                 }
             }
-
-
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = $"Erro ao validar produto: {ex.Message}";
+                return View("Cadastrar", produto);
+            }
 
         }
 
         public IActionResult Editar(int id)
         {
-            Produto produto = _produtoServices.GetProduto(id);
-            if (produto != null)
+            try
             {
+                Produto produto = _produtoServices.GetProduto(id);
+
+                if (produto == null)
+                {
+                    TempData["MensagemErro"] = "Produto não encontrado para edição.";
+                    return RedirectToAction("Index");
+                }
+
                 return View(produto);
             }
-            else
+            catch (Exception ex)
             {
-                TempData["MensagemErro"] = "Erro ao tentar editar o produto";
-                return RedirectToAction("index");
+                TempData["MensagemErro"] = $"Erro ao carregar produto para edição: {ex.Message}";
+                return RedirectToAction("Index");
             }
         }
 
         [HttpPost]
         public IActionResult Atualizar(Produto produto)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                TempData["MensagemErro"] = "Ops, algo deu errado. Erros: " + string.Join(", ", errors);
-                return View("Editar", produto);
-            }
-            else
-            {
-                // Conversão manual do valor decimal
-                produto.ValorUnitario = decimal.Parse(produto.ValorUnitario.ToString().Replace(".", ","), new CultureInfo("pt-BR"));
-                if (produto.ValorUnitario <= 0)
-                {
-                    TempData["MensagemErro"] = "O valor informado é inválido";
-                    return View("Editar", produto);
-                }
 
-                if (_produtoServices.AtualizarProduto(produto))
+                DomainErrorModel errorModel = _produtoServices.ValidarPrdouto(produto);
+
+                if (errorModel.Sucesso)
                 {
-                    TempData["MensagemSucesso"] = "Produto atualizado com sucesso!";
+                    _produtoServices.AtualizarProduto(produto);
+                    TempData["MensagemSucesso"] = errorModel.Mensagem;
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    TempData["MensagemErro"] = "Ops, não foi possivel atualizar o produto";
+                    TempData["MensagemErro"] = errorModel.Mensagem;
                     return View("Editar", produto);
                 }
-            }
-        }
 
+            }
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = $"Erro ao validar produto: {ex.Message}";
+                return View("Editar", produto);
+            }
+
+        }
     }
 }
-

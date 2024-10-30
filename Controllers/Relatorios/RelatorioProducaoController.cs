@@ -21,7 +21,6 @@ namespace Leaf.Controllers.Relatorios
 		private readonly LoteProcucaoFacedeServices _loteProcucaoFacedeServices;
 		private readonly ProdutoServices _produtoServices;
 
-
 		public RelatorioProducaoController(LoteProcucaoFacedeServices loteProcucaoFacedeServices, ProdutoServices produtoServices)
 		{
 			_produtoServices = produtoServices;
@@ -31,27 +30,32 @@ namespace Leaf.Controllers.Relatorios
 		[Route("relatorio-producao")]
 		public IActionResult Index()
 		{
-			GetProdutos();
-			return View(_pathIndex);
+			try
+			{
+				GetProdutos();
+				return View(_pathIndex);
+			}
+			catch (Exception ex)
+			{
+				TempData["MensagemErro"] = "Erro ao carregar a página de relatórios de produção: " + ex.Message;
+				return RedirectToAction("Index");
+			}
 		}
 
 		[HttpGet]
 		public async Task<IActionResult> Buscar(string numeroLote, string estagio, string produto, string dataInicio, string dataFim)
 		{
-			// Popular produtos
+			// Popula produtos
 			GetProdutos();
 
-			// Converter os parâmetros para os tipos corretos
+			// Converte os parâmetros para os tipos corretos
 			var (idLote, idProduto, estagioProducao, inicio, fim) = ConverterParametrosBusca(numeroLote, estagio, produto, dataInicio, dataFim);
 
-
-            if (fim < inicio)
+			if (fim < inicio)
 			{
 				TempData["MensagemErro"] = "A data de fim não pode ser menor que a data de início.";
 				return RedirectToAction("Index");
 			}
-
-           
 
 			try
 			{
@@ -60,13 +64,13 @@ namespace Leaf.Controllers.Relatorios
 
 				if (lotes.Any())
 				{
-                    ViewBag.NumeroLote = numeroLote;
-                    ViewBag.Estagio = estagio;
-                    ViewBag.Produto = produto;
-                    ViewBag.DataInicio = dataInicio;
-                    ViewBag.DataFim = dataFim;
+					ViewBag.NumeroLote = numeroLote;
+					ViewBag.Estagio = estagio;
+					ViewBag.Produto = produto;
+					ViewBag.DataInicio = dataInicio;
+					ViewBag.DataFim = dataFim;
 
-                    TempData["MensagemSucesso"] = "Dados encontrados.";
+					TempData["MensagemSucesso"] = "Dados encontrados.";
 					return View(_pathIndex, lotes);
 				}
 				else
@@ -77,7 +81,7 @@ namespace Leaf.Controllers.Relatorios
 			}
 			catch (Exception ex)
 			{
-				TempData["MensagemErro"] = "Não foi possível acessar o banco de dados, erro: " + ex.Message;
+				TempData["MensagemErro"] = "Erro ao buscar lotes de produção: " + ex.Message;
 				return RedirectToAction("Index");
 			}
 		}
@@ -88,12 +92,20 @@ namespace Leaf.Controllers.Relatorios
 		{
 			var (idLote, idProduto, estagioProducao, inicio, fim) = ConverterParametrosBusca(numeroLote, estagio, produto, dataInicio, dataFim);
 
-			List<LoteProducaoViewModel> loteViewModel = await _loteProcucaoFacedeServices.GetLotesFiltros(inicio, fim, idProduto, idLote, estagioProducao);
+			try
+			{
+				List<LoteProducaoViewModel> loteViewModel = await _loteProcucaoFacedeServices.GetLotesFiltros(inicio, fim, idProduto, idLote, estagioProducao);
 
-			// Retornar os filtros
-			ArmazenarFiltros(numeroLote, estagio, produto, dataInicio, dataFim);
+				// Armazena os filtros
+				ArmazenarFiltros(numeroLote, estagio, produto, dataInicio, dataFim);
 
-			return View(_pathImprimir, loteViewModel);
+				return View(_pathImprimir, loteViewModel);
+			}
+			catch (Exception ex)
+			{
+				TempData["MensagemErro"] = "Erro ao tentar imprimir o relatório: " + ex.Message;
+				return RedirectToAction("Index");
+			}
 		}
 
 		[HttpGet]
@@ -149,13 +161,20 @@ namespace Leaf.Controllers.Relatorios
 		// Método para popular os produtos na ViewBag
 		private void GetProdutos()
 		{
-			List<Produto> produtos = _produtoServices.ListarProdutos();
-			if (produtos == null || !produtos.Any())
+			try
 			{
-				produtos = new List<Produto> { new Produto { IdProduto = 0, Descricao = "SEM PRODUTO" } };
-			}
+				List<Produto> produtos = _produtoServices.ListarProdutos();
+				if (produtos == null || !produtos.Any())
+				{
+					produtos = new List<Produto> { new Produto { IdProduto = 0, Descricao = "SEM PRODUTO" } };
+				}
 
-			ViewBag.Produtos = produtos;
+				ViewBag.Produtos = produtos;
+			}
+			catch (Exception ex)
+			{
+				TempData["MensagemErro"] = "Erro ao carregar a lista de produtos: " + ex.Message;
+			}
 		}
 	}
 }
