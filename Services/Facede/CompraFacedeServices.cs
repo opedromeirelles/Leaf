@@ -152,7 +152,6 @@ public class CompraFacedeServices
 				}
 
 			}
-
             return comprasByUsuario.Any() ? comprasByUsuario : new List<Compra>();
             
         }
