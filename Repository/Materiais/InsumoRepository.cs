@@ -192,8 +192,8 @@ namespace Leaf.Repository.Materiais
             {
                 try
                 {
-                    string sql = @"INSERT INTO insumo (cod_barras, descricao, unidade_medida, status, valor_unitario, qtde_estoque, id_pessoa)
-                                   VALUES (@cod_barras, @descricao, @unidade_medida, @status, @valor_unitario, @qtde_estoque, @id_pessoa)";
+                    string sql = @"INSERT INTO insumo (cod_barras, descricao, unidade_medida, valor_unitario, id_pessoa)
+                                   VALUES (@cod_barras, @descricao, @unidade_medida, @valor_unitario, @id_pessoa)";
 
                     SqlCommand command = new SqlCommand(sql, conn);
                     List<SqlParameter> parametros = new List<SqlParameter>
@@ -201,9 +201,7 @@ namespace Leaf.Repository.Materiais
                         new SqlParameter("@cod_barras", insumo.CodBarras),
                         new SqlParameter("@descricao", insumo.Descricao),
                         new SqlParameter("@unidade_medida", insumo.UnidadeMedida),
-                        new SqlParameter("@status", insumo.Status),
                         new SqlParameter("@valor_unitario", insumo.ValorUnitario),
-                        new SqlParameter("@qtde_estoque", insumo.QtdeEstoque),
                         new SqlParameter("@id_pessoa", insumo.IdPessoa)
                     };
 

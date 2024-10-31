@@ -150,10 +150,11 @@ public class CompraFacedeServices
 						comprasByUsuario.Add(compra);
 					}
 				}
+                return comprasByUsuario.Any() ? comprasByUsuario : new List<Compra>();
 
 			}
-            return comprasByUsuario.Any() ? comprasByUsuario : new List<Compra>();
-            
+
+            return compras;
         }
         catch (Exception ex)
         {
