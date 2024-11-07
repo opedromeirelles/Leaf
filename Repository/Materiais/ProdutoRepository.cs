@@ -19,15 +19,15 @@ namespace Leaf.Repository.Materiais
         //MÉTODO PARA MAPEAR PRODUTO
         public Produto MapearProduto(SqlDataReader reader)
         {
-            return new Produto
-            {
-                IdProduto = Convert.ToInt32(reader["idproduto"]),
-                Descricao = reader["descricao"].ToString(),
-                ValorUnitario = Convert.ToDecimal(reader["valor_unitario"]),
-                QtdeEstoque = Convert.ToInt32(reader["qtde_estoque"]),
-                Status = Convert.ToInt32(reader["status"])
-            };
-        }
+			return new Produto
+			{
+				IdProduto = reader["idproduto"] != DBNull.Value ? Convert.ToInt32(reader["idproduto"]) : 0,
+				Descricao = reader["descricao"] != DBNull.Value ? reader["descricao"].ToString() : string.Empty,
+				ValorUnitario = reader["valor_unitario"] != DBNull.Value ? Convert.ToDecimal(reader["valor_unitario"]) : 0m,
+				QtdeEstoque = reader["qtde_estoque"] != DBNull.Value ? Convert.ToInt32(reader["qtde_estoque"]) : 0,
+				Status = reader["status"] != DBNull.Value ? Convert.ToInt32(reader["status"]) : 0
+			};
+		}
 
         //MÉTODOS DE BUSCA
         public List<Produto> GetProdutos()

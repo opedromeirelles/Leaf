@@ -16,15 +16,15 @@ namespace Leaf.Repository.Pedidos
 
         public ItemPedido MapearItemPedido(SqlDataReader reader)
         {
-            return new ItemPedido
-            {
-                IdItemPedido = Convert.ToInt32(reader["iditempedido"]),
-                IdPedido = Convert.ToInt32(reader["id_pedido"]),
-                IdProduto = Convert.ToInt32(reader["id_produto"]),
-                Quantidade = Convert.ToInt32(reader["qtde"]),
-                SubTotal = Convert.ToDecimal(reader["sub_total"])
-            };
-        }
+			return new ItemPedido
+			{
+				IdItemPedido = reader["iditempedido"] != DBNull.Value ? Convert.ToInt32(reader["iditempedido"]) : 0,
+				IdPedido = reader["id_pedido"] != DBNull.Value ? Convert.ToInt32(reader["id_pedido"]) : 0,
+				IdProduto = reader["id_produto"] != DBNull.Value ? Convert.ToInt32(reader["id_produto"]) : 0,
+				Quantidade = reader["qtde"] != DBNull.Value ? Convert.ToInt32(reader["qtde"]) : 0,
+				SubTotal = reader["sub_total"] != DBNull.Value ? Convert.ToDecimal(reader["sub_total"]) : 0m
+			};
+		}
 
         //Listar item do pedido
         public List<ItemPedido> GetItensPedido(int idPedido)

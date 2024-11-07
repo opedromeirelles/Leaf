@@ -74,7 +74,7 @@ else if (TempData["MensagemSucesso"] != null)
                         {
                             <tr>
                                 <td class="text-center">@(@pedidoViewModel.Pedido?.IdPedido ?? 0)</td>
-                                <td class="text-center">@(@pedidoViewModel.Pedido?.Stauts ?? "N/A")</td>
+                                <td class="text-center">@(@pedidoViewModel.Pedido?.Status ?? "N/A")</td>
                                 <td>@(@pedidoViewModel.Pedido?.ValorToal.ToString("C", new CultureInfo("pt-BR")) ?? "N/A")</td>
                                 <td>@(@pedidoViewModel.Cliente?.Nome ?? "N/A")</td>
                                 <td class="hide-column">@(@pedidoViewModel.Vendedor?.Nome ?? "N/A")</td>

@@ -18,19 +18,19 @@ namespace Leaf.Repository.Agentes
         // MÉTODO PARA MAPEAR PESSOA
         public Pessoa MapearPessoa(SqlDataReader reader)
         {
-            return new Pessoa
-            {
-                IdPessoa = Convert.ToInt32(reader["idpessoa"]),
-                Nome = reader["nome"].ToString(),
-                Tipo = reader["tipo"].ToString(),
-                Cpf = reader["cpf"]?.ToString(),
-                Cnpj = reader["cnpj"]?.ToString(),
-                Telefone1 = reader["telefone1"]?.ToString(),
-                Telefone2 = reader["telefone2"]?.ToString(),
-                Email1 = reader["email1"]?.ToString(),
-                Email2 = reader["email2"]?.ToString()
-            };
-        }
+			return new Pessoa
+			{
+				IdPessoa = reader["idpessoa"] != DBNull.Value ? Convert.ToInt32(reader["idpessoa"]) : 0, // Assumindo 0 como valor padrão
+				Nome = reader["nome"] != DBNull.Value ? reader["nome"].ToString() : string.Empty,
+				Tipo = reader["tipo"] != DBNull.Value ? reader["tipo"].ToString() : string.Empty,
+				Cpf = reader["cpf"] != DBNull.Value ? reader["cpf"].ToString() : string.Empty,
+				Cnpj = reader["cnpj"] != DBNull.Value ? reader["cnpj"].ToString() : string.Empty,
+				Telefone1 = reader["telefone1"] != DBNull.Value ? reader["telefone1"].ToString() : string.Empty,
+				Telefone2 = reader["telefone2"] != DBNull.Value ? reader["telefone2"].ToString() : string.Empty,
+				Email1 = reader["email1"] != DBNull.Value ? reader["email1"].ToString() : string.Empty,
+				Email2 = reader["email2"] != DBNull.Value ? reader["email2"].ToString() : string.Empty
+			};
+		}
 
         // MÉTODOS DE BUSCA
         public List<Pessoa> GetPessoas()

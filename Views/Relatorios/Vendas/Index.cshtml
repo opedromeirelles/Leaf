@@ -134,7 +134,7 @@ else if (TempData["MensagemSucesso"] != null)
 									? pedido.ItensPedido.Sum(item => item.SubTotal).ToString("#,##0.00")
 									: "0,00")
 							</td>
-							<td class="text-center">@(pedido.Pedido.Stauts ?? "INDEFINIDO")</td>
+							<td class="text-center">@(pedido.Pedido.Status ?? "INDEFINIDO")</td>
 							<td class="text-center">
 								<a class="btn btn-sm btn-info ml-1" href="@Url.Action("Detalhes", "RelatorioVendas", new { id = pedido.IdPedido })" target="_blank">Detalhes</a>
 							</td>

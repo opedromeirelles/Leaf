@@ -104,7 +104,7 @@
 
                         <td class="text-center">
                             @{
-                                var status = pedido?.Pedido?.Stauts ?? "Indefinido";
+                                var status = pedido?.Pedido?.Status ?? "Indefinido";
                                 string statusClass = status switch
                                 {
                                     "EM" => "text-primary",

@@ -3,7 +3,7 @@
     public class Pedido
     {
         public int IdPedido { get; set; }
-        public string Stauts { get; set; }
+        public string Status { get; set; }
         public decimal ValorToal { get; set; }
         public string EndEntrega { get; set; }
         public string Cep { get; set; }

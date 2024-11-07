@@ -22,21 +22,21 @@ namespace Leaf.Repository.Agentes
         // Método auxiliar para mapear o resultado do SqlDataReader para um objeto Usuario
         private Usuario MapearUsuario(SqlDataReader reader)
         {
-            return new Usuario
-            {
-                Id = Convert.ToInt32(reader["idusuario"]),
-                Nome = reader["nome"].ToString(),
-                Login = reader["login"].ToString(),
-                Senha = reader["senha"].ToString(),
-                Status = Convert.ToInt32(reader["status"]),
-                IdDpto = Convert.ToInt32(reader["id_dpto"]),
-                Departamento = new Departamento
-                {
-                    IdDpto = Convert.ToInt32(reader["id_dpto"]),
-                    Descricao = reader["descricao"].ToString()
-                }
-            };
-        }
+			return new Usuario
+			{
+				Id = reader["idusuario"] != DBNull.Value ? Convert.ToInt32(reader["idusuario"]) : 0,
+				Nome = reader["nome"] != DBNull.Value ? reader["nome"].ToString() : string.Empty,
+				Login = reader["login"] != DBNull.Value ? reader["login"].ToString() : string.Empty,
+				Senha = reader["senha"] != DBNull.Value ? reader["senha"].ToString() : string.Empty,
+				Status = reader["status"] != DBNull.Value ? Convert.ToInt32(reader["status"]) : 0,
+				IdDpto = reader["id_dpto"] != DBNull.Value ? Convert.ToInt32(reader["id_dpto"]) : 0,
+				Departamento = new Departamento
+				{
+					IdDpto = reader["id_dpto"] != DBNull.Value ? Convert.ToInt32(reader["id_dpto"]) : 0,
+					Descricao = reader["descricao"] != DBNull.Value ? reader["descricao"].ToString() : string.Empty
+				}
+			};
+		}
 
         // VALIDAR USUARIO
         public Usuario ValidarUsuario(string username, string senha)

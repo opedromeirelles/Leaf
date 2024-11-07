@@ -112,7 +112,7 @@
                         <td class="text-center">R$ @(pedido.ItensPedido != null ? pedido.ItensPedido.Sum(item => item.SubTotal).ToString("#,##0.00") : "0,00")</td>
                         <td class="text-center">
                             @{
-                                var status = pedido?.Pedido?.Stauts ?? "Indefinido";
+                                var status = pedido?.Pedido?.Status ?? "Indefinido";
                                 string statusClass = status switch
                                 {
                                     "EM" => "text-primary",

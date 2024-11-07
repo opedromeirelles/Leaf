@@ -29,7 +29,7 @@ namespace Leaf.Repository.Pedidos
 
                 EndEntrega = reader["end_entrega"] != DBNull.Value ? reader["end_entrega"].ToString() : "Não Informado",
                 Cep = reader["cep"] != DBNull.Value ? reader["cep"].ToString() : "Não Informado",
-                Stauts = reader["status"] != DBNull.Value ? reader["status"].ToString() : "Indefinido",
+				Status = reader["status"] != DBNull.Value ? reader["status"].ToString() : "Indefinido",
 
                 DtaEmissao = reader["dta_emissao"] != DBNull.Value ? Convert.ToDateTime(reader["dta_emissao"]) : (DateTime?)null,
                 DtaSaida = reader["dta_saida"] != DBNull.Value ? Convert.ToDateTime(reader["dta_saida"]) : (DateTime?)null,
