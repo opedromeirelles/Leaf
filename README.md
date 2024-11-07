@@ -1,61 +1,62 @@
 # Leaf
 
-Leaf é um sistema de gestão distribuído desenvolvido com foco em produtividade e eficiência, projetado para operar em diferentes dispositivos (desktop, web e mobile), cada um com responsabilidades específicas. O sistema é estruturado em uma arquitetura MVC em ASP.NET, com C# e SQL Server, adotando conceitos modernos de injeção de dependências, responsividade, separação de responsabilidades e boas práticas de desenvolvimento. Este repositório contém a aplicação **web**, responsável pela geração de relatórios e o gerenciamento de compras.
+Leaf Ã© um sistema de gestÃ£o distribuÃ­do desenvolvido com foco em produtividade e eficiÃªncia, projetado para operar em diferentes dispositivos (desktop, web e mobile), cada um com responsabilidades especÃ­ficas. O sistema Ã© estruturado em uma arquitetura MVC em ASP.NET, com C# e SQL Server, adotando conceitos modernos de injeÃ§Ã£o de dependÃªncias, responsividade, separaÃ§Ã£o de responsabilidades e boas prÃ¡ticas de desenvolvimento. Este repositÃ³rio contÃ©m a aplicaÃ§Ã£o **web**, responsÃ¡vel pela geraÃ§Ã£o de relatÃ³rios e o gerenciamento de compras.
 
-## Índice
+## Ãndice
 
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [Funcionalidades](#funcionalidades)
 - [Arquitetura do Projeto](#arquitetura-do-projeto)
-- [Instalação](#instalação)
+- [InstalaÃ§Ã£o](#instalaÃ§Ã£o)
 - [Uso](#uso)
-- [Contribuição](#contribuição)
-- [Licença](#licença)
+- [ContribuiÃ§Ã£o](#contribuiÃ§Ã£o)
+- [LicenÃ§a](#licenÃ§a)
 
 ## Tecnologias Utilizadas
 
-- **ASP.NET** para desenvolvimento da aplicação web
+- **ASP.NET** para desenvolvimento da aplicaÃ§Ã£o web
 - **C#** como linguagem principal
 - **SQL Server** para banco de dados
-- **JavaScript, JSON, AJAX** para validações e integrações no front-end
+- **JavaScript, JSON, AJAX** para validaÃ§Ãµes e integraÃ§Ãµes no front-end
 - **LINQ** para consultas dinamicas
-- **Metodologia MVC** para organização do projeto
+- **Metodologia MVC** para organizaÃ§Ã£o do projeto
 
 ## Funcionalidades
 
-A aplicação **Leaf** é distribuída em três dispositivos com responsabilidades distintas:
+A aplicaÃ§Ã£o **Leaf** Ã© distribuÃ­da em trÃªs dispositivos com responsabilidades distintas:
 
-- **Desktop**: Gestão de produção e vendas com emissão de lotes.
-- **Web** (esta aplicação): Responsável por relatórios e gerenciamento de compras.
-- **Mobile**: Parte da aplicação que será integrada para acesso remoto ao pedidos, destinados as entregas do mesmo (em desenvolvimento).
+- **Desktop**: GestÃ£o de produÃ§Ã£o e vendas com emissÃ£o de lotes.
+- **Web** (esta aplicaÃ§Ã£o): ResponsÃ¡vel por relatÃ³rios e gerenciamento de compras.
+- **Mobile**: Parte da aplicaÃ§Ã£o que serÃ¡ integrada para acesso remoto aos pedidos, destinados Ã s entregas do mesmo [acesse aqui](https://github.com/opedromeirelles/Leaf-Mobile).
 
-### Funcionalidades da aplicação web
 
-- **Relatórios de Vendas e Compras**: Geração e visualização de relatórios detalhados.
-- **Gerenciamento de Compras**: Controle de pedidos, recebimento e atualização de status.
-- **Autenticação e Autorização**: Controle de login e acesso de usuários.
-- **Validações de Dados**: Validações de entrada com JSON/AJAX integrado.
-- **Consultas Dinâmicas e LINQ**: Utilização de consultas eficientes ao banco de dados.
-- **Métodos Assíncronos** para otimização de consultas e respostas.
+### Funcionalidades da aplicaÃ§Ã£o web
+
+- **RelatÃ³rios de Vendas e Compras**: GeraÃ§Ã£o e visualizaÃ§Ã£o de relatÃ³rios detalhados.
+- **Gerenciamento de Compras**: Controle de pedidos, recebimento e atualizaÃ§Ã£o de status.
+- **AutenticaÃ§Ã£o e AutorizaÃ§Ã£o**: Controle de login e acesso de usuÃ¡rios.
+- **ValidaÃ§Ãµes de Dados**: ValidaÃ§Ãµes de entrada com JSON/AJAX integrado.
+- **Consultas DinÃ¢micas e LINQ**: UtilizaÃ§Ã£o de consultas eficientes ao banco de dados.
+- **MÃ©todos AssÃ­ncronos** para otimizaÃ§Ã£o de consultas e respostas.
 
 ## Arquitetura do Projeto
 
-A aplicação foi estruturada em camadas bem definidas:
+A aplicaÃ§Ã£o foi estruturada em camadas bem definidas:
 
-- **View**: Interface do usuário e componentes de apresentação.
-- **Controller**: Lógica de controle das requisições e navegação entre páginas.
-- **Services**: Implementação da lógica de negócio e integrações entre camadas.
-- **Repository**: Interface com o banco de dados usando consultas LINQ e métodos dinâmicos.
+- **View**: Interface do usuÃ¡rio e componentes de apresentaÃ§Ã£o.
+- **Controller**: LÃ³gica de controle das requisiÃ§Ãµes e navegaÃ§Ã£o entre pÃ¡ginas.
+- **Services**: ImplementaÃ§Ã£o da lÃ³gica de negÃ³cio e integraÃ§Ãµes entre camadas.
+- **Repository**: Interface com o banco de dados usando consultas LINQ e mÃ©todos dinÃ¢micos.
 
-Além disso, o projeto utiliza **injeção de dependência** para gerenciar as dependências entre camadas, **tratamento de erros** com logs e mensagens amigáveis ao usuário, **validação de dados** tanto no lado do cliente quanto no servidor, e **controle de versão** para rastreamento de atualizações e correções.
-
-
-## Contribuição
-
-Contribuições são bem-vindas! Sinta-se à vontade para abrir issues, enviar pull requests ou sugerir melhorias. Por favor, siga as boas práticas de desenvolvimento e inclua descrições detalhadas ao enviar suas contribuições.
+AlÃ©m disso, o projeto utiliza **injeÃ§Ã£o de dependÃªncia** para gerenciar as dependÃªncias entre camadas, **tratamento de erros** com logs e mensagens amigÃ¡veis ao usuÃ¡rio, **validaÃ§Ã£o de dados** tanto no lado do cliente quanto no servidor, e **controle de versÃ£o** para rastreamento de atualizaÃ§Ãµes e correÃ§Ãµes.
 
 
-## Considerações
+## ContribuiÃ§Ã£o
 
-Leaf é um sistema de gestão distribuído desenvolvido como um projeto acadêmico, com o objetivo de aplicar e consolidar conhecimentos em desenvolvimento web e de software. Este projeto busca simular um ambiente real de trabalho, permitindo a prática de conceitos avançados como arquitetura em camadas, injeção de dependências, controle de versionamento, e metodologias de desenvolvimento em ASP.NET com C#.
+ContribuiÃ§Ãµes sÃ£o bem-vindas! Sinta-se Ã  vontade para abrir issues, enviar pull requests ou sugerir melhorias. Por favor, siga as boas prÃ¡ticas de desenvolvimento e inclua descriÃ§Ãµes detalhadas ao enviar suas contribuiÃ§Ãµes.
+
+
+## ConsideraÃ§Ãµes
+
+Leaf Ã© um sistema de gestÃ£o distribuÃ­do desenvolvido como um projeto acadÃªmico, com o objetivo de aplicar e consolidar conhecimentos em desenvolvimento web e de software. Este projeto busca simular um ambiente real de trabalho, permitindo a prÃ¡tica de conceitos avanÃ§ados como arquitetura em camadas, injeÃ§Ã£o de dependÃªncias, controle de versionamento, e metodologias de desenvolvimento em ASP.NET com C#.
 
