@@ -43,6 +43,7 @@ builder.Services.AddAuthentication("CookieAuthentication")
 // Adicionar minhas camadas de serviços
 
 //Services Area:
+
 builder.Services.AddTransient<UsuarioServices>();
 builder.Services.AddTransient<DepartamentoServices>();
 builder.Services.AddTransient<ProdutoServices>();
@@ -54,9 +55,11 @@ builder.Services.AddTransient<PedidoServices>();
 builder.Services.AddTransient<PedidoFacedeServices>();
 builder.Services.AddTransient<ItemPedidoServices>();
 builder.Services.AddTransient<LoteProducaoServices>();
+builder.Services.AddTransient<LoteProducaoLogServices>();
 builder.Services.AddTransient<ItemLoteProducaoServices>();
 builder.Services.AddTransient<CompraFacedeServices>();
 builder.Services.AddTransient<LoteProcucaoFacedeServices>();
+
 
 
 
@@ -71,6 +74,7 @@ builder.Services.AddTransient<ItemCompraRepository>();
 builder.Services.AddTransient<PedidoRepository>();
 builder.Services.AddTransient<ItemPedidoRepository>();
 builder.Services.AddTransient<LoteProducaoRepository>();
+builder.Services.AddTransient<LoteProducaoLogRepository>();
 builder.Services.AddTransient<ItemLoteProducaoRepository>();
 
 

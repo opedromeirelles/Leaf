@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Leaf.Services.Materiais;
+using Leaf.Models.DomainLog;
 
 namespace Leaf.Controllers.Relatorios
 {
@@ -20,6 +21,7 @@ namespace Leaf.Controllers.Relatorios
 
 		private readonly LoteProcucaoFacedeServices _loteProcucaoFacedeServices;
 		private readonly ProdutoServices _produtoServices;
+		
 
 		public RelatorioProducaoController(LoteProcucaoFacedeServices loteProcucaoFacedeServices, ProdutoServices produtoServices)
 		{
@@ -132,8 +134,50 @@ namespace Leaf.Controllers.Relatorios
 			}
 		}
 
-		// Método para converter os parâmetros da busca
-		public (string idLote, int idProduto, int estagioProducao, DateTime inicio, DateTime fim) ConverterParametrosBusca(string numeroLote, string estagio, string produto, string dataInicio, string dataFim)
+        [HttpGet]
+        [Route("relatorio-producao/detalhesLog")]
+        public JsonResult LogProducao(string lote)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(lote))
+                {
+                    return Json(new { Response = false, Message = "O identificador do lote não foi informado." });
+                }
+
+                var logs = _loteProcucaoFacedeServices.GetProducaoLog(lote);
+
+                if (logs == null || !logs.Any())
+                {
+                    return Json(new { Response = true, Logs = new List<object>(), Message = "Nenhum registro encontrado para o lote informado." });
+                }
+
+                // Retorna os logs formatados para o JSON
+                var response = logs.Select(log => new
+                {
+                    log.IdLog,
+                    log.Lote,
+                    QtdeAntiga = log.QtdeAntiga,
+                    QtdeNova = log.QtdeNova,
+                    Usuario = new
+                    {
+                        Nome = log.Usuario?.Nome ?? "Não informado"
+                    },
+                    DtaAtualizacao = log.DtaAlteracao?.ToString("yyyy-MM-ddTHH:mm:ss")
+                });
+
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+                TempData["MensagemErro"] = "Erro ao buscar registros deste lote: " + ex.Message;
+                return Json(new { Response = false, Message = "Erro ao buscar log.", Error = ex.Message });
+            }
+        }
+
+
+        // Método para converter os parâmetros da busca
+        public (string idLote, int idProduto, int estagioProducao, DateTime inicio, DateTime fim) ConverterParametrosBusca(string numeroLote, string estagio, string produto, string dataInicio, string dataFim)
 		{
 			string idLote = numeroLote;
 			int idProduto = int.TryParse(produto, out int produtoInt) ? produtoInt : 0;

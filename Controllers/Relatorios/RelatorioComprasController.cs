@@ -48,13 +48,21 @@ namespace Leaf.Controllers.Relatorios
 			GetAdministrativos();
 			GetFornecedores();
 
-			// Trata o número da compra: se estiver vazio ou inválido, define como 0
-			int idCompra = string.IsNullOrWhiteSpace(numeroCompra) ? 0 : (int.TryParse(numeroCompra, out int compraInt) ? compraInt : 0);
-			if (idCompra == 0)
+			// Trata o número da compra: se estiver vazio ou inválido, define como 0 e se for digitado caracter não numérico define como -1 para controle
+			int idCompra = string.IsNullOrWhiteSpace(numeroCompra) ? 0 : (int.TryParse(numeroCompra, out int compraInt) ? compraInt : -1);
+
+			if (idCompra != 0)
 			{
 				TempData["MensagemErro"] = "Número da conta incorreto.";
 				return RedirectToAction("Index");
 			}
+			else if (idCompra < 0)
+			{
+				TempData["MensagemErro"] = "Número da conta incorreto.";
+				return RedirectToAction("Index");
+			}
+
+			
 
 			// Tratamento de parâmetros
 			var (idFornecedor, idUsuario, inicio, fim) = ConverterParametrosBuscaFornecedorUsuario(fornecedor, solicitante, dataInicio, dataFim);

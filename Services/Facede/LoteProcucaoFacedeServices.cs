@@ -4,6 +4,8 @@ using Leaf.Models.Domain;
 using Leaf.Services.Producao;
 using Leaf.Models.ViewModels;
 using Leaf.Models.ItensDomain;
+using Microsoft.Identity.Client;
+using Leaf.Models.DomainLog;
 
 namespace Leaf.Services.Facede
 {
@@ -13,17 +15,21 @@ namespace Leaf.Services.Facede
 		private readonly InsumoServices _insumoServices;
 
 		private readonly UsuarioServices _usuarioServices;
+
 		private readonly ItemLoteProducaoServices _itemLoteProducaoServices;
 		private readonly LoteProducaoServices _loteProducaoServices;
 
+		private readonly LoteProducaoLogServices _loteProducaoLogServices;
 
-		public LoteProcucaoFacedeServices(InsumoServices insumoServices, ProdutoServices produtoServices, UsuarioServices usuarioServices, LoteProducaoServices loteProducaoServices, ItemLoteProducaoServices itemLoteProducaoServices)
+
+		public LoteProcucaoFacedeServices(InsumoServices insumoServices, ProdutoServices produtoServices, UsuarioServices usuarioServices, LoteProducaoServices loteProducaoServices, ItemLoteProducaoServices itemLoteProducaoServices, LoteProducaoLogServices loteProducaoLogServices)
         {
 			_itemLoteProducaoServices = itemLoteProducaoServices;
 			_insumoServices = insumoServices;
 			_loteProducaoServices = loteProducaoServices;
 			_usuarioServices = usuarioServices;
 			_produtoServices = produtoServices;
+			_loteProducaoLogServices = loteProducaoLogServices;
 
 		}
 
@@ -84,7 +90,7 @@ namespace Leaf.Services.Facede
 		
 
 
-		//Relatorio de lotes:
+		//Relatorio de lotes
 		public async Task<List<LoteProducaoViewModel>> GetLotesFiltros(DateTime dataInicio, DateTime dataFim, int idProduto, string idLote, int estagio)
 		{
 			try
@@ -107,12 +113,29 @@ namespace Leaf.Services.Facede
 
 				throw new Exception("Não foi possivel filtrar os dados, erro: " + ex.Message);
 			}
-
-
-
 			
 		}
-		
+
+		// Capturando log de produção
+		public List<LoteProducaoLog> GetProducaoLog(string lote)
+		{
+            List<LoteProducaoLog> loteProducaoLogs = new List<LoteProducaoLog>();
+			try
+			{
+				loteProducaoLogs = _loteProducaoLogServices.GetLoteProducaoLog(lote);
+                foreach (var log in loteProducaoLogs)
+                {
+					log.Usuario = _usuarioServices.GetUsuarioId(log.IdUsuario);
+                }
+            }
+			catch (Exception ex)
+			{
+
+				throw new Exception("Não foi possivel retornar o log do lote de produção. " + ex.Message);
+			}
+
+			return loteProducaoLogs;
+		}
 
 	}
 }
