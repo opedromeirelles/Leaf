@@ -1,61 +1,56 @@
-# Leaf
+# Leaf - AplicaÃ§Ã£o Web
 
-Leaf é um sistema de gestão distribuído desenvolvido com foco em produtividade e eficiência, projetado para operar em diferentes dispositivos (desktop, web e mobile), cada um com responsabilidades específicas. O sistema é estruturado em uma arquitetura MVC em ASP.NET, com C# e SQL Server, adotando conceitos modernos de injeção de dependências, responsividade, separação de responsabilidades e boas práticas de desenvolvimento. Este repositório contém a aplicação **web**, responsável pela geração de relatórios e o gerenciamento de compras.
+**Leaf** Ã© um sistema de gestÃ£o distribuÃ­do desenvolvido com foco em produtividade e eficiÃªncia, projetado para operar em diferentes dispositivos (desktop, web e mobile), cada um com responsabilidades especÃ­ficas. O sistema Ã© estruturado em uma arquitetura **MVC** com **ASP.NET**, **C#** e **SQL Server**, adotando conceitos modernos como injeÃ§Ã£o de dependÃªncias, responsividade e boas prÃ¡ticas de desenvolvimento. Este repositÃ³rio contÃ©m a aplicaÃ§Ã£o **web**, cuja responsabilidade principal Ã© a emissÃ£o de relatÃ³rios e o gerenciamento de compras.
 
-## Índice
+## Ãndice
 
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [Funcionalidades](#funcionalidades)
 - [Arquitetura do Projeto](#arquitetura-do-projeto)
-- [Instalação](#instalação)
-- [Uso](#uso)
-- [Contribuição](#contribuição)
-- [Licença](#licença)
+- [ConsideraÃ§Ãµes](#consideraÃ§Ãµes)
 
 ## Tecnologias Utilizadas
 
-- **ASP.NET** para desenvolvimento da aplicação web
-- **C#** como linguagem principal
-- **SQL Server** para banco de dados
-- **JavaScript, JSON, AJAX** para validações e integrações no front-end
-- **LINQ** para consultas dinamicas
-- **Metodologia MVC** para organização do projeto
+- **ASP.NET**: Framework utilizado para o desenvolvimento da aplicaÃ§Ã£o web.
+- **C#**: Linguagem principal para a implementaÃ§Ã£o da lÃ³gica de negÃ³cio.
+- **SQL Server**: Banco de dados relacional para armazenamento e recuperaÃ§Ã£o de dados.
+- **JavaScript, JSON, AJAX**: Para validaÃ§Ãµes no lado do cliente e integraÃ§Ã£o com a interface de forma dinÃ¢mica.
+- **LINQ**: Utilizado para consultas dinÃ¢micas ao banco de dados.
+- **Metodologia MVC**: Estrutura para organizaÃ§Ã£o do projeto, promovendo uma separaÃ§Ã£o clara de responsabilidades.
 
 ## Funcionalidades
 
-A aplicação **Leaf** é distribuída em três dispositivos com responsabilidades distintas:
+A aplicaÃ§Ã£o **Leaf Web** Ã© parte do sistema distribuÃ­do e desempenha um papel essencial no gerenciamento e controle das operaÃ§Ãµes administrativas. Suas principais funcionalidades incluem:
 
-- **Desktop**: Gestão de produção e vendas com emissão de lotes.
-- **Web** (esta aplicação): Responsável por relatórios e gerenciamento de compras.
-- **Mobile**: Parte da aplicação que será integrada para acesso remoto ao pedidos, destinados as entregas do mesmo (em desenvolvimento).
-
-### Funcionalidades da aplicação web
-
-- **Relatórios de Vendas e Compras**: Geração e visualização de relatórios detalhados.
-- **Gerenciamento de Compras**: Controle de pedidos, recebimento e atualização de status.
-- **Autenticação e Autorização**: Controle de login e acesso de usuários.
-- **Validações de Dados**: Validações de entrada com JSON/AJAX integrado.
-- **Consultas Dinâmicas e LINQ**: Utilização de consultas eficientes ao banco de dados.
-- **Métodos Assíncronos** para otimização de consultas e respostas.
+- **GeraÃ§Ã£o de RelatÃ³rios**: EmissÃ£o e visualizaÃ§Ã£o de relatÃ³rios detalhados de vendas e compras, auxiliando na anÃ¡lise e tomada de decisÃµes.
+- **Gerenciamento de Compras de Insumos**: Controle de pedidos de insumos, gerenciamento de fornecedores e atualizaÃ§Ã£o do status de compras.
+- **AutenticaÃ§Ã£o e AutorizaÃ§Ã£o**: Sistema de login seguro e gerenciamento de permissÃµes de acesso dos usuÃ¡rios.
+- **ValidaÃ§Ãµes de Dados**: ValidaÃ§Ãµes no lado do cliente com **AJAX** e **JSON** para uma experiÃªncia de usuÃ¡rio responsiva.
+- **Consultas Otimizadas**: UtilizaÃ§Ã£o de **LINQ** para consultas eficientes, combinadas com mÃ©todos assÃ­ncronos para melhor desempenho.
 
 ## Arquitetura do Projeto
 
-A aplicação foi estruturada em camadas bem definidas:
+A aplicaÃ§Ã£o **web** segue uma arquitetura **MVC** bem definida, garantindo modularidade e facilidade de manutenÃ§Ã£o:
 
-- **View**: Interface do usuário e componentes de apresentação.
-- **Controller**: Lógica de controle das requisições e navegação entre páginas.
-- **Services**: Implementação da lógica de negócio e integrações entre camadas.
-- **Repository**: Interface com o banco de dados usando consultas LINQ e métodos dinâmicos.
+- **View**: Componentes de interface do usuÃ¡rio, desenvolvidos para serem responsivos e intuitivos.
+- **Controller**: Controla o fluxo de dados entre a View e o Model, processando solicitaÃ§Ãµes e coordenando a lÃ³gica de negÃ³cios.
+- **Model**: Representa as entidades do domÃ­nio e Ã© responsÃ¡vel pela interaÃ§Ã£o com o banco de dados.
+- **Services**: Camada intermediÃ¡ria que implementa a lÃ³gica de negÃ³cio e promove a integraÃ§Ã£o entre Controller e Model.
+- **Repository**: AbstraÃ§Ã£o do acesso ao banco de dados, utilizando **LINQ** e consultas personalizadas.
 
-Além disso, o projeto utiliza **injeção de dependência** para gerenciar as dependências entre camadas, **tratamento de erros** com logs e mensagens amigáveis ao usuário, **validação de dados** tanto no lado do cliente quanto no servidor, e **controle de versão** para rastreamento de atualizações e correções.
+### Recursos Adicionais
 
+- **InjeÃ§Ã£o de DependÃªncias**: Implementada para facilitar a testabilidade e o desacoplamento entre as camadas.
+- **Tratamento de Erros**: InclusÃ£o de logs e mensagens de erro amigÃ¡veis para melhorar a experiÃªncia do usuÃ¡rio e a manutenÃ§Ã£o do sistema.
+- **Controle de VersÃ£o**: Para monitoramento de atualizaÃ§Ãµes e correÃ§Ãµes, garantindo um processo de desenvolvimento colaborativo e eficiente.
 
-## Contribuição
+## ConsideraÃ§Ãµes
 
-Contribuições são bem-vindas! Sinta-se à vontade para abrir issues, enviar pull requests ou sugerir melhorias. Por favor, siga as boas práticas de desenvolvimento e inclua descrições detalhadas ao enviar suas contribuições.
+O projeto **Leaf** foi desenvolvido como um projeto acadÃªmico com o objetivo de aplicar e consolidar conhecimentos em desenvolvimento web e arquitetura de software. Este projeto simula um ambiente real de trabalho, permitindo a prÃ¡tica de conceitos avanÃ§ados, como a arquitetura em camadas, injeÃ§Ã£o de dependÃªncias, e metodologias modernas de desenvolvimento em **ASP.NET** com **C#**.
 
+---
 
-## Considerações
+Veja outras partes que complementam esse projeto:
 
-Leaf é um sistema de gestão distribuído desenvolvido como um projeto acadêmico, com o objetivo de aplicar e consolidar conhecimentos em desenvolvimento web e de software. Este projeto busca simular um ambiente real de trabalho, permitindo a prática de conceitos avançados como arquitetura em camadas, injeção de dependências, controle de versionamento, e metodologias de desenvolvimento em ASP.NET com C#.
-
+- [Leaf Desktop - Gerenciamento de vendas e produÃ§Ã£o de produtos](https://github.com/opedromeirelles/Leaf-Mobile)
+- [Leaf Mobile - Gerenciamento de entregas dos produtos vendidos](https://github.com/opedromeirelles/Leaf-WinForms)
